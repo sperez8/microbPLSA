@@ -7,11 +7,8 @@ import numpy as np
 import csv
 from time import time, gmtime, strftime
 import sys
-sys.path.append('/Users/sperez/Documents/workspace/PLSA/')
-print sys.path
+sys.path.append('/Users/sperez/Documents/workspace/PLSA/') #Mathieu Blondel's PLSA package
 from plsa import pLSA
-
-f = 'otu_table.txt'
 
 class MicrobPLSA():
     '''A class to handle metagenomic data from in particular the Earth Microbiome Project
