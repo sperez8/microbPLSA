@@ -59,30 +59,30 @@ class MicrobPLSA():
         #new_data = np.dot(np.dot(U, np.diag(s)), np.conjugate(V))
         #print new_data
     
-    def runplsa(self, filename, topic_number, verbatim = True):
+    def runplsa(self, topic_number, maxiter, verbatim = True):
         '''runs plsa on sample data in filename'''
-        columns, datamatrix, otus = importdata(filename)
+        columns, datamatrix, otus = self.importdata(self.file)
         Z = topic_number #number of topics
         if verbatim: 
             print '\nData in matrix form:\n', datamatrix
-            print '\nOtus:',otus
-            print columns
-            print len(otus), len(columns)
-            print Z, 'topics'
+            print len(otus), 'Otus:',otus
+            print len(columns), 'Sample names:', columns
+            print Z, 'topics.'
             
         plsa = pLSA()
         plsa.debug = verbatim
         plsa.random_init(Z, len(otus), len(columns))
-        model = plsa.train(datamatrix, Z)   #runs plsa!
+        print "\n Running PLSA.\n"
+        plsa.train(datamatrix, Z, maxiter)   #runs plsa!
+        self.model = plsa
+        return self.model
         
-        return plsa
-    
-    def saveresults(self, plsa, filename = 'results'):
+    def saveresults(self, filename = 'results'):
         ''' functions saves plsa probabilities into a .csv file'''
         filename = formatfilename(filename)
         f = open(filename,'w')
         writer = csv.writer(f)
-        p_z,p_w_z,p_d_z = plsa.get_model()
+        p_z,p_w_z,p_d_z = self.model.get_model()
         
         writer.writerow(['p_z', p_z.shape])
         for value in p_z:
@@ -101,7 +101,7 @@ class MicrobPLSA():
     @staticmethod
     def formatfile(filename):
         '''formats name of file to get correct file format and avoid conflicts'''
-        if filename == 'results' or 'results.csv':
+        if filename == 'test' or 'results' or 'results.csv':
             timestamp = strftime("%d%b%H:%M", gmtime()) #add date to filename to avoid conflicts
             filename = 'results' + timestamp + '.csv'
         if filename[-4:] != '.csv':
