@@ -15,23 +15,24 @@ class MicrobPLSA():
     and apply statistical tools such as Probabilistic Latent Semantic Analysis.
     This class is actually a wrapper on Mathieu Blondel's PLSA package'''
 
-    def __init__(self, file):
+    def __init__(self, file, sampling = False):
         self.file = file
+        self.sampling = sampling #boolean tells us to use full dataset or not
     
     def runplsa(self, topic_number, maxiter, verbatim = True):
         '''runs plsa on sample data in filename'''
-        columns, datamatrix, otus = self.importdata(self.file)
+        columns, datamatrix, otus = self.importdata(self.file, self.sampling)
         Z = topic_number #number of topics
         if verbatim: 
-            print '\nData in matrix form:\n', datamatrix
+            print '\nData in matrix form:\n', datamatrix, '\n'
             print len(otus), 'Otus:',otus
-            print len(columns), 'Sample names:', columns
-            print Z, 'topics.'
+            print len(columns), 'Samples:', columns
+            print Z, 'Topics.'
             
         plsa = pLSA()
         plsa.debug = verbatim
         plsa.random_init(Z, len(otus), len(columns))
-        print "\n Running PLSA.\n"
+        print "\n Running PLSA...\n"
         plsa.train(datamatrix, Z, maxiter)   #runs plsa!
         self.model = plsa
         return self.model
@@ -44,8 +45,7 @@ class MicrobPLSA():
         p_z,p_w_z,p_d_z = self.model.get_model()
         
         writer.writerow(['p_z', p_z.shape])
-        for value in p_z:
-            writer.writerow(value)
+        writer.writerow(p_z)
         writer.writerow(['p_d_z', p_d_z.shape])
         for value in p_d_z:
             writer.writerow(value)    
@@ -94,7 +94,7 @@ class MicrobPLSA():
         return filename
     
     @staticmethod
-    def importdata(self, filename):
+    def importdata(filename, sampling):
         '''imports the date from filename and saves it in numpy array format'''
         file = open(filename,'r')
         table = file.read().splitlines() #read file and split by lines
@@ -102,7 +102,11 @@ class MicrobPLSA():
         columns.pop(0)
         otus = []
         datamatrix = np.ndarray((len(table)-2,len(columns)))
-        for i in range(2,len(table)):
+        if sampling and len(table)>1000:
+            last_line = 500
+            print 'stoped at 500'
+        else: last_line = len(table)
+        for i in range(2,last_line):
             row = table[i].split('\t')
             otus.append(row.pop(0)) 
             datamatrix[i-2] = (row)
