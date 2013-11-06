@@ -35,14 +35,16 @@ def import_biom_file(f):
     shape = data['shape']
     datamatrix = np.zeros((shape[0], shape[1]))
     
-    if data['matrix_type'] == 'sparse': #can either be 'sparse' or 'dense'
-        sparse = True
-    else: sparse = False
+    data_type = data['matrix_type']  #can either be 'sparse' or 'dense'
+
     
-    i = 0
-    for otu, sample, count in data['data']:
-        datamatrix[otu][sample] = count
-    
+    if data_type == 'sparse':
+        for otu, sample, count in data['data']:
+            datamatrix[otu][sample] = count
+    if data_type == 'dense': #NOT TESTED YET
+        row = 0
+        for otu_counts in data['data']:
+            datamatrix[row] = otu_counts        
     
         
     return datamatrix
