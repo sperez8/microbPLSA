@@ -39,7 +39,7 @@ class MicrobPLSA():
         self.model = plsa
         return self.model
         
-    def saveresults(self, filename = 'results'):
+    def saveresults(self, filename = 'Results/results'):
         ''' functions saves plsa probabilities into a .csv file'''
         filename = self.formatfile(filename)
         f = open(filename,'w')
@@ -88,11 +88,13 @@ class MicrobPLSA():
     @staticmethod
     def formatfile(filename):
         '''formats name of file to get correct file format and avoid conflicts'''
-        if filename == 'test' or 'results' or 'results.csv':
+        if 'results' in filename:
             timestamp = strftime("%d%b%H:%M", gmtime()) #add date to filename to avoid conflicts
-            filename = 'results' + timestamp + '.csv'
+            filename = filename + timestamp
         if filename[-4:] != '.csv':
             filename = filename +'.csv'
+        if 'Results/' not in filename:
+            filename = 'Results/'+filename
         return filename
     
 
