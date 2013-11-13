@@ -10,8 +10,23 @@ import numpy as np
 import json
 from pprint import pprint
 import sys
+import matplotlib.pyplot as plt
 
 
+
+def tag_count(file):
+    columns, datamatrix, otus = extract_data(file, False)
+    tags = np.sum(datamatrix, axis = 0)
+    bins = tags
+    n = np.arange(bins.shape[0])
+    # get the corners of the rectangles for the histogram
+    plt.bar(n,bins,width = 0.8, color = 'blue')
+    plt.xlabel('Sample number')
+    plt.ylabel('tag or read count')
+    plt.title('Sorted read count per sample.')
+    plt.show()
+    return tags
+        
 
 def find_otu_name(id):
     '''returns the OTU name for an OTU id'''
@@ -93,9 +108,11 @@ def import_tab_file(filename, sampling):
 
 
 #Testing find_otu_name()
-import time
-t0 = time.time()
-id = 89440
-print find_otu_name(id)
-print time.time() - t0
+# import time
+# t0 = time.time()
+# id = 89440
+# print find_otu_name(id)
+# print time.time() - t0
 
+#f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
+#tag_count(f)

@@ -26,7 +26,8 @@ class MicrobPLSA():
         columns, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
         if verbatim: 
-            print '\nData in matrix form:\n', datamatrix, '\n'
+            print '\nData in matrix form:\n', datamatrix.shape, '\n'
+            print datamatrix
             print len(otus), 'Otus:',otus
             print len(columns), 'Samples:', columns
             print Z, 'Topics.'
