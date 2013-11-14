@@ -6,10 +6,12 @@ author: sperez8
 import numpy as np
 import csv
 from time import time, gmtime, strftime
-import sys
-sys.path.append('/Users/sperez/Documents/workspace/PLSA/') #Mathieu Blondel's PLSA package
-from plsa import pLSA
 from utilities import *
+import sys, os
+
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, _cur_dir + os.sep + "PLSA")
+from plsa import pLSA
 
 class MicrobPLSA():
     '''A class to handle metagenomic data from in particular the Earth Microbiome Project
