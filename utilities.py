@@ -125,13 +125,13 @@ def data_count(file):
     plt.subplot(1,3,3)
     plt.hist(otu_presence, bins=datamatrix.shape[1], normed=1, facecolor='purple')
     plt.xlabel('Number of samples')
-    plt.ylabel('Proportion of OTUs')
-    plt.title('Counts of OTUs in different number of samples')
+    plt.ylabel('Proportion of OTUs in given number of samples')
+    plt.title('Histogram of OTUs\'s number in count')
     plt.show()
     return None
 
-f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
-data_count(f)
+#f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
+#data_count(f)
 
 #Testing find_otu_name()
 # import time
