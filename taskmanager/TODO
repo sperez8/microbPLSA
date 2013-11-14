@@ -1,0 +1,5 @@
+- Intelligible display of elapsed time
+- Inline functions when checking if a task has changed
+- Search algorithms to find the best parameter combination
+- A way to reuse the same parameter as a previous task in a task
+- Handle named arguments on the command line (`task1:param1=0.2,param2=1`)
