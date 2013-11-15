@@ -4,8 +4,8 @@ sys.path.append('/Users/sperez/git/microbPLSA')
 
 import microbplsa
 
-#f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
-f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
+f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
+#f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
 
 m = microbplsa.MicrobPLSA(f,sampling = False)
 

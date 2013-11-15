@@ -25,18 +25,18 @@ class MicrobPLSA():
         
     def runplsa(self, topic_number, maxiter, verbatim = True):
         '''runs plsa on sample data in filename'''
-        columns, datamatrix, otus = self.columns, self.datamatrix, self.otus
+        samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
         if verbatim: 
             print '\nData in matrix form:\n', datamatrix.shape, '\n'
             print datamatrix
             print len(otus), 'Otus:',otus
-            print len(columns), 'Samples:', columns
+            print len(samples), 'Samples:', samples
             print Z, 'Topics.'
             
         plsa = pLSA()
         plsa.debug = verbatim
-        plsa.random_init(Z, len(otus), len(columns))
+        plsa.random_init(Z, datamatrix.shape[0], datamatrix.shape[0])
         print "\n Running PLSA...\n"
         plsa.train(datamatrix, Z, maxiter)   #runs plsa!
         self.model = plsa

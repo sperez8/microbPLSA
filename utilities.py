@@ -75,10 +75,10 @@ def import_tab_file(filename, sampling):
     '''imports the date from filename and saves it in numpy array format'''
     file = open(filename,'r')
     table = file.read().splitlines() #read file and split by lines
-    columns = table[1].split('\t')  #read column names which are split by tabs
-    columns.pop(0)
+    samples = table[1].split('\t')  #read column names which are split by tabs
+    samples.pop(0)
     otus = []
-    datamatrix = np.ndarray((len(table)-2,len(columns)))
+    datamatrix = np.ndarray((len(table)-2,len(samples)))
     if sampling and len(table)>1000:
         last_line = 500
     else: last_line = len(table)
@@ -88,11 +88,11 @@ def import_tab_file(filename, sampling):
         datamatrix[i-2] = (row)
 
     #return datamatrix, otus
-    return columns, datamatrix, np.array([int(x) for x in otus])
+    return samples, datamatrix, np.array([int(x) for x in otus])
 
 
 def data_count(file):
-    columns, datamatrix, otus = extract_data(file, False)
+    samples, datamatrix, otus = extract_data(file, False)
     #matrix with boolean values representing if OTU occurs or not
     binary_data = datamatrix > np.zeros(datamatrix.shape)
     
