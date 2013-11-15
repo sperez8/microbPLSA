@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 import os
-
 import sys
 
-sys.path.insert(0, '/Users/sperez/workspace')
-sys.path.insert(0, '/Users/sperez/workspace/plsa')
-sys.path.insert(0, '/Users/sperez/workspace/taskmanager')
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir + os.sep + 'PLSA')
+sys.path.insert(0, _root_dir + os.sep + 'taskmanager')
+
+
 sys.path.insert(0, '/Users/sperez/workspace/tfidf')
 
 import taskmanager as tm

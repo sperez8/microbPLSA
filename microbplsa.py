@@ -23,7 +23,7 @@ class MicrobPLSA():
         self.sampling = sampling #boolean tells us to use full dataset or not
         self.columns, self.datamatrix, self.otus = extract_data(self.file, self.sampling)
         
-    def runplsa(self, topic_number, maxiter, verbatim = True):
+    def runplsa(self, topic_number, maxiter=500, verbatim = True):
         '''runs plsa on sample data in filename'''
         samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
