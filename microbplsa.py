@@ -5,7 +5,7 @@ author: sperez8
 '''
 import numpy as np
 import csv
-from time import time, gmtime, strftime
+from time import time, localtime, strftime
 from utilities import *
 import sys, os
 
@@ -27,12 +27,12 @@ class MicrobPLSA():
         '''runs plsa on sample data in filename'''
         samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
-        if verbatim: 
-            print '\nData in matrix form:\n', datamatrix.shape, '\n'
-            print datamatrix
-            print len(otus), 'Otus:',otus
-            print len(samples), 'Samples:', samples
-            print Z, 'Topics.'
+#         if verbatim: 
+#             print '\nData in matrix form:\n', datamatrix.shape, '\n'
+#             print datamatrix
+#             print len(otus), 'Otus:',otus
+#             print len(samples), 'Samples:', samples
+#             print Z, 'Topics.'
             
         plsa = pLSA()
         plsa.debug = verbatim
@@ -92,7 +92,7 @@ class MicrobPLSA():
     def formatfile(filename):
         '''formats name of file to get correct file format and avoid conflicts'''
         if 'results' in filename:
-            timestamp = strftime("%d%b%H:%M", gmtime()) #add date to filename to avoid conflicts
+            timestamp = strftime("%d%b%H:%M", localtime()) #add date to filename to avoid conflicts
             filename = filename + timestamp
         if filename[-4:] != '.csv':
             filename = filename +'.csv'
