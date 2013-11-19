@@ -1,3 +1,9 @@
+'''
+Created on 16/09/2013
+
+author: sperez8
+'''
+
 import sys, os
 from time import time
 
@@ -12,9 +18,10 @@ f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_t
 
 m = microbplsa.MicrobPLSA(f,sampling = False)
 
-t0 = time()
-model = m.runplsa(5, verbatim = True)
-m.saveresults('results')
-
-print '\n\n\n Topic Labels', model.topic_labels(None)
-print 'Time for analysis:', int(time()-t0)
+for z in [2,3,4,6,7,8,9,10,11,12]:
+    print '\n\n\n ZZZZZZZzzzz is ',z, '\n\n\n' 
+    t0 = time()
+    model = m.runplsa(z, verbatim = True)
+    m.saveresults('results' + z + 'topics')
+    print '\n\n\n Topic Labels', model.topic_labels(None)
+    print 'Time for analysis:', int(time()-t0)
