@@ -63,7 +63,7 @@ def import_biom_file(f,sampling):
             else: datamatrix[otu][sample] = count
     if data_type == 'dense': #NOT TESTED YET
         row = 0
-        for otu_counts in data['data']:
+        for otu_counts in data['data']: 
             datamatrix[row] = otu_counts    
             row += 1   
             if sampling and row > 500: break 
