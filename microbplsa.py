@@ -20,11 +20,11 @@ class MicrobPLSA():
 
     def __init__(self, file, sampling = False):
         self.file = file
+        
+    def runplsa(self, topic_number, maxiter=500, verbatim = True, sampling = False):
+        '''runs plsa on sample data in filename'''
         self.sampling = sampling #boolean tells us to use full dataset or not
         self.columns, self.datamatrix, self.otus = extract_data(self.file, self.sampling)
-        
-    def runplsa(self, topic_number, maxiter=500, verbatim = True):
-        '''runs plsa on sample data in filename'''
         samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
 #         if verbatim: 
@@ -40,27 +40,44 @@ class MicrobPLSA():
         print "\n Running PLSA...\n"
         plsa.train(datamatrix, Z, maxiter)   #runs plsa!
         self.model = plsa
-        return self.model
-        
-    def saveresults(self, filename = 'Results/results'):
-        ''' functions saves plsa probabilities into a .csv file'''
-        filename = self.formatfile(filename)
+        return plsa
+    
+    def saveresults(self, filename = 'Results/results', extension = '.txt'):
+        ''' functions saves plsa probabilities into a csv or txt file'''
+        filename = self.formatfile(filename, extension)
         f = open(filename,'w')
-        writer = csv.writer(f)
         p_z,p_w_z,p_d_z = self.model.get_model()
         
-        writer.writerow(['p_z', p_z.shape])
-        writer.writerow(p_z)
-        writer.writerow(['p_d_z', p_d_z.shape])
-        for value in p_d_z:
-            writer.writerow(value)    
-        writer.writerow(['p_w_z', p_w_z.shape])
-        for value in p_w_z:
-            writer.writerow(value)
-            
+        if extention == '.csv':
+            writer = csv.writer(f)
+            writer.writerow(['p_z', p_z.shape])
+            writer.writerow(p_z)
+            writer.writerow(['p_d_z', p_d_z.shape])
+            for value in p_d_z:
+                writer.writerow(value)    
+            writer.writerow(['p_w_z', p_w_z.shape])
+            for value in p_w_z:
+                writer.writerow(value)
+        elif extension == '.txt':
+            data = {}
+            data['p_z'] = [list(row) for row in p_z] #convert the numpy array in a list of lists
+            data['p_w_z'] = [list(row) for row in p_w_z] 
+            data['p_d_z'] = [list(row) for row in p_d_z]
+            json.dump(data,f)
+        else: print "Error: the extension given is not valid"     
         f.close()
-        
         return None
+    
+    def open_model(self):
+        ''' Opens the probs of a model previously computed and saved in a json file '''
+        f = open(file,'r')
+        data = json.load(f)
+        p_z = data['p_z']
+        p_w_z = data['p_w_z']
+        p_d_z = data['p_d_z']
+        model = p_z, p_w_z, p_d_z
+        plsa = pLSA(model)
+        return plsa
     
     def svd(self, columns, datamatrix, otus):
         '''performs svd on data. NEEDS TESTING'''
@@ -94,12 +111,13 @@ class MicrobPLSA():
         if 'results' in filename:
             timestamp = strftime("%d%b%H:%M", localtime()) #add date to filename to avoid conflicts
             filename = filename + timestamp
-        if filename[-4:] != '.csv':
-            filename = filename +'.csv'
+        if filename[-4:] != extension:
+            filename = filename + extension
         if 'Results/' not in filename:
             filename = 'Results/'+filename
         return filename
-    
+
+
 
 
 

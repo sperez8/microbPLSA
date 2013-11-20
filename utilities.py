@@ -8,8 +8,9 @@ contains a bunch of different utilities to read EMP data
 '''
 import numpy as np
 import json
-from pprint import pprint
+#from pprint import pprint
 import sys
+import csv
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
@@ -129,6 +130,13 @@ def data_count(file):
     plt.title('Histogram of OTUs\'s number in count')
     plt.show()
     return None
+
+def read_results(file):
+    f = open(file, 'r')
+    reader = csv.reader(f)
+    for row in reader:
+        print row
+    sys.exit()
 
 #f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
 #data_count(f)
