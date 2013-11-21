@@ -10,7 +10,8 @@ from utilities import *
 import sys, os
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, _cur_dir + os.sep + "PLSA")
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir + os.sep + "PLSA")
 from plsa import pLSA
 
 class MicrobPLSA():
