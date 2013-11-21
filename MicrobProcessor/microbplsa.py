@@ -69,17 +69,6 @@ class MicrobPLSA():
         f.close()
         return None
     
-    def open_model(self):
-        ''' Opens the probs of a model previously computed and saved in a json file '''
-        f = open(file,'r')
-        data = json.load(f)
-        p_z = data['p_z']
-        p_w_z = data['p_w_z']
-        p_d_z = data['p_d_z']
-        model = p_z, p_w_z, p_d_z
-        plsa = pLSA(model)
-        return plsa
-    
     def svd(self, columns, datamatrix, otus):
         '''performs svd on data. NEEDS TESTING'''
         print '\nData in matrix form:\n', datamatrix
