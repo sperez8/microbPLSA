@@ -92,44 +92,6 @@ def import_tab_file(filename, sampling):
     return samples, datamatrix, np.array([int(x) for x in otus])
 
 
-def data_count(file):
-    samples, datamatrix, otus = extract_data(file, False)
-    #matrix with boolean values representing if OTU occurs or not
-    binary_data = datamatrix > np.zeros(datamatrix.shape)
-    
-    #Measure the number of OTUs in each sample
-    otu_count = np.sum(binary_data, axis = 0)
-    #Measure the number of samples in which an OTU occurs
-    otu_presence = np.sum(binary_data, axis = 1)
-    #Measure number of reads per sample
-    tags = np.sum(datamatrix, axis = 0)
-    
-    plt.subplot(1,3,1)
-    bins = np.sort(tags)
-    n = np.arange(bins.shape[0])
-    plt.bar(n,bins,width = 0.8, color = 'green')
-    plt.xlabel('Sample #')
-    plt.ylabel('Tag or read count')
-    plt.title('Sorted read count per sample.')
-    
-    
-    #Make plot for sample diversity
-    plt.subplot(1,3,2)
-    bins = np.sort(otu_count)
-    n = np.arange(bins.shape[0])
-    plt.bar(n,bins,width = 0.8, color = 'blue')
-    plt.xlabel('Sample #')
-    plt.ylabel('OTU diversity count')
-    plt.title('Sorted read count per sample.')
-    
-    #Make plot for OTU's presence in samples
-    plt.subplot(1,3,3)
-    plt.hist(otu_presence, bins=datamatrix.shape[1], normed=1, facecolor='purple')
-    plt.xlabel('Number of samples')
-    plt.ylabel('Proportion of OTUs in given number of samples')
-    plt.title('Histogram of OTUs\'s number in count')
-    plt.show()
-    return None
 
 def read_results(file):
     f = open(file, 'r')
