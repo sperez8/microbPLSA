@@ -48,7 +48,7 @@ class MicrobPLSA():
         f = open(filename,'w')
         p_z,p_w_z,p_d_z = self.model.get_model()
         
-        if extention == '.csv':
+        if extension == '.csv':
             writer = csv.writer(f)
             writer.writerow(['p_z', p_z.shape])
             writer.writerow(p_z)
@@ -60,8 +60,8 @@ class MicrobPLSA():
                 writer.writerow(value)
         elif extension == '.txt':
             data = {}
-            data['p_z'] = [list(row) for row in p_z] #convert the numpy array in a list of lists
-            data['p_w_z'] = [list(row) for row in p_w_z] 
+            data['p_z'] = list(p_z)
+            data['p_w_z'] = [list(row) for row in p_w_z] #convert the numpy array in a list of lists  
             data['p_d_z'] = [list(row) for row in p_d_z]
             json.dump(data,f)
         else: print "Error: the extension given is not valid"     
@@ -106,7 +106,7 @@ class MicrobPLSA():
     
     
     @staticmethod
-    def formatfile(filename):
+    def formatfile(filename, extension):
         '''formats name of file to get correct file format and avoid conflicts'''
         if 'results' in filename:
             timestamp = strftime("%d%b%H:%M", localtime()) #add date to filename to avoid conflicts
