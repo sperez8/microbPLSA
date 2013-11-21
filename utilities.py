@@ -14,7 +14,7 @@ import csv
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
-
+SAMPLE_SIZE = 400
 def find_otu_name(id):
     '''returns the OTU name for an OTU id'''
     id = str(id)
@@ -46,7 +46,7 @@ def import_biom_file(f,sampling):
     
     shape = data['shape']
     if sampling:
-        datamatrix = np.zeros((501, shape[1]))
+        datamatrix = np.zeros((SAMPLE_SIZE+1, shape[1]))
     else: 
         datamatrix = np.zeros((shape[0], shape[1]))
                  
@@ -60,14 +60,14 @@ def import_biom_file(f,sampling):
             if otu != row_otu:
                 row_otu = otu
                 row += 1
-            if sampling and row > 500: break #doesn't work/untested
+            if sampling and row > SAMPLE_SIZE: break #doesn't work/untested
             else: datamatrix[otu][sample] = count
     if data_type == 'dense': #NOT TESTED YET
         row = 0
         for otu_counts in data['data']: 
             datamatrix[row] = otu_counts    
             row += 1   
-            if sampling and row > 500: break 
+            if sampling and row > SAMPLE_SIZE: break 
     
         
     return [], datamatrix, []
@@ -81,7 +81,7 @@ def import_tab_file(filename, sampling):
     otus = []
     datamatrix = np.ndarray((len(table)-2,len(samples)))
     if sampling and len(table)>1000:
-        last_line = 500
+        last_line = SAMPLE_SIZE
     else: last_line = len(table)
     for i in range(2,last_line):
         row = table[i].split('\t')
