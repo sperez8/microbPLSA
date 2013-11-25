@@ -19,13 +19,24 @@ class MicrobPLSA():
     and apply statistical tools such as Probabilistic Latent Semantic Analysis.
     This class is actually a wrapper on Mathieu Blondel's PLSA package'''
 
-    def __init__(self, file, sampling = False):
-        self.file = file
+    def __init__(self):
+        return None
         
-    def runplsa(self, topic_number, maxiter=500, verbatim = True, sampling = False):
+    def open_model(self, file):
+        ''' Opens the probs of a model previously computed and saved in a json file '''
+        f = open(file,'r')
+        data = json.load(f)
+        p_z = np.array(data['p_z'])
+        p_w_z = np.array(data['p_w_z'])
+        p_d_z = np.array(data['p_d_z'])
+        model = p_z, p_w_z, p_d_z
+        plsa = pLSA()
+        plsa.set_model(model)
+        return plsa
+
+    def runplsa(self, file, topic_number, maxiter=500, verbatim = True, sampling = False):
         '''runs plsa on sample data in filename'''
-        self.sampling = sampling #boolean tells us to use full dataset or not
-        self.columns, self.datamatrix, self.otus = extract_data(self.file, self.sampling)
+        self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
         samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
 #         if verbatim: 

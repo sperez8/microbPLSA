@@ -12,9 +12,10 @@ _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 
-from utilities import open_model
 import numpy as np
 import matplotlib.pyplot as plt
+
+import microbplsa
 
 
 def data_count(file):
@@ -58,18 +59,42 @@ def data_count(file):
 
 
 def topic_distribution(file):
-    p_z, p_w_z, p_d_z = open_model(file)
+    '''Given a model p_z,p_w_z,p_d_z, we can plot the document's distribution
+    using p(z|d) = normalized((p(d|z)*p(z))) '''
     
-    N,Z = p_d_z.shape #number of samples
-    print N,Z, p_d_z[:,0].shape
+    m = microbplsa.MicrobPLSA()
+    plsa = m.open_model(file) #get model from the results file
+    
+    ###Remove lines below for non NOV 20th results
+    p_z, p_w_z, p_d_z = plsa.get_model()
+    model = p_z, p_w_z, p_d_z[:24,:]
+    plsa.set_model(model)
+    ############
+    
+    #return document's distribution
+    p_z_d = plsa.document_topics()
+    
+    Z,N =p_z_d.shape #number of samples
     n = np.arange(N)
     width = 10.0/float(N) #scale width of bars by number of samples
-    print width
     p = [] #list of plots
-    p.append(plt.bar(n, p_d_z[:,0], width, color='r'))
-    #for z in range(1,Z):
-    #    p.append(plt.bar(n, p_d_z[:,0], width, color='r'), bottom=p_d_z[:,z-1])
+    colors = ['r','b','m','c','y','k']
+    p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0]))
+    height = p_z_d[0,:]
+    for z in range(1,Z):
+        counter = z
+        height
+        p.append(plt.bar(n, p_z_d[z,:], width, color=colors[counter], bottom=height))
+        height += p_z_d[z,:]
+        if counter == len(colors):
+            counter = 0
     
+    
+    plt.ylabel('Probability')
+    plt.title('Sample\'s topic distribution')
+    #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
+    plt.legend(p, ['Topic'+str(z) for z in range(1,Z+1)] )
+
     
     plt.show()
     return None
