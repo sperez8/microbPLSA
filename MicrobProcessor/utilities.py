@@ -90,17 +90,6 @@ def import_tab_file(filename, sampling):
 
     #return datamatrix, otus
     return samples, datamatrix, np.array([int(x) for x in otus])
-
-
-def open_model(file):
-    ''' Opens the probs of a model previously computed and saved in a json file '''
-    f = open(file,'r')
-    data = json.load(f)
-    p_z = np.array(data['p_z'])
-    p_w_z = np.array(data['p_w_z'])
-    p_d_z = np.array(data['p_d_z'])
-    model = p_z, p_w_z, p_d_z
-    return model
     
 def read_results(file):
     f = open(file, 'r')

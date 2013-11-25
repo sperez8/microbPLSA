@@ -9,5 +9,5 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 from microbPlotter import *
 
-f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_3topics_20Nov17:48.txt"
+f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_6topics_20Nov20:28.txt"
 topic_distribution(f)
