@@ -159,6 +159,7 @@ class pLSA(object):
         D: number of documents.
         """
         # np.random.seed(0) # uncomment for deterministic init
+        print 'once', Z,V,D
         if self.p_z is None:
             self.p_z = normalize(np.random.random(Z))
         if self.p_w_z is None:
@@ -177,12 +178,16 @@ class pLSA(object):
         """
         V, D = td.shape
 
+        print V,D,Z
+        print 'rand'
         self.random_init(Z, V, D)
-
+        
         p_d_z_old = np.zeros_like(self.p_d_z)
         p_w_z_old = np.zeros_like(self.p_w_z)
         p_z_old = np.zeros_like(self.p_z)
 
+        print V,D,Z
+                
         train_func = _plsa.train if HAVE_EXT else train
 
         train_func(td.astype(np.uint32),
