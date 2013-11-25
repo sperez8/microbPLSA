@@ -37,7 +37,6 @@ class MicrobPLSA():
             
         plsa = pLSA()
         plsa.debug = verbatim
-        plsa.random_init(Z, datamatrix.shape[0], datamatrix.shape[0])
         print "\n Running PLSA...\n"
         plsa.train(datamatrix, Z, maxiter)   #runs plsa!
         self.model = plsa
