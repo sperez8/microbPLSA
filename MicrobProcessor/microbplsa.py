@@ -8,11 +8,16 @@ import csv
 from time import time, localtime, strftime
 from utilities import *
 import sys, os
+import pickle
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir + os.sep + "PLSA")
 from plsa import pLSA
+
+OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
+
+
 
 class MicrobPLSA():
     '''A class to handle metagenomic data from in particular the Earth Microbiome Project
@@ -34,23 +39,35 @@ class MicrobPLSA():
         plsa.set_model(model)
         return plsa
     
-    def topic_OTUS(self,reference, file, N=5):
+    def open_otu_maps(self,biom_data):
         '''Open a results file, finds the primary OTU ids 
-        for each topic and translates them using the original 
-        data .biom count file.'''
-        
-        model = self.open_model(file) #get model from the results file
+        for each topic and translates them using an OTU-MAP file.'''
  
-        json_data=open(reference)
-        data = json.load(json_data)
-        #pprint(data) #use this command to print the whole file
-        json_data.close()
-        otu_id_map = make_dictionary(data['rows']) #translate the json row data into a {otu_id: otu_name} dictionary
-        
-       
-        
-        print model.topic_labels(otu_id_map,N)
+        reference = OTU_MAP_NAME + biom_data.split('/')[-1] +'.txt'
+        reference = os.path.join(_cur_dir,reference)
+        try:
+            with open(reference) as ref: #read the json file
+                pickled_map=open(reference)
+                otu_maps = pickle.load(pickled_map)
+                pickled_map.close()
+        except IOError: #create the json file.
+            json_data=open(biom_data)
+            data = json.load(json_data)
+            json_data.close()
+            otu_maps = make_dictionary(data['rows']) #translate the json row data into a {otu_id: otu_name} dictionary
+            ref = open(os.path.join(_cur_dir,reference), 'w')
+            pickle.dump(otu_maps,ref)
+            ref.close()
+            
+        self.otu_map = otu_maps
         return None
+       
+    def topic_OTUS(self, file, N=5):
+        '''Open a results file, finds the primary OTU ids 
+        for each topic and translates them using an OTU-MAP file.'''
+        model = self.open_model(file) #get model from the results file  
+        labels = model.topic_labels(self.otu_map['OTU_MAP'],N)
+        return labels
        
     def open_data(self,file,sampling = False):
         self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
