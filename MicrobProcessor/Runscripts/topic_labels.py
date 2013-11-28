@@ -20,9 +20,14 @@ m.open_otu_maps(biom_data)
 
 end = '_topics_26Nov.txt'
 for z in range(2,7):
-    print '\n\n\n z', z
+    print '\nz = ', z
     labels = m.topic_OTUS(f+str(z)+end,N)
-    print 'Labels:', labels 
-# end = '_topics_27Nov.txt'
-# for z in range(7,13):
-#     topic_labels(f+str(z)+end)
+    for label in labels:
+        print label
+    
+end = '_topics_27Nov.txt'
+for z in range(7,13):
+    print '\nz = ', z
+    labels = m.topic_OTUS(f+str(z)+end,N)
+    for label in labels:
+        print label
