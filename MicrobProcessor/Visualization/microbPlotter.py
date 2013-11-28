@@ -65,12 +65,6 @@ def topic_distribution(file):
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file
     
-    ###Remove lines below for non NOV 20th results
-    p_z, p_w_z, p_d_z = plsa.get_model()
-    model = p_z, p_w_z, p_d_z[:24,:]
-    plsa.set_model(model)
-    ############
-    
     #return document's distribution
     p_z_d = plsa.document_topics()
     

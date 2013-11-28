@@ -33,6 +33,24 @@ class MicrobPLSA():
         plsa = pLSA()
         plsa.set_model(model)
         return plsa
+    
+    def topic_OTUS(self,reference, file, N=5):
+        '''Open a results file, finds the primary OTU ids 
+        for each topic and translates them using the original 
+        data .biom count file.'''
+        
+        model = self.open_model(file) #get model from the results file
+ 
+        json_data=open(reference)
+        data = json.load(json_data)
+        #pprint(data) #use this command to print the whole file
+        json_data.close()
+        otu_id_map = make_dictionary(data['rows']) #translate the json row data into a {otu_id: otu_name} dictionary
+        
+       
+        
+        print model.topic_labels(otu_id_map,N)
+        return None
        
     def open_data(self,file,sampling = False):
         self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
