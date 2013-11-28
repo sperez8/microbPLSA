@@ -14,6 +14,7 @@ sys.path.insert(0, _root_dir)
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 import microbplsa
 
@@ -72,7 +73,7 @@ def topic_distribution(file):
     n = np.arange(N)
     width = 10.0/float(N) #scale width of bars by number of samples
     p = [] #list of plots
-    colors = plt.cm.Set1(np.linspace(0, 1, Z))
+    colors = plt.cm.rainbow(np.linspace(0, 1, Z))
     p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0]))
     height = p_z_d[0,:]
     for z in range(1,Z):
@@ -85,6 +86,7 @@ def topic_distribution(file):
     plt.title('Sample\'s topic distribution')
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
     plt.legend(p, ['Topic'+str(z) for z in range(1,Z+1)] )
-    plt.show()
+    
+    return plt
 
     

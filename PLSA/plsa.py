@@ -269,7 +269,6 @@ class pLSA(object):
         for z in range(Z):
             ind = np.argsort(self.p_w_z[:,z])[-N:][::-1]
             if inv_vocab:
-                print ind
                 ret.append([inv_vocab[i] for i in ind])
             else: ret.append(ind)
         return ret
