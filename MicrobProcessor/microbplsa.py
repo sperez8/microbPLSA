@@ -33,10 +33,14 @@ class MicrobPLSA():
         plsa = pLSA()
         plsa.set_model(model)
         return plsa
-
-    def runplsa(self, file, topic_number, maxiter=500, verbatim = True, sampling = False):
-        '''runs plsa on sample data in filename'''
+       
+    def open_data(self,file,sampling = False):
         self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
+        return None
+       
+
+    def runplsa(self, topic_number, maxiter=500, verbatim = True):
+        '''runs plsa on sample data in filename'''
         samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
 #         if verbatim: 
@@ -109,12 +113,13 @@ class MicrobPLSA():
     def formatfile(filename, extension):
         '''formats name of file to get correct file format and avoid conflicts'''
         if 'results' in filename:
-            timestamp = strftime("%d%b%H:%M", localtime()) #add date to filename to avoid conflicts
+            timestamp = strftime("%d%b", localtime()) #add date to filename to avoid conflicts
             filename = filename + timestamp
         if filename[-4:] != extension:
             filename = filename + extension
         if 'Results/' not in filename:
-            filename = 'Results/'+filename
+            _cur_dir = os.path.dirname(os.path.realpath(__file__))
+            filename = _cur_dir +'/Results/'+filename
         return filename
 
 
