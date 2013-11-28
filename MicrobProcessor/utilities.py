@@ -99,33 +99,38 @@ def read_results(file):
     sys.exit()
 
 def make_dictionary(data):
-    otu_table = {}
+    '''from 'rows' dictionary in .biom file, creates a dictionary with two maps:
+    OTU_MAP with {index:otu} keys
+    and OTU_ID_MAP with {id:otu} keys'''
+    otu_map = {}
+    otu_id_map = {}
+    index = 0
     for item in data:
-        otu_id = item['id']
+        otu_id = int(item['id'])
         metadata = item['metadata']
         taxonomy = metadata['taxonomy']
-        otu_name = '_'
+        otu_name = ''
         i=0
         names = 0
         #print 'taxa', taxonomy
         while names < 2:
             if 'k__' in taxonomy[-1-i]:
-                otu_table[otu_id] = taxonomy[-1-i]
-                continue
+                otu_map[index] = taxonomy[-1-i]
+                otu_id_map[otu_id] = taxonomy[-1-i]
+                break
             level = str(taxonomy[-1-i])
             #print 'level',level
             if level[-1] != '_':
-                otu_name = level.replace(' (class)','') + otu_name
+                otu_name = level.replace(' (class)','') +'_'+ otu_name
                 names +=1
             i+=1
         #print 'id:', otu_id, otu_name
-        
-        otu_table[otu_id] = otu_name
     
-    print len(otu_table)
-    sys.exit()
-    return otu_table
-            
+        otu_map[index] = otu_name
+        otu_id_map[otu_id] = otu_name
+        index +=1
+
+    return {'OTU_MAP': otu_map, 'OTU_ID_MAP':otu_id_map}            
 
 
 #f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
