@@ -98,6 +98,36 @@ def read_results(file):
         print row
     sys.exit()
 
+def make_dictionary(data):
+    otu_table = {}
+    for item in data:
+        otu_id = item['id']
+        metadata = item['metadata']
+        taxonomy = metadata['taxonomy']
+        otu_name = '_'
+        i=0
+        names = 0
+        #print 'taxa', taxonomy
+        while names < 2:
+            if 'k__' in taxonomy[-1-i]:
+                otu_table[otu_id] = taxonomy[-1-i]
+                continue
+            level = str(taxonomy[-1-i])
+            #print 'level',level
+            if level[-1] != '_':
+                otu_name = level.replace(' (class)','') + otu_name
+                names +=1
+            i+=1
+        #print 'id:', otu_id, otu_name
+        
+        otu_table[otu_id] = otu_name
+    
+    print len(otu_table)
+    sys.exit()
+    return otu_table
+            
+
+
 #f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
 #data_count(f)
 
