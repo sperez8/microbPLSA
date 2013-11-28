@@ -14,7 +14,7 @@ import csv
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
-SAMPLE_SIZE = 400
+SAMPLE_SIZE = 100
 def find_otu_name(id):
     '''returns the OTU name for an OTU id'''
     id = str(id)
