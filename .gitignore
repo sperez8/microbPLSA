@@ -4,6 +4,7 @@
 # result files
 *.csv
 *.txt
+*.rtf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
