@@ -98,7 +98,7 @@ def read_results(file):
         print row
     sys.exit()
 
-def make_dictionary(data):
+def make_dictionary(data, k):
     '''from 'rows' dictionary in .biom file, creates a dictionary with two maps:
     OTU_MAP with {index:otu} keys
     and OTU_ID_MAP with {id:otu} keys'''
@@ -113,10 +113,9 @@ def make_dictionary(data):
         i=0
         names = 0
         #print 'taxa', taxonomy
-        while names < 2:
+        while names < k:
             if 'k__' in taxonomy[-1-i]:
-                otu_map[index] = taxonomy[-1-i]
-                otu_id_map[otu_id] = taxonomy[-1-i]
+                otu_name = taxonomy[-1-i] +'_'+ otu_name
                 break
             level = str(taxonomy[-1-i])
             #print 'level',level

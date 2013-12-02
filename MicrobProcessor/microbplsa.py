@@ -16,7 +16,7 @@ sys.path.insert(0, _root_dir + os.sep + "PLSA")
 from plsa import pLSA
 
 OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
-
+LEVELS = 1 #number of levels to add to name of OTU in OTU_MAP
 
 
 class MicrobPLSA():
@@ -54,7 +54,7 @@ class MicrobPLSA():
             json_data=open(biom_data)
             data = json.load(json_data)
             json_data.close()
-            otu_maps = make_dictionary(data['rows']) #translate the json row data into a {otu_id: otu_name} dictionary
+            otu_maps = make_dictionary(data['rows'],LEVELS) #translate the json row data into a {otu_id: otu_name} dictionary
             ref = open(os.path.join(_cur_dir,reference), 'w')
             pickle.dump(otu_maps,ref)
             ref.close()
