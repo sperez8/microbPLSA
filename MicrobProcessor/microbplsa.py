@@ -71,7 +71,7 @@ class MicrobPLSA():
        
     def open_data(self,file,sampling = False):
         self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
-        return None
+        return self.datamatrix.shape
        
 
     def runplsa(self, topic_number, maxiter=500, verbatim = True):
