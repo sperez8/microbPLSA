@@ -14,13 +14,13 @@ sys.path.insert(0, _root_dir)
 import microbplsa
 from math import sqrt
 #f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
-
-for study in ['659','722','1526','1037']:
+#redo for 722
+for study in ['1526','1037']:
 
     f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
     
     m = microbplsa.MicrobPLSA()
-    (w,d) = m.open_data(f,sampling = True)
+    (w,d) = m.open_data(f,sampling = False)
     
     print '\n\n\nStudy', study, 'has', w, 'otus and', d, 'samples.'
     

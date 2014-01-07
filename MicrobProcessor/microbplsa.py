@@ -66,7 +66,8 @@ class MicrobPLSA():
         '''Open a results file, finds the primary OTU ids 
         for each topic and translates them using an OTU-MAP file.'''
         model = self.open_model(file) #get model from the results file  
-        labels = model.topic_labels(self.otu_map['OTU_MAP'],N)
+        #labels = model.topic_labels(self.otu_map['OTU_MAP'],N)
+        labels = model.topic_labels(None, N)
         return labels
        
     def open_data(self,file,sampling = False):

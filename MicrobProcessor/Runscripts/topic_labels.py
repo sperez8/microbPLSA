@@ -35,7 +35,7 @@ for z in range(2,8):
         print label
     
 end = '_topics_30Nov.txt'
-for z in range(8,12):
+for z in range(8,10):
     print '\nz = ', z
     labels = m.topic_OTUS(f+str(z)+end,N)
     for label in labels:
