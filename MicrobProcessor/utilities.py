@@ -9,10 +9,14 @@ contains a bunch of different utilities to read EMP data
 import numpy as np
 import json
 #from pprint import pprint
-import sys
+import sys, os
 import csv
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
+
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, _cur_dir)
+import microbplsa
 
 SAMPLE_SIZE = 100
 def find_otu_name(id):
@@ -97,6 +101,41 @@ def read_results(file):
     for row in reader:
         print row
     sys.exit()
+
+def convert_2_R(results_file):
+    '''converts the result matrix probabilities into tab delimited files readable by R'''
+    dir = os.path.dirname(os.path.realpath(__file__)) + "/Results/"  
+    m = microbplsa.MicrobPLSA()
+    plsa = m.open_model(dir + results_file) #get model from the results file
+    p_z = plsa.p_z
+    p_w_z = plsa.p_w_z
+    #return document's distribution
+    p_z_d = plsa.document_topics()
+    
+    
+    R_file_p_z = open(dir + 'Results_for_R/p_z_' + results_file, 'w')
+    for row in p_z:
+        R_file_p_z.writelines('\n')
+        R_file_p_z.writelines('\t' + str(row))
+        R_file_p_z.writelines('\n')
+    R_file_p_z.close()   
+    
+    R_file_p_w_z = open(dir + 'Results_for_R/p_w_z_' + results_file, 'w')
+    for row in p_w_z:
+        R_file_p_w_z.writelines('\n')
+        R_file_p_w_z.writelines('\t' + str(i) for i in row)
+        R_file_p_w_z.writelines('\n')
+    R_file_p_w_z.close()  
+    
+    R_file_p_z_d = open(dir + 'Results_for_R/p_z_d_' + results_file, 'w')
+    #R_file_p_z_d.writelines('\t topic' + (str(i)) for i in range(1,p_z_d.shape[1]+1))
+    for row in p_z_d:
+        R_file_p_z_d.writelines('\n')
+        R_file_p_z_d.writelines('\t' + str(i) for i in row)
+        R_file_p_z_d.writelines('\n')
+    R_file_p_z_d.close()      
+    
+    return None
 
 def make_dictionary(data, k):
     '''from 'rows' dictionary in .biom file, creates a dictionary with two maps:

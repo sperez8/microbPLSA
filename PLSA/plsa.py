@@ -256,7 +256,7 @@ class pLSA(object):
         """
         return self.word_topics().argmax(axis=0)
 
-    def topic_labels(self, inv_vocab, N=10):
+    def topic_labels(self, inv_vocab=None, N=10):
         """
         For each topic z, find the N words w with highest probability P(w|z).
 
