@@ -6,7 +6,9 @@ author: sperez8
 Functions to plot data.
 '''
 import sys, os
+import fnmatch
 from time import time
+import re
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
@@ -89,4 +91,31 @@ def topic_distribution(file):
     
     return plt
 
+def loglikelihood_curve(study):
+    '''Given a dataset we can find the models p_z,p_w_z,p_d_z for 
+    different number of topics Z and can plot the loglikelihood vs. Z curve'''
+    logl = []
+    topic = []
+
+    for file in os.listdir(_root_dir+'/Results/'):
+        if fnmatch.fnmatch(file, 'study_'+study+'*.txt'):
+            Z = int(re.findall(r'\d+', file)[1])
+            f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+            m = microbplsa.MicrobPLSA()
+            (w,d) = m.open_data(f,sampling = False)
+            td = m.datamatrix
+            plsa = m.open_model(_root_dir+'/Results/'+file) #get model from the results file
+            L = m.loglikelihood()
+            
+            topic.append(Z)
+            logl.append(L)
+    
+    plt.plot(topic,logl,'.')
+    plt.ylabel('LogLikelihood')
+    plt.title('Loglikelihood versus number of topics for study '+study)
+    plt.xlabel('Z, number of topics')
+    
+    return plt
+    
+    
     

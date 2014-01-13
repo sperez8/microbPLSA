@@ -14,8 +14,9 @@ sys.path.insert(0, _root_dir)
 import microbplsa
 from math import sqrt
 #f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
-#redo for 722
-for study in ['1526','1037']:
+
+
+for study in ['1037','722','659','1526','864','1043','1702', '1642','1692','1579','1578','1526','1289','1034','990']:
 
     f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
     
@@ -24,16 +25,24 @@ for study in ['1526','1037']:
     
     print '\n\n\nStudy', study, 'has', w, 'otus and', d, 'samples.'
     
-    num_topics = int(2*sqrt(d))
+    num_topics = int(3*sqrt(d))
     print 'We will run PLSA with Z = 2 to', num_topics-1 
     
     
     for z in range(2,num_topics):
         print '\n ZZZZZZZzzzz is ',z, '\n' 
         t0 = time()
-        model = m.runplsa(z, maxiter=5000, verbatim = False)
         name = f.split('/')[-1].split('_')
         name = name[0]+'_'+name[1] +'_'
-        m.saveresults(filename = name+ str(z) + '_topics_', extension =  '.txt')
-        print '\n Topic Labels', model.topic_labels(None)
-        print 'Time for analysis:', int(time()-t0)
+        resultsfilename = name + str(z) + '_topics_'
+        try:
+            open(resultsfilename, "r")
+            print "The reuslts file already exists for study", study, "and ", z, "topics."
+            continue #if result files already exists, we don't overide
+        except IOError:
+            #plsa has not been run with that topic nubmer and study so we run it!
+            model = m.runplsa(z, maxiter=5000, verbatim = False)        
+            m.saveresults(filename = resultsfilename, extension =  '.txt')
+            print '\n Topic Labels', model.topic_labels(None)
+            print 'Time for analysis:', int(time()-t0)
+            
