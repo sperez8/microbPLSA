@@ -14,6 +14,7 @@ _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir + os.sep + "PLSA")
 from plsa import pLSA
+from plsa import loglikelihood
 
 OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
 LEVELS = 1 #number of levels to add to name of OTU in OTU_MAP
@@ -37,11 +38,12 @@ class MicrobPLSA():
         model = p_z, p_w_z, p_d_z
         plsa = pLSA()
         plsa.set_model(model)
+        self.model = model
         return plsa
     
     def open_otu_maps(self,biom_data):
-        '''Open a results file, finds the primary OTU ids 
-        for each topic and translates them using an OTU-MAP file.'''
+        '''Opens a file in the .biom format and opens or creates an {id:otu} dicitonary 
+        if not already created'''
  
         reference = OTU_MAP_NAME + biom_data.split('/')[-1] +'.txt'
         reference = os.path.join(_cur_dir,reference)
@@ -75,7 +77,7 @@ class MicrobPLSA():
         return self.datamatrix.shape
        
 
-    def runplsa(self, topic_number, maxiter=500, verbatim = True):
+    def runplsa(self, topic_number, maxiter=10000, verbatim = True):
         '''runs plsa on sample data in filename'''
         samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
@@ -143,7 +145,14 @@ class MicrobPLSA():
         #NON FUNCTIONAL
         #new_data = np.dot(np.dot(U, np.diag(s)), np.conjugate(V))
         #print new_data
-    
+        
+    def loglikelihood(self):
+        """
+        Compute the log-likelihood that the model generated the data.
+        """
+        p_z, p_w_z, p_d_z = self.model
+        L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
+        return L 
     
     @staticmethod
     def formatfile(filename, extension):
