@@ -22,8 +22,9 @@ f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
 m = microbplsa.MicrobPLSA()
 m.open_otu_maps(biom_data)
 
-t0 = time.time()
+
 print time.time()-t0
+t0 = time.time()
 
 
 
