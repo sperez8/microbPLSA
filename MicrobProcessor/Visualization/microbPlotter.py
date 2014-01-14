@@ -110,7 +110,10 @@ def loglikelihood_curve(study):
             topic.append(Z)
             logl.append(L)
     
-    plt.plot(topic,logl,'.')
+    topic.sort()
+    logl.sort()
+    plt.plot(topic,logl,'b-')
+    plt.plot(topic,logl,'m.')
     plt.ylabel('LogLikelihood')
     plt.title('Loglikelihood versus number of topics for study '+study)
     plt.xlabel('Z, number of topics')
