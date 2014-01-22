@@ -10,19 +10,19 @@ _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 from microbPlotter import *
-
+from time import time
 f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
 
 
-pdf = PdfPages('/Users/sperez/Desktop/loglikelihood_curves.pdf')
+t0 = time()
 
-
-for study in ['1037','1526','659','722','864']:
+for study in ['722']:
+    pdf = PdfPages('/Users/sperez/Desktop/loglikelihood_curves'+study+'.pdf')
     plot = loglikelihood_curve(study)
     plot.savefig(pdf, format='pdf')
     print "Figure saved for study ", study
-    plot.clf()
-
+    plot.clf() 
+    pdf.close()
     
-pdf.close()
+print 'Process took', time()-t0
 print 'PDF file is ready to read'
