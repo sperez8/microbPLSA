@@ -20,6 +20,8 @@ from matplotlib.figure import Figure
 
 import microbplsa
 
+from math import sqrt
+
 
 def data_count(file):
     samples, datamatrix, otus = extract_data(file, False)
@@ -119,6 +121,36 @@ def loglikelihood_curve(study):
     plt.xlabel('Z, number of topics')
     
     return plt
+
+def topic_correlation(file):
+    '''Given a model p_z,p_w_z,p_d_z, and sample metadata we can calculate 
+    the correlation between the topic distributions and eadphic factors'''
     
+    m = microbplsa.MicrobPLSA()
+    plsa = m.open_model(file) #get model from the results file
+    
+    #return document's distribution
+    p_z_d = plsa.document_topics()    
+    Z,N =p_z_d.shape #number of samples
+    np.random.seed(seed=1)
+    Y = np.random.choice([True,False],size = N)
+    print Z, N
+    for z in range (0,Z):
+        print 'Topic',z
+        X = p_z_d[z]
+        M1 = X[Y]
+        n1 = len(M1)
+        M1 = np.mean(M1)
+        M0 = X[np.logical_not(Y)]
+        n0 = len(M0)
+        M0 = np.mean(M0)
+        s_n = np.std(X)
+        r = (M1-M0)/s_n*sqrt(n1*n0/(n1+n0)^2)
+
+        print 'Correlation:', r
+        print ' \n\n\n'
+
+    
+    return None
     
     

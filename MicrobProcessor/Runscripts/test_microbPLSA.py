@@ -30,17 +30,17 @@ for study in ['1037','722','659','1526','864','1043','1702', '1642','1692','1579
     
     
     for z in range(2,num_topics):
-        print '\n ZZZZZZZzzzz is ',z, '\n' 
-        t0 = time()
         name = f.split('/')[-1].split('_')
         name = name[0]+'_'+name[1] +'_'
-        resultsfilename = name + str(z) + '_topics_'
+        resultsfilename = name + str(z) + '_topics_.txt'
         try:
-            open(resultsfilename, "r")
-            print "The reuslts file already exists for study", study, "and ", z, "topics."
+            open(_root_dir + '/Results/' + resultsfilename, "r")
+            print "The results file already exists for study", study, "and ", z, "topics."
             continue #if result files already exists, we don't overide
         except IOError:
             #plsa has not been run with that topic nubmer and study so we run it!
+            print '\n ZZZZZZZzzzz is ',z, '\n' 
+            t0 = time()
             model = m.runplsa(z, maxiter=5000, verbatim = False)        
             m.saveresults(filename = resultsfilename, extension =  '.txt')
             print '\n Topic Labels', model.topic_labels(None)
