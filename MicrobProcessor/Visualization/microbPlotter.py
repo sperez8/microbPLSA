@@ -9,6 +9,7 @@ import sys, os
 import fnmatch
 from time import time
 import re
+import csv
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
@@ -122,35 +123,42 @@ def loglikelihood_curve(study):
     
     return plt
 
-def topic_correlation(file):
-    '''Given a model p_z,p_w_z,p_d_z, and sample metadata we can calculate 
-    the correlation between the topic distributions and eadphic factors'''
+def topic_correlation(file,Y):
+    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
+     we can calculate the correlation between the topic distributions 
+     and edaphic factors'''
     
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file
     
     #return document's distribution
     p_z_d = plsa.document_topics()    
-    Z,N =p_z_d.shape #number of samples
-    np.random.seed(seed=1)
-    Y = np.random.choice([True,False],size = N)
-    print Z, N
+    Z,N =p_z_d.shape #number of sampless
+    R = []
+    N
     for z in range (0,Z):
-        print 'Topic',z
         X = p_z_d[z]
         M1 = X[Y]
-        n1 = len(M1)
+        n1 = float(len(M1))
         M1 = np.mean(M1)
         M0 = X[np.logical_not(Y)]
-        n0 = len(M0)
+        n0 = float(len(M0))
         M0 = np.mean(M0)
+        if n1 + n0 != N: raise NameError('Something funky about your metadata: number of samples is not equal to the total of Y elements.')
         s_n = np.std(X)
-        r = (M1-M0)/s_n*sqrt(n1*n0/(n1+n0)^2)
+        r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
+        R.append(round(r,2))
+   
+    return R
 
-        print 'Correlation:', r
-        print ' \n\n\n'
+def metadata(csvfile):
+    with open(csvfile, 'rU') as file:
+        spamreader = csv.reader(file, delimiter=',', quotechar='|')
+        header = spamreader.next()
+        x = [spamreader.next(),spamreader.next()]
+        x = np.array(x)
+        for row in spamreader:
+            x = np.append(x,[row], axis = 0)
+    return header, x
 
-    
-    return None
-    
     
