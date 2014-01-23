@@ -17,7 +17,7 @@ f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
 t0 = time()
 
 for study in ['722']:
-    pdf = PdfPages('/Users/sperez/Desktop/loglikelihood_curves'+study+'.pdf')
+    pdf = PdfPages('/Users/sperez/Desktop/loglikelihood_curves'+study+'_.pdf')
     plot = loglikelihood_curve(study)
     plot.savefig(pdf, format='pdf')
     print "Figure saved for study ", study

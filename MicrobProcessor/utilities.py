@@ -11,6 +11,7 @@ import json
 #from pprint import pprint
 import sys, os
 import csv
+from math import sqrt
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
@@ -170,6 +171,72 @@ def make_dictionary(data, k):
 
     return {'OTU_MAP': otu_map, 'OTU_ID_MAP':otu_id_map}            
 
+def get_metadata(csvfile):
+    with open(csvfile, 'rU') as file:
+        spamreader = csv.reader(file, delimiter=',', quotechar='|')
+        header = spamreader.next()
+        x = [spamreader.next(),spamreader.next()]
+        x = np.array(x)
+        for row in spamreader:
+            x = np.append(x,[row], axis = 0)
+    return header, x
+
+def reorder_metadata(datafile,metadata):
+    '''gets the order of the sample names in the .biom data file. 
+    Reorders the metadata in the table according to that sample order.'''
+    
+    #FIrst get the sample order
+    json_data=open(datafile)
+    data = json.load(json_data)
+    json_data.close()
+    columns = data['columns']
+    samples = {}
+    i=0
+    for item in columns:
+        s = str(item['id']).split('.')
+        s.pop() #remove numerical id with pop()
+        sample_name = '.'.join(s) 
+        samples[sample_name] = i
+        i+=1
+    
+    #Now we reconstruct the metadata numpy array by putting the rows in the right order.
+    
+    metatable = np.ndarray(shape=metadata.shape, dtype='S40')
+    i = 0
+    for x in metadata[:,1]:
+        j = samples[x]
+        metatable[j,:] = metadata[i,:]
+        i+=1
+    return metatable
+    
+def topic_correlation(file,Y):
+    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
+     we can calculate the correlation between the topic distributions 
+     and edaphic factors'''
+    
+    m = microbplsa.MicrobPLSA()
+    plsa = m.open_model(file) #get model from the results file
+    
+    #return document's distribution
+    p_z_d = plsa.document_topics()    
+    Z,N =p_z_d.shape #number of sampless
+    R = []
+    N
+    for z in range (0,Z):
+        X = p_z_d[z]
+        M1 = X[Y]
+        n1 = float(len(M1))
+        M1 = np.mean(M1)
+        M0 = X[np.logical_not(Y)]
+        n0 = float(len(M0))
+        M0 = np.mean(M0)
+        if n1 + n0 != N: raise NameError('Something funky about your metadata: number of samples is not equal to the total of Y elements.')
+        s_n = np.std(X)
+        r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
+        R.append(round(r,2))
+   
+    return R
+    
 
 #f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
 #data_count(f)
