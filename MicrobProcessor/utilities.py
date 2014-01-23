@@ -209,7 +209,7 @@ def reorder_metadata(datafile,metadata):
         i+=1
     return metatable
     
-def topic_correlation(file,Y):
+def topic_point_bisectoral_correlation(file,Y):
     '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
      we can calculate the correlation between the topic distributions 
      and edaphic factors'''
