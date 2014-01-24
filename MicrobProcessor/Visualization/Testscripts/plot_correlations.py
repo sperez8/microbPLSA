@@ -13,7 +13,7 @@ from utilities import *
 
 
 study = '1037'
-Z = 6
+Z = 7
 f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_" + study + '_' + str(Z) +'_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata.csv'
@@ -26,7 +26,14 @@ metatable = reorder_metadata(datafile,metadata)
 ORG = np.array([True if 'ORG' in x else False for x in metatable[:,1]])
 REF = np.array([True if 'REF' in x else False for x in metatable[:,1]])
 biogeoclimatic_zone = np.array([True if 'Sub-boreal Spruce' in x else False for x in metatable[:,19]])
-print biogeoclimatic_zone
+annual_season_precpt = [int(x) for x in metatable[:,6]]
+annual_season_temp = [float(x) for x in metatable[:,7]]
+elevation = [int(x) for x in metatable[:,8]]
+extreme_event = [int(x) for x in metatable[:,17]]
+collection_date =[int(x) for x in metatable[:,18]]
+mean_coldest = [float(x) for x in metatable[:,23]]
+mean_warmest = [float(x) for x in metatable[:,24]]
+
 
 R = topic_point_bisectoral_correlation(f, ORG)
 print '\n CORRELATIONS ORG:', R
@@ -34,3 +41,18 @@ R = topic_point_bisectoral_correlation(f, REF)
 print '\n CORRELATIONS REF:', R
 R = topic_point_bisectoral_correlation(f, biogeoclimatic_zone)
 print '\n CORRELATIONS biogeoclimatic_zone:', R
+
+R = topic_pearson_correlation(f, annual_season_precpt)
+print '\n CORRELATIONS annual_season_precpt:', R
+R = topic_pearson_correlation(f, annual_season_temp)
+print '\n CORRELATIONS annual_season_temp:', R
+R = topic_pearson_correlation(f, elevation)
+print '\n CORRELATIONS elevation:', R
+R = topic_pearson_correlation(f, extreme_event)
+print '\n CORRELATIONS extreme_event:', R
+R = topic_pearson_correlation(f, collection_date)
+print '\n CORRELATIONS collection_date:', R
+R = topic_pearson_correlation(f, mean_coldest)
+print '\n CORRELATIONS mean_coldest:', R
+R = topic_pearson_correlation(f, mean_warmest)
+print '\n CORRELATIONS mean_warmest:', R
