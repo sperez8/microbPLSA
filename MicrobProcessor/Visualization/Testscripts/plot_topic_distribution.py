@@ -11,19 +11,21 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 from microbPlotter import *
 
-f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
+study = '1037'
+f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study+'_'
+
 
 pdf = PdfPages('/Users/sperez/Desktop/topic_dist_plots.pdf')
 
-end = '_topics_26Nov.txt'
+end = '_topics_.txt'
 for z in range(2,7):
     plot = topic_distribution(f+str(z)+end)
     plot.savefig(pdf, format='pdf')
     
-end = '_topics_27Nov.txt'
+end = '_topics_.txt'
 for z in range(7,13):
     plot = topic_distribution(f+str(z)+end)
     plot.savefig(pdf, format='pdf')
     
 pdf.close()
-print 'file is read'
+print 'file is ready.'

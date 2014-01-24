@@ -87,7 +87,8 @@ def topic_distribution(file):
         height += p_z_d[z,:]
     
     
-    plt.ylabel('Probability')
+    plt.ylabel('Probability P(z|d)')
+    plt.xlabel('Sample')
     plt.title('Sample\'s topic distribution')
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
     plt.legend(p, ['Topic'+str(z) for z in range(1,Z+1)] )
