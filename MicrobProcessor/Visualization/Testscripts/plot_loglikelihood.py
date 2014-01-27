@@ -13,6 +13,7 @@ from microbPlotter import *
 from time import time
 f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
 
+print 'test'
 t0 = time()
 
 for study in ['722']:
