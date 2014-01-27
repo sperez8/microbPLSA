@@ -17,7 +17,8 @@ f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
 t0 = time()
 
 for study in ['722']:
-    pdf = PdfPages('/Users/sperez/Desktop/loglikelihood_curves'+study+'_.pdf')
+    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_.pdf'
+    pdf = PdfPages(file)
     plot = loglikelihood_curve(study)
     plot.savefig(pdf, format='pdf')
     print "Figure saved for study ", study
@@ -25,4 +26,4 @@ for study in ['722']:
     pdf.close()
     
 print 'Process took', time()-t0
-print 'PDF file is ready to read'
+print 'PDF file is ready to read: ', file
