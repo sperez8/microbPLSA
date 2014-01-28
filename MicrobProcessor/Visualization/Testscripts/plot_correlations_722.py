@@ -20,14 +20,15 @@ metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_
 
 factors, metadata = get_metadata(metadatafile)
 
-metatable = reorder_metadata(datafile,metadata)
+for i,factor in enumerate(factors):
+    print i, factor
+metatable = reorder_metadata(datafile,metadata,study)
 
 
+human = np.array([True if 'human' in x else False for x in metatable[:,12]])
 
-ORG = np.array([True if 'human' in x else False for x in metatable[:,1]])
+print human
 
-
-
-R = topic_point_bisectoral_correlation(f, ORG)
-print '\n CORRELATIONS ORG:', R
+R = topic_point_bisectoral_correlation(f, human)
+print '\n CORRELATIONS human:', R
 

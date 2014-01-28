@@ -183,7 +183,7 @@ def get_metadata(csvfile):
             x = np.append(x,[row], axis = 0)
     return header, x
 
-def reorder_metadata(datafile,metadata):
+def reorder_metadata(datafile,metadata,study):
     '''gets the order of the sample names in the .biom data file. 
     Reorders the metadata in the table according to that sample order.'''
     
@@ -195,17 +195,17 @@ def reorder_metadata(datafile,metadata):
     samples = {}
     i=0
     for item in columns:
-        s = str(item['id']).split('.')
-        s.pop() #remove numerical id with pop()
-        sample_name = '.'.join(s) 
+        sample_name = item['id']
+        if study == '1037':
+            s = str(sample_name).split('.')
+            s.pop() #remove numerical id with pop()
+            sample_name = '.'.join(s) 
         samples[sample_name] = i
         i+=1
-    
     #Now we reconstruct the metadata numpy array by putting the rows in the right order.
-    
     metatable = np.ndarray(shape=metadata.shape, dtype='S40')
     i = 0
-    for x in metadata[:,1]:
+    for x in metadata[:,0]:
         j = samples[x]
         metatable[j,:] = metadata[i,:]
         i+=1

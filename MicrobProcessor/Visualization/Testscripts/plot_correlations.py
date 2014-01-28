@@ -19,20 +19,21 @@ datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_libr
 metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata.csv'
 
 factors, metadata = get_metadata(metadatafile)
-metatable = reorder_metadata(datafile,metadata)
+metatable = reorder_metadata(datafile,metadata,study)
 
 
 
-ORG = np.array([True if 'ORG' in x else False for x in metatable[:,1]])
-REF = np.array([True if 'REF' in x else False for x in metatable[:,1]])
-biogeoclimatic_zone = np.array([True if 'Sub-boreal Spruce' in x else False for x in metatable[:,19]])
-annual_season_precpt = [int(x) for x in metatable[:,6]]
-annual_season_temp = [float(x) for x in metatable[:,7]]
-elevation = [int(x) for x in metatable[:,8]]
-extreme_event = [int(x) for x in metatable[:,17]]
-collection_date =[int(x) for x in metatable[:,18]]
-mean_coldest = [float(x) for x in metatable[:,23]]
-mean_warmest = [float(x) for x in metatable[:,24]]
+ORG = np.array([True if 'ORG' in x else False for x in metatable[:,0]])
+REF = np.array([True if 'REF' in x else False for x in metatable[:,0]])
+biogeoclimatic_zone = np.array([True if 'Sub-boreal Spruce' in x else False for x in metatable[:,18]])
+annual_season_precpt = [int(x) for x in metatable[:,5]]
+annual_season_temp = [float(x) for x in metatable[:,6]]
+elevation = [int(x) for x in metatable[:,7]]
+extreme_event = [int(x) for x in metatable[:,16]]
+collection_date =[int(x) for x in metatable[:,17]]
+mean_coldest = [float(x) for x in metatable[:,22]]
+mean_warmest = [float(x) for x in metatable[:,23]]
+print mean_coldest
 
 
 R = topic_point_bisectoral_correlation(f, ORG)
