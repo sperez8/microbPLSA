@@ -11,10 +11,12 @@ import json
 import sys, os
 from math import sqrt
 from scipy.stats.stats import pearsonr
+from scipy.stats import chisquare
 
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
-_root_dir = os.path.dirname(_root_dir)
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
@@ -24,7 +26,7 @@ import microbplsa
 def topic_point_bisectoral_correlation(file,Y):
     '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
      we can calculate the correlation between the topic distributions 
-     and edaphic factors'''
+     and dichotomous factors'''
     
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file
@@ -52,7 +54,7 @@ def topic_point_bisectoral_correlation(file,Y):
 def topic_pearson_correlation(file,Y):
     '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
      we can calculate the correlation between the topic distributions 
-     and edaphic factors'''
+     and continuous factors'''
     
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file
@@ -61,9 +63,29 @@ def topic_pearson_correlation(file,Y):
     p_z_d = plsa.document_topics()    
     Z,N =p_z_d.shape #number of sampless
     R = []
-    N
     for z in range (0,Z):
         X = p_z_d[z]
         R.append([round(x,3) for x in pearsonr(X,Y)])
    
     return R
+
+def topic_category_correlation(file, Y):
+    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
+     we can calculate the correlation between the topic distributions 
+     and categorical factors'''
+    
+    m = microbplsa.MicrobPLSA()
+    plsa = m.open_model(file) #get model from the results file
+    p_z = plsa.p_z
+    
+    #return document's distribution
+    p_z_d = plsa.document_topics()    
+    Z,N =p_z_d.shape #number of sampless
+    R = []
+    for z in range(0,Z):
+        f_obs = p_z_d[z]
+        p_z_list = [p_z[z] for i in range (0,N)]
+        R.append( chisquare(f_obs,f_exp = p_z[z]) )
+    
+    return R
+    

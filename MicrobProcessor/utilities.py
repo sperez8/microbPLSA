@@ -211,8 +211,12 @@ def reorder_metadata(datafile,metadata,study):
 
 
 def organize_metadata(metadata_column):
-    
-    return None
+    options = {}
+    for item in metadata_column:
+        if item not in options:
+            options[item] = 1
+        else: options[item] +=1
+    return options
 
 
 
