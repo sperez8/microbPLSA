@@ -11,10 +11,8 @@ import json
 #from pprint import pprint
 import sys, os
 import csv
-from math import sqrt
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
-from scipy.stats.stats import pearsonr
 
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
@@ -210,53 +208,6 @@ def reorder_metadata(datafile,metadata,study):
         metatable[j,:] = metadata[i,:]
         i+=1
     return metatable
-    
-def topic_point_bisectoral_correlation(file,Y):
-    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
-     we can calculate the correlation between the topic distributions 
-     and edaphic factors'''
-    
-    m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file
-    
-    #return document's distribution
-    p_z_d = plsa.document_topics()    
-    Z,N =p_z_d.shape #number of sampless
-    R = []
-    N
-    for z in range (0,Z):
-        X = p_z_d[z]
-        M1 = X[Y]
-        n1 = float(len(M1))
-        M1 = np.mean(M1)
-        M0 = X[np.logical_not(Y)]
-        n0 = float(len(M0))
-        M0 = np.mean(M0)
-        if n1 + n0 != N: raise NameError('Something funky about your metadata: number of samples is not equal to the total of Y elements.')
-        s_n = np.std(X)
-        r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
-        R.append(round(r,2))
-   
-    return R
-    
-def topic_pearson_correlation(file,Y):
-    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
-     we can calculate the correlation between the topic distributions 
-     and edaphic factors'''
-    
-    m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file
-    
-    #return document's distribution
-    p_z_d = plsa.document_topics()    
-    Z,N =p_z_d.shape #number of sampless
-    R = []
-    N
-    for z in range (0,Z):
-        X = p_z_d[z]
-        R.append([round(x,3) for x in pearsonr(X,Y)])
-   
-    return R
 
 
 #f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'

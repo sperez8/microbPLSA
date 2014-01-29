@@ -15,7 +15,7 @@ f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
 
 t0 = time()
 
-for study in ['722']:
+for study in ['1526']:
     file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_.pdf'
     pdf = PdfPages(file)
     plot = loglikelihood_curve(study)
