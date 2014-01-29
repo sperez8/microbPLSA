@@ -210,12 +210,9 @@ def reorder_metadata(datafile,metadata,study):
     return metatable
 
 
-#f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_1037_closed_reference_otu_table.biom'
-#data_count(f)
+def organize_metadata(metadata_column):
+    
+    return None
 
-#Testing find_otu_name()
-# import time
-# t0 = time.time()
-# id = 89440
-# print find_otu_name(id)
-# print time.time() - t0
+
+
