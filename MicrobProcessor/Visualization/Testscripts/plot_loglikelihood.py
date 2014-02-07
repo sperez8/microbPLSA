@@ -11,11 +11,14 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 from microbPlotter import *
 from time import time
+
+
 f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
+studies = ['1526']
+
 
 t0 = time()
-
-for study in ['1526']:
+for study in studies:
     file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_.pdf'
     pdf = PdfPages(file)
     plot = loglikelihood_curve(study)

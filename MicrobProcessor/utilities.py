@@ -172,6 +172,7 @@ def make_dictionary(data, k):
     return {'OTU_MAP': otu_map, 'OTU_ID_MAP':otu_id_map}            
 
 def get_metadata(csvfile):
+    '''returns metadata from csv file as an array'''
     with open(csvfile, 'rU') as file:
         spamreader = csv.reader(file, delimiter=',', quotechar='|')
         header = spamreader.next()
@@ -217,6 +218,3 @@ def organize_metadata(metadata_column):
             options[item] = 1
         else: options[item] +=1
     return options
-
-
-

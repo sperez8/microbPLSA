@@ -21,6 +21,16 @@ sys.path.insert(0, _root_dir)
 import microbplsa
 
 
+def pbcorrelation(X, Y):
+    M1 = X[Y]
+    n1 = float(len(M1))
+    M1 = np.mean(M1)
+    M0 = X[np.logical_not(Y)]
+    n0 = float(len(M0))
+    M0 = np.mean(M0)
+    s_n = np.std(X)
+    r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
+    return r
 
 
 def topic_point_bisectoral_correlation(file,Y):
@@ -38,15 +48,7 @@ def topic_point_bisectoral_correlation(file,Y):
     N
     for z in range (0,Z):
         X = p_z_d[z]
-        M1 = X[Y]
-        n1 = float(len(M1))
-        M1 = np.mean(M1)
-        M0 = X[np.logical_not(Y)]
-        n0 = float(len(M0))
-        M0 = np.mean(M0)
-        if n1 + n0 != N: raise NameError('Something funky about your metadata: number of samples is not equal to the total of Y elements.')
-        s_n = np.std(X)
-        r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
+        r = pbcorrelation(X,Y)
         R.append(round(r,2))
    
     return R
@@ -84,8 +86,8 @@ def topic_category_correlation(file, Y):
     R = []
     for z in range(0,Z):
         f_obs = p_z_d[z]
-        p_z_list = [p_z[z] for i in range (0,N)]
-        R.append( chisquare(f_obs,f_exp = p_z[z]) )
+        #p_z_list = [p_z[z] for i in range (0,N)]
+        f_exp = p_z[z]*Y
+        R.append( chisquare(f_obs,f_exp = f_exp))
     
     return R
-    

@@ -5,9 +5,9 @@ author: sperez8
 '''
 
 import os,sys
+from correlations import *
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
-_root_dir = os.path.dirname(_root_dir)
 sys.path.insert(0, _root_dir)
 from utilities import *
 
