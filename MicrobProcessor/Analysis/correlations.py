@@ -10,7 +10,7 @@ import numpy as np
 import json
 import sys, os
 from math import sqrt
-from scipy.stats.stats import pearsonr
+from scipy.stats import spearmanr
 from scipy.stats import chisquare
 
 
@@ -20,7 +20,24 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
+def sort_metadate_types(factors):
+    factors_sorted = {}
+    return factors_sorted
 
+def perform_correlations(metadata):
+    R = {}
+    return R
+
+def assign_topic_labels(R):
+    labels = {}
+    return labels
+
+def save_labels(labels, filename):
+    f = open(filename, 'w')
+    for label in labels:
+        f.write(label)
+    f.close()
+                                                                           
 def pbcorrelation(X, Y):
     M1 = X[Y]
     n1 = float(len(M1))
@@ -53,7 +70,7 @@ def topic_point_bisectoral_correlation(file,Y):
    
     return R
     
-def topic_pearson_correlation(file,Y):
+def topic_spearman_correlation(file,Y):
     '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
      we can calculate the correlation between the topic distributions 
      and continuous factors'''
@@ -67,11 +84,14 @@ def topic_pearson_correlation(file,Y):
     R = []
     for z in range (0,Z):
         X = p_z_d[z]
-        R.append([round(x,3) for x in pearsonr(X,Y)])
+        R.append([round(x,3) for x in spearmanr(X,Y)])
    
     return R
 
 def topic_category_correlation(file, Y):
+    '''FIX ME!!!'''
+    
+    
     '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
      we can calculate the correlation between the topic distributions 
      and categorical factors'''
@@ -85,9 +105,6 @@ def topic_category_correlation(file, Y):
     Z,N =p_z_d.shape #number of sampless
     R = []
     for z in range(0,Z):
-        f_obs = p_z_d[z]
-        #p_z_list = [p_z[z] for i in range (0,N)]
-        f_exp = p_z[z]*Y
-        R.append( chisquare(f_obs,f_exp = f_exp))
+        R = 0
     
     return R

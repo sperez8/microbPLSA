@@ -27,8 +27,6 @@ metatable = reorder_metadata(datafile,metadata,study)
 
 human = np.array([True if 'human' in x else False for x in metatable[:,12]])
 
-print human
-
 R = topic_point_bisectoral_correlation(f, human)
 print '\n CORRELATIONS human:', R
 

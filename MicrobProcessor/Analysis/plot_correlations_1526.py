@@ -27,18 +27,13 @@ metatable = reorder_metadata(datafile,metadata,study)
 
 #print metatable
 
-for x in [3]: #,6,14,17]:
+for x in [3, 6,14,17]:
     variable_options = organize_metadata(metatable[:,x])
     print "\n\n\nOptions", variable_options
     for variable in variable_options.keys():
         category = np.array([True if variable in i else False for i in metatable[:,x]])
-        R = topic_category_correlation(f, category)
-        i = 0
-        for chi,p in R:
-            #print chi, p
-            #if p<0.9995:
-            print 'CORRELATION ', variable, ':', chi,p, i
-            i+=1
-            if i>5:
-                break
+        R = topic_point_bisectoral_correlation(f, category)
+        for z,r in enumerate(R):
+            if r>0.7 or r< -0.7:
+                print 'CORRELATION ', variable, ':', z, r
 
