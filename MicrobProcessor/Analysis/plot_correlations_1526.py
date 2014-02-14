@@ -18,6 +18,7 @@ datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_libr
 metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata'+study+'.csv'
 
 factors, metadata = get_metadata(metadatafile)
+print metadata
 
 for i,factor in enumerate(factors):
     #print i, factor
@@ -25,7 +26,8 @@ for i,factor in enumerate(factors):
 
 metatable = reorder_metadata(datafile,metadata,study)
 
-#print metatable
+print metatable
+sys.exit()
 
 for x in [3, 6,14,17]:
     variable_options = organize_metadata(metatable[:,x])

@@ -6,6 +6,7 @@ author: sperez8
 
 import sys, os
 from time import time
+import datetime
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
@@ -39,10 +40,13 @@ for study in ['1526','659','864','1037','722','1043','1702', '1642','1692','1579
             continue #if result files already exists, we don't overide
         except IOError:
             #plsa has not been run with that topic nubmer and study so we run it!
-            print '\n ZZZZZZZzzzz is ',z, '\n' 
+            today = datetime.datetime.today()
+            print '\n', today.strftime('%b %d, %Y @ %I:%M%p')
+            print 'ZZZZZZZzzzz is ',z, '\n' 
+
             t0 = time()
             model = m.runplsa(z, maxiter=5000, verbatim = False)        
             m.saveresults(filename = resultsfilename, extension =  '.txt')
-            print '\n Topic Labels', model.topic_labels(None)
+            print 'Topic Labels', model.topic_labels(None)
             print 'Time for analysis:', int(time()-t0)
             
