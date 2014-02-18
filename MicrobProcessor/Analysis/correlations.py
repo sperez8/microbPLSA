@@ -20,25 +20,35 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-def sort_metadate_types(factors):
-    factors_sorted = {}
-    return factors_sorted
 
 def perform_correlations(metadata):
+    ''' sorts through all the metadat and calculates all 
+        the correlations depending on the type of variable 
+        in the metadata'''
+    
     R = {}
     return R
 
 def assign_topic_labels(R):
+    '''for each topic, find the factor to which it is correlated 
+        best and assign it the corresponding label'''
+    
     labels = {}
     return labels
 
 def save_labels(labels, filename):
+    '''Given the labels of each topic, they are saved in a 
+        text file for further analysis'''
+    
     f = open(filename, 'w')
     for label in labels:
         f.write(label)
     f.close()
                                                                            
 def pbcorrelation(X, Y):
+    ''' calculates point bisectoral correlation given two variable X and Y:
+        X is a vector with the continuous variables, and
+        Y is a vector with the True or False dichotomous statements'''
     M1 = X[Y]
     n1 = float(len(M1))
     M1 = np.mean(M1)
@@ -52,8 +62,8 @@ def pbcorrelation(X, Y):
 
 def topic_point_bisectoral_correlation(file,Y):
     '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
-     we can calculate the correlation between the topic distributions 
-     and dichotomous factors'''
+         we can calculate the correlation between the topic distributions 
+         and dichotomous factors'''
     
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file
@@ -72,8 +82,8 @@ def topic_point_bisectoral_correlation(file,Y):
     
 def topic_spearman_correlation(file,Y):
     '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
-     we can calculate the correlation between the topic distributions 
-     and continuous factors'''
+         we can calculate the correlation between the topic distributions 
+         and continuous factors'''
     
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file
@@ -92,9 +102,9 @@ def topic_category_correlation(file, Y):
     '''FIX ME!!!'''
     
     
-    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
-     we can calculate the correlation between the topic distributions 
-     and categorical factors'''
+    '''Given a model p_z,p_w_z,p_d_z, and sample metadata with 
+        categorical options stored in Y, we can calculate the correlation
+        between the topic distributions and categorical factors'''
     
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file
