@@ -30,14 +30,8 @@ def labeling(study, Z, resultfile = None,
     metatable = reorder_metadata(datafile,metadata,study)
 
     factors_type = organize_metadata(metatable,factors)
-    #for k,v in factors_type.iteritems():
-    #    print k, v
     
     R = perform_correlations(factors, factors_type, metatable, Z, resultfile)
-    print R
-    print R.shape
-    print len(factors)
-    print len(factors_type['dichotomous'])
     
     
     

@@ -51,11 +51,13 @@ def get_topic_proportions(file):
     return plsa.document_topics()  
     
 def correlation_dichotomous(p_z_d, Y):
+    '''calculates the correlation between all topics
+        and a dichotomous variable'''
     R = []
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
         r = pbcorrelation(X, Y)
-        R.append(r)
+        R.append(round(r,3))
     return np.array(R)
     
 def assign_topic_labels(R):

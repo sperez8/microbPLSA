@@ -77,7 +77,7 @@ def organize_metadata(metatable, factors):
                 type = 'categorical'
             else:
                 type = 'constant'
-        print index, factor, len(options), options
+        #print index, factor, len(options), options
         factor_types[type].append({factor:options})
     return factor_types
 
