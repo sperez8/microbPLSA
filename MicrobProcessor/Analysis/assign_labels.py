@@ -31,8 +31,7 @@ def labeling(study, Z, resultfile = None,
 
     factors_type = organize_metadata(metatable,factors)
     for k,v in factors_type.iteritems():
-        for d in v:
-            print k, d.keys()
+        print k, v
     
     
     

@@ -98,9 +98,9 @@ def is_numerical(value):
     else:
         for p in string.punctuation:
             if p in value:
-                if p =='.': 
+                if p =='.': #probably have a float
                     pass
-                elif p == '/': value = value.split(p)[-1]
+                elif p == '/': value = value.split(p)[-1] #probably a date...
                 elif p == '-': value = value.split(p)[-1]
                 else: print "I don't know how to deal with this punctuation: ", p
         try:
