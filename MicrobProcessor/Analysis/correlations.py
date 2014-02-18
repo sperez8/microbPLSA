@@ -21,14 +21,43 @@ sys.path.insert(0, _root_dir)
 import microbplsa
 
 
-def perform_correlations(metadata):
+def perform_correlations(factors, factors_type, metatable, Z, file):
     ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
-    
-    R = {}
-    return R
+    p_z_d = get_topic_proportions(file)
+    Rs = np.zeros((Z,len(factors)))
+    for type,metafactors in factors_type.iteritems():
+        if type == "constant":
+            pass
+        elif type == "continuous":
+            pass        
+        elif type == "dichotomous":
+            for metafactor in metafactors:
+                for factor, labels in metafactor.iteritems():
+                    index = factors.index(factor)
+                    Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
+                    Rs[:,index] = correlation_dichotomous(p_z_d, Y)
+        elif type == "categorical":
+            pass        
+    return Rs
 
+def get_topic_proportions(file):
+    '''Given a model p_z,p_w_z,p_d_z, stored in a result file, 
+        we can find the topic distributions'''
+    m = microbplsa.MicrobPLSA()
+    plsa = m.open_model(file) #get model from the results file
+    #return document's distribution for each topic
+    return plsa.document_topics()  
+    
+def correlation_dichotomous(p_z_d, Y):
+    R = []
+    for z in range(0,p_z_d.shape[0]):
+        X = p_z_d[z]
+        r = pbcorrelation(X, Y)
+        R.append(r)
+    return np.array(R)
+    
 def assign_topic_labels(R):
     '''for each topic, find the factor to which it is correlated 
         best and assign it the corresponding label'''
@@ -70,7 +99,7 @@ def topic_point_bisectoral_correlation(file,Y):
     
     #return document's distribution
     p_z_d = plsa.document_topics()    
-    Z,N =p_z_d.shape #number of sampless
+    Z,N =p_z_d.shape #number of samples
     R = []
     N
     for z in range (0,Z):
