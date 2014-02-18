@@ -56,23 +56,29 @@ def organize_metadata(metatable, factors):
         {factor_type: {factor: values}} where factor_type is 
         dichotomous, continuous, categorical or simple when the 
         value of the factor is invariable'''
-    factor_types = {}
+    N = metatable.shape[0] #number of samples
+    factor_types = {"dichotomous":[], "continuous":[], "categorical":[], "constant":[]}
     #we first create a dictionary of {factor: possible values}
-    for (x,y),column in np.ndenumerate(metatable.T):
+    for index, factor in enumerate(factors):
+        column = metatable[:,index]
         options = []
         for value in column:
             if is_numerical(value):
                 type = "continuous"
             else:
-                options.append(value)
+                if value not in options:
+                    options.append(value)
         if options:
-            if len(options)==2:
+            if len(options) == N:
+                type = 'constant'
+            elif len(options)==2:
                 type = 'dichotomous'
             elif len(options) > 2:
                 type = 'categorical'
             else:
                 type = 'constant'
-        factor_types[type] = {factors[x]:options}
+        print index, factor, len(options), options
+        factor_types[type].append({factor:options})
     return factor_types
 
 def sort_metadate_types(factors):
@@ -92,15 +98,16 @@ def is_numerical(value):
     else:
         for p in string.punctuation:
             if p in value:
-                if p =='.': value = value.replace('.',',')
+                if p =='.': 
+                    pass
                 elif p == '/': value = value.split(p)[-1]
                 elif p == '-': value = value.split(p)[-1]
                 else: print "I don't know how to deal with this punctuation: ", p
         try:
-            float(value)
-            return True
+            v = float(value)
+            return v
         except ValueError:
-            return False
+            return None
     
     
     

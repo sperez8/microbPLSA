@@ -28,11 +28,11 @@ def labeling(study, Z, resultfile = None,
     #sometimes the samples aren't in the metadata 
     #as in the result files
     metatable = reorder_metadata(datafile,metadata,study)
-    
-    print factors
+
     factors_type = organize_metadata(metatable,factors)
-    print factors_type
-    
+    for k,v in factors_type.iteritems():
+        for d in v:
+            print k, d.keys()
     
     
     
