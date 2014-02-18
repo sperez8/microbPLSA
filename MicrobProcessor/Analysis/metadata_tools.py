@@ -8,7 +8,8 @@ contains a bunch of different utilities to read and organize metadata
 
 import csv
 import json
-
+import numpy as np
+import string
 
 def get_metadata(csvfile):
     '''returns metadata from csv file as an array'''
@@ -50,15 +51,60 @@ def reorder_metadata(datafile,metadata,study):
     return metatable
 
 
-def organize_metadata(metadata_column):
-    options = {}
-    for item in metadata_column:
-        if item not in options:
-            options[item] = 1
-        else: options[item] +=1
-    return options
+def organize_metadata(metatable, factors):
+    '''organizes the metadata by type in a dictionary of the form:
+        {factor_type: {factor: values}} where factor_type is 
+        dichotomous, continuous, categorical or simple when the 
+        value of the factor is invariable'''
+    factor_types = {}
+    #we first create a dictionary of {factor: possible values}
+    for (x,y),column in np.ndenumerate(metatable.T):
+        options = []
+        for value in column:
+            if is_numerical(value):
+                type = "continuous"
+            else:
+                options.append(value)
+        if options:
+            if len(options)==2:
+                type = 'dichotomous'
+            elif len(options) > 2:
+                type = 'categorical'
+            else:
+                type = 'constant'
+        factor_types[type] = {factors[x]:options}
+    return factor_types
 
 def sort_metadate_types(factors):
     factors_sorted = {}
     return factors_sorted
 
+def is_numerical(value):
+    '''return True if a metadata value is numerical.
+        if it's 'none' then we can't tell
+        if it has punctuation such as '-' or '/' 
+        then it might be a range or a date'''
+    
+    if value == "none" or value == "None":
+        return True
+    elif any((char in string.letters) for char in value):
+        return False
+    else:
+        for p in string.punctuation:
+            if p in value:
+                if p =='.': value = value.replace('.',',')
+                elif p == '/': value = value.split(p)[-1]
+                elif p == '-': value = value.split(p)[-1]
+                else: print "I don't know how to deal with this punctuation: ", p
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+    
+    
+    
+    
+    
+    
+    

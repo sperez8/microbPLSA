@@ -17,9 +17,11 @@ from math import sqrt
 #f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
 
 
-for study in ['864','1037','722','1043','1702', '1642','1692','1579','1578','1526','1289','1034','990']:
+for study in ['864','1037','722','1043','1702', '1642','1692',
+              '1579','1578','1526','1289','1034','990']:
 
-    f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+    f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study
+    f += '_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
     
     m = microbplsa.MicrobPLSA()
     (w,d) = m.open_data(f,sampling = False)

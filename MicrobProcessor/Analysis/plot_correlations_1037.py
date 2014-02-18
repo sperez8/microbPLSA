@@ -5,22 +5,14 @@ author: sperez8
 '''
 
 import os,sys
-_cur_dir = os.path.dirname(os.path.realpath(__file__))
-_root_dir = os.path.dirname(_cur_dir)
-_root_dir = os.path.dirname(_root_dir)
-sys.path.insert(0, _root_dir)
-from utilities import *
-
+from assign_labels import labeling
 
 study = '1037'
 Z = 7
-f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_" + study + '_' + str(Z) +'_topics_.txt'
-datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
-metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata.csv'
 
-factors, metadata = get_metadata(metadatafile)
-metatable = reorder_metadata(datafile,metadata,study)
+labeling(study, Z)
 
+sys.exit()
 
 
 ORG = np.array([True if 'ORG' in x else False for x in metatable[:,0]])

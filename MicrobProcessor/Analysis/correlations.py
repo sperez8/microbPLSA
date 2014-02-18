@@ -22,7 +22,7 @@ import microbplsa
 
 
 def perform_correlations(metadata):
-    ''' sorts through all the metadat and calculates all 
+    ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
     
