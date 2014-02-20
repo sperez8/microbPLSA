@@ -13,3 +13,5 @@ Z = 7
 labeling(study, Z)
 
 sys.exit()
+
+#### NOTE: currently the order of factors and columns and Rs dont correspond!!!!

@@ -58,7 +58,7 @@ def organize_metadata(metatable, factors):
         value of the factor is invariable'''
     N = metatable.shape[0] #number of samples
     factor_types = {"dichotomous":[], "continuous":[], "categorical":[], "constant":[]}
-    #the number of dichotomous and continuous factors + 
+    #F is the number of dichotomous and continuous factors + 
     #the number of categories for the categorical factors
     F = 0
     #we first create a dictionary of {factor: possible values}
@@ -67,19 +67,23 @@ def organize_metadata(metatable, factors):
         options = []
         for value in column:
             if is_numerical(value):
-                type = "continuous"
+                type = 'continuous'
             else:
                 if value not in options:
                     options.append(value)
+        
         if options:
             if len(options) == N:
                 type = 'constant'
             elif len(options)==2:
                 type = 'dichotomous'
+                F += 1
             elif len(options) > 2:
                 type = 'categorical'
+                F += len(options)
             else:
                 type = 'constant'
+        if type == 'continuous': F += 1
         #print index, factor, len(options), options
         factor_types[type].append({factor:options})
     return factor_types, F

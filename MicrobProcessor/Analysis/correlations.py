@@ -24,7 +24,7 @@ def perform_correlations(factors, factors_type, metatable, Z, F, file):
         the correlations depending on the type of variable 
         in the metadata'''
     p_z_d = get_topic_proportions(file)
-    Rs = np.zeros((Z,len(factors))) # to be filled
+    Rs = np.zeros((Z,F)) # to be filled
     for type,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
             if type == "constant":
@@ -43,12 +43,17 @@ def perform_correlations(factors, factors_type, metatable, Z, F, file):
                     Rs[:,index] = correlation_dichotomous(p_z_d, Y)
             elif type == "categorical":
                 for factor, labels in metafactor.iteritems():
-                    index = factors.index(factor)
-                    Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
-                    Rs[:,index] = correlation_dichotomous(p_z_d, Y)            
+                    for label in labels:
+                        index = factors.index(factor) ###not right...
+                        Y = np.array([True if label in x else False for x in metatable[:,index]])
+                        Rs[:,index] = correlation_dichotomous(p_z_d, Y)            
     #now we check that we have file the correlation matrix!       
     #zeroes = sum(Rs == 0)
     #if zeroes >= 1: raise CorrelationProblem('Some entries, in the correlation matrix remain unfilled.')
+    
+    
+    #### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
+    
     return Rs
 
 def get_topic_proportions(file):
