@@ -41,10 +41,7 @@ def labeling(study, Z, resultfile = None,
     
     #measure the correlation between each topic and each metadata factor
     #store these in a numpy array where row: topic, col: factor
-    R = perform_correlations(real_factors, factors_type, metatable, Z, F, resultfile)
-    
-    #### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
-        
+    R = perform_correlations(real_factors, factors, factors_type, metatable, Z, F, resultfile)
         
     return R
 

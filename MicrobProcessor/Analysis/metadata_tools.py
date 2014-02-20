@@ -87,9 +87,9 @@ def organize_metadata(metatable, factors):
                 ftype = 'categorical'
                 F += len(options)
                 real_factors.extend(options)
-            elif ftype == 'continuous': 
-                real_factors.append(factor)
-                F += 1
+        if ftype == 'continuous': 
+            real_factors.append(factor)
+            F += 1
         
         #print index, factor, len(options), options
         factor_types[ftype].append({factor:options})

@@ -17,6 +17,8 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
+NUM_DECIMALS = 3
+
 
 def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, file):
     ''' sorts through all the metadata and calculates all 
@@ -39,18 +41,21 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
             elif ftype == "dichotomous":
                 for factor in metafactor.keys():
                     labels = metafactor[factor]
-                    table_index = factors.index(factor)
-                    Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
-                    Rs[:,index] = correlation_dichotomous(p_z_d, Y)
+                    m_index = factors.index(factor)
+                    r_index = realfactors.index(factor)
+                    Y = np.array([x == labels[0] for x in metatable[:,m_index]])
+                    Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
             elif ftype == "categorical":
                 for factor, labels in metafactor.iteritems():
                     for label in labels:
-                        table_index = factors.index(factor)
-                        Y = np.array([True if x == label else False for x in metatable[:,index]])
-                        Rs[:,index] = correlation_dichotomous(p_z_d, Y)         
-    #now we check that we have file the correlation matrix!       
-    #zeroes = sum(Rs == 0)
-    #if zeroes >= 1: raise CorrelationProblem('Some entries, in the correlation matrix remain unfilled.')
+                        m_index = factors.index(factor)
+                        r_index = realfactors.index(label)
+                        Y = np.array([x == label for x in metatable[:,m_index]])
+                        Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)         
+    
+    #now we check that we have filled the correlation matrix!       
+    zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
+    if zeros >= 1: raise ValueError('Some entries, in the correlation matrix remain unfilled.')
     
     return Rs
 
@@ -69,7 +74,7 @@ def correlation_dichotomous(p_z_d, Y):
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
         r = pbcorrelation(X, Y)
-        R.append(round(r,3))
+        R.append(round(r,NUM_DECIMALS))
     return np.array(R)
     
 def correlation_continuous(p_z_d, Y):
@@ -79,7 +84,7 @@ def correlation_continuous(p_z_d, Y):
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
         r = spearmanr(X, Y)[0]
-        R.append(round(r,3))
+        R.append(round(r,NUM_DECIMALS))
     return np.array(R)
 
 def assign_topic_labels(R):
