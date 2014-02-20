@@ -10,14 +10,13 @@ import numpy as np
 import json
 import sys, os
 from math import sqrt
-from scipy.stats import spearmanr
-from scipy.stats import chisquare
+#from scipy.stats import spearmanr
 
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
-import microbplsa
+from microbplsa import MicrobPLSA
 
 
 def perform_correlations(factors, factors_type, metatable, Z, file):
@@ -25,23 +24,30 @@ def perform_correlations(factors, factors_type, metatable, Z, file):
         the correlations depending on the type of variable 
         in the metadata'''
     p_z_d = get_topic_proportions(file)
-    Rs = np.zeros((Z,len(factors)))
+    Rs = np.zeros((Z,len(factors))) # to be filled
     for type,metafactors in factors_type.iteritems():
-        if type == "constant":
-            pass
-        elif type == "continuous":
-            for metafactor in metafactors:
-                index = factors.index(factor)
-                Y = metatable[:,index]
+        for metafactor in metafactors:
+            if type == "constant":
+                #we skip these since they irrelevant
+                pass
+            elif type == "continuous":
+                index = factors.index(metafactor)
+                data = list(metatable[:,index])
+                Y = [0 if y == 'none' else float(y) for y in data]
                 Rs[:,index] = correlation_continuous(p_z_d, Y)       
-        elif type == "dichotomous":
-            for metafactor in metafactors:
+            elif type == "dichotomous":
                 for factor, labels in metafactor.iteritems():
                     index = factors.index(factor)
                     Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
                     Rs[:,index] = correlation_dichotomous(p_z_d, Y)
-        elif type == "categorical":
-            pass        
+            elif type == "categorical":
+                for factor, labels in metafactor.iteritems():
+                    index = factors.index(factor)
+                    Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
+                    Rs[:,index] = correlation_dichotomous(p_z_d, Y)            
+    #now we check that we have file the correlation matrix!       
+    #zeroes = sum(Rs == 0)
+    #if zeroes >= 1: raise CorrelationProblem('Some entries, in the correlation matrix remain unfilled.')
     return Rs
 
 def get_topic_proportions(file):
