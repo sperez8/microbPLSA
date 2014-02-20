@@ -19,7 +19,7 @@ sys.path.insert(0, _root_dir)
 from microbplsa import MicrobPLSA
 
 
-def perform_correlations(factors, factors_type, metatable, Z, file):
+def perform_correlations(factors, factors_type, metatable, Z, F, file):
     ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
@@ -36,7 +36,8 @@ def perform_correlations(factors, factors_type, metatable, Z, file):
                 Y = [0 if y == 'none' else float(y) for y in data]
                 Rs[:,index] = correlation_continuous(p_z_d, Y)       
             elif type == "dichotomous":
-                for factor, labels in metafactor.iteritems():
+                for factor in metafactor.keys():
+                    labels = metfactor[factor]
                     index = factors.index(factor)
                     Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
                     Rs[:,index] = correlation_dichotomous(p_z_d, Y)

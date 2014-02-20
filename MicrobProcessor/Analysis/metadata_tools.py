@@ -26,7 +26,7 @@ def reorder_metadata(datafile,metadata,study):
     '''gets the order of the sample names in the .biom data file. 
     Reorders the metadata in the table according to that sample order.'''
     
-    #FIrst get the sample order
+    #First get the sample order
     json_data=open(datafile)
     data = json.load(json_data)
     json_data.close()
@@ -58,6 +58,9 @@ def organize_metadata(metatable, factors):
         value of the factor is invariable'''
     N = metatable.shape[0] #number of samples
     factor_types = {"dichotomous":[], "continuous":[], "categorical":[], "constant":[]}
+    #the number of dichotomous and continuous factors + 
+    #the number of categories for the categorical factors
+    F = 0
     #we first create a dictionary of {factor: possible values}
     for index, factor in enumerate(factors):
         column = metatable[:,index]
@@ -79,7 +82,7 @@ def organize_metadata(metatable, factors):
                 type = 'constant'
         #print index, factor, len(options), options
         factor_types[type].append({factor:options})
-    return factor_types
+    return factor_types, F
 
 def sort_metadate_types(factors):
     factors_sorted = {}
