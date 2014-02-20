@@ -27,17 +27,29 @@ def labeling(study, Z, resultfile = None,
     if metadatafile == None:
         metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata.csv'
 
-    #store the name of the metadata columns in FACTORS
+    #store the name of the metadata columns in FACTORS = ['date', 'soil type', ...]
     #store the metadata in a numpy array with row: sample, col: data
     factors, metadata = get_metadata(metadatafile)
-    #sometimes the samples aren't in the metadata 
+    #sometimes the samples aren't in the same order in the metadata 
     #as in the result files
     metatable = reorder_metadata(datafile,metadata,study)
-
+    
+    #test if different metadata factors are dichotomous, continuous
+    #or categorical. The embedded dictionaries look like: 
+    #factor_types{'categorical':[factorA:{cat1, cat2, cat3...}, factorB...] ....}
     factors_type = organize_metadata(metatable,factors)
     
+    #measure the correlation between each topic and each metadata factor
+    #store these in a numpy array where row: topic, col: factor
     R = perform_correlations(factors, factors_type, metatable, Z, resultfile)
     
-    
-    
-    return None
+    return R
+
+
+
+
+
+
+
+
+
