@@ -37,13 +37,11 @@ def labeling(study, Z, resultfile = None,
     #test if different metadata factors are dichotomous, continuous
     #or categorical. The embedded dictionaries look like: 
     #factor_types{'categorical':[factorA:{cat1, cat2, cat3...}, factorB...] ....}
-    factors_type, F = organize_metadata(metatable,factors)
+    factors_type, real_factors, F = organize_metadata(metatable,factors)
     
     #measure the correlation between each topic and each metadata factor
     #store these in a numpy array where row: topic, col: factor
-    R = perform_correlations(factors, factors_type, metatable, Z, F, resultfile)
-    
-    print R
+    R = perform_correlations(real_factors, factors_type, metatable, Z, F, resultfile)
     
     #### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
         

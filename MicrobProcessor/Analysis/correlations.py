@@ -18,41 +18,39 @@ sys.path.insert(0, _root_dir)
 import microbplsa
 
 
-def perform_correlations(factors, factors_type, metatable, Z, F, file):
+def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, file):
     ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
     p_z_d = get_topic_proportions(file)
     Rs = np.zeros((Z,F)) # to be filled
-    for type,metafactors in factors_type.iteritems():
+    for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
-            if type == "constant":
+            if ftype == "constant":
                 #we skip these since they irrelevant
                 pass
-            elif type == "continuous":
+            elif ftype == "continuous":
                 factor = metafactor.keys()[0]
-                index = factors.index(factor)
-                data = list(metatable[:,index])
+                m_index = factors.index(factor)
+                r_index = realfactors.index(factor)
+                data = list(metatable[:,m_index])
                 Y = numericize(data)
-                Rs[:,index] = correlation_continuous(p_z_d, Y)       
-            elif type == "dichotomous":
+                Rs[:,r_index] = correlation_continuous(p_z_d, Y)      
+            elif ftype == "dichotomous":
                 for factor in metafactor.keys():
                     labels = metafactor[factor]
-                    index = factors.index(factor)
+                    table_index = factors.index(factor)
                     Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
                     Rs[:,index] = correlation_dichotomous(p_z_d, Y)
-            elif type == "categorical":
+            elif ftype == "categorical":
                 for factor, labels in metafactor.iteritems():
                     for label in labels:
-                        index = factors.index(factor) ###not right...
-                        Y = np.array([True if label in x else False for x in metatable[:,index]])
+                        table_index = factors.index(factor)
+                        Y = np.array([True if x == label else False for x in metatable[:,index]])
                         Rs[:,index] = correlation_dichotomous(p_z_d, Y)         
     #now we check that we have file the correlation matrix!       
     #zeroes = sum(Rs == 0)
     #if zeroes >= 1: raise CorrelationProblem('Some entries, in the correlation matrix remain unfilled.')
-    
-    
-    #### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
     
     return Rs
 
