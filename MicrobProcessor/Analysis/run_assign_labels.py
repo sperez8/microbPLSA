@@ -14,4 +14,4 @@ labeling(study, Z)
 
 sys.exit()
 
-#### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
+#### NOTE: currently the order of factors and columns and Rs don't correspond!!!!

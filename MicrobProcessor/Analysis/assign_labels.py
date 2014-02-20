@@ -43,6 +43,7 @@ def labeling(study, Z, resultfile = None,
     #store these in a numpy array where row: topic, col: factor
     R = perform_correlations(factors, factors_type, metatable, Z, F, resultfile)
     
+    print R
     
     #### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
         

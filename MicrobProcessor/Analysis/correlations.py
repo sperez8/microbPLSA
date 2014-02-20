@@ -4,19 +4,18 @@ Created on 29/01/2014
 author: sperez8
 
 contains a bunch of different utilities to read EMP data
-
 '''
 import numpy as np
 import json
 import sys, os
 from math import sqrt
-#from scipy.stats import spearmanr
+from scipy.stats import spearmanr
 
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
-from microbplsa import MicrobPLSA
+import microbplsa
 
 
 def perform_correlations(factors, factors_type, metatable, Z, F, file):
@@ -31,13 +30,14 @@ def perform_correlations(factors, factors_type, metatable, Z, F, file):
                 #we skip these since they irrelevant
                 pass
             elif type == "continuous":
-                index = factors.index(metafactor)
+                factor = metafactor.keys()[0]
+                index = factors.index(factor)
                 data = list(metatable[:,index])
-                Y = [0 if y == 'none' else float(y) for y in data]
+                Y = numericize(data)
                 Rs[:,index] = correlation_continuous(p_z_d, Y)       
             elif type == "dichotomous":
                 for factor in metafactor.keys():
-                    labels = metfactor[factor]
+                    labels = metafactor[factor]
                     index = factors.index(factor)
                     Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
                     Rs[:,index] = correlation_dichotomous(p_z_d, Y)
@@ -74,13 +74,13 @@ def correlation_dichotomous(p_z_d, Y):
         R.append(round(r,3))
     return np.array(R)
     
-def correlation_continous(p_z_d, Y):
+def correlation_continuous(p_z_d, Y):
     '''calculates the correlation between all topics
         and a continuous variable'''
     R = []
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
-        r = spearmanr(X, Y)
+        r = spearmanr(X, Y)[0]
         R.append(round(r,3))
     return np.array(R)
 
@@ -113,3 +113,49 @@ def pbcorrelation(X, Y):
     s_n = np.std(X)
     r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
     return r
+
+def numericize(data):
+    ''' Data is a list f strings that need to be turned
+    into floats. However sometimes they contain ',' instead of
+    '.' and '-' to show ranges. We transform the data here'''
+    data1 = [d.replace(',','.') for d in data]
+    #check for range variables like '30-39'
+    data2=[]
+    for d in data1:
+        if '-' in d and d.split('-')[0]: #need both statements here in case of neg numbs.
+                start_range = float(d.split('-')[0])
+                end_range = float(d.split('-')[1])
+                middle = (start_range + end_range)/2.0
+                data2.append(middle)
+        else:
+            data2.append(float(d))
+    return data2
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
