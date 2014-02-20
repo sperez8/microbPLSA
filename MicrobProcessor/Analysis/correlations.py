@@ -46,7 +46,7 @@ def perform_correlations(factors, factors_type, metatable, Z, F, file):
                     for label in labels:
                         index = factors.index(factor) ###not right...
                         Y = np.array([True if label in x else False for x in metatable[:,index]])
-                        Rs[:,index] = correlation_dichotomous(p_z_d, Y)            
+                        Rs[:,index] = correlation_dichotomous(p_z_d, Y)         
     #now we check that we have file the correlation matrix!       
     #zeroes = sum(Rs == 0)
     #if zeroes >= 1: raise CorrelationProblem('Some entries, in the correlation matrix remain unfilled.')
@@ -113,63 +113,3 @@ def pbcorrelation(X, Y):
     s_n = np.std(X)
     r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
     return r
-
-
-def topic_point_bisectoral_correlation(file,Y):
-    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
-         we can calculate the correlation between the topic distributions 
-         and dichotomous factors'''
-    
-    m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file
-    
-    #return document's distribution
-    p_z_d = plsa.document_topics()    
-    Z,N =p_z_d.shape #number of samples
-    R = []
-    N
-    for z in range (0,Z):
-        X = p_z_d[z]
-        r = pbcorrelation(X,Y)
-        R.append(round(r,2))
-   
-    return R
-    
-def topic_spearman_correlation(file,Y):
-    '''Given a model p_z,p_w_z,p_d_z, and sample metadata boolean vector Y,
-         we can calculate the correlation between the topic distributions 
-         and continuous factors'''
-    
-    m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file
-    
-    #return document's distribution
-    p_z_d = plsa.document_topics()    
-    Z,N =p_z_d.shape #number of sampless
-    R = []
-    for z in range (0,Z):
-        X = p_z_d[z]
-        R.append([round(x,3) for x in spearmanr(X,Y)])
-   
-    return R
-
-def topic_category_correlation(file, Y):
-    '''FIX ME!!!'''
-    
-    
-    '''Given a model p_z,p_w_z,p_d_z, and sample metadata with 
-        categorical options stored in Y, we can calculate the correlation
-        between the topic distributions and categorical factors'''
-    
-    m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file
-    p_z = plsa.p_z
-    
-    #return document's distribution
-    p_z_d = plsa.document_topics()    
-    Z,N =p_z_d.shape #number of sampless
-    R = []
-    for z in range(0,Z):
-        R = 0
-    
-    return R
