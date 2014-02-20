@@ -7,8 +7,8 @@ author: sperez8
 import os,sys
 from assign_labels import labeling
 
-study = '1037'
-Z = 7
+study = '722'
+Z = 3
 
 labeling(study, Z)
 

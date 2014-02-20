@@ -28,10 +28,8 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
     Rs = np.zeros((Z,F)) # to be filled
     for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
-            if ftype == "constant":
-                #we skip these since they irrelevant
-                pass
-            elif ftype == "continuous":
+            print metafactor
+            if ftype == "continuous":
                 factor = metafactor.keys()[0]
                 m_index = factors.index(factor)
                 r_index = realfactors.index(factor)
@@ -48,14 +46,16 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
             elif ftype == "categorical":
                 for factor, labels in metafactor.iteritems():
                     for label in labels:
+                        print factor, label
                         m_index = factors.index(factor)
                         r_index = realfactors.index(label)
                         Y = np.array([x == label for x in metatable[:,m_index]])
                         Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)         
     
-    #now we check that we have filled the correlation matrix!       
-    zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
-    if zeros >= 1: raise ValueError('Some entries, in the correlation matrix remain unfilled.')
+    #now we check that we have filled the correlation matrix!
+    print Rs       
+    #zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
+    #if zeros >= 1: raise ValueError('Some entries, in the correlation matrix remain unfilled.')
     
     return Rs
 

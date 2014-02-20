@@ -57,7 +57,7 @@ def organize_metadata(metatable, factors):
         dichotomous, continuous, categorical. All 'constant' or
         invariable factors are ignored'''
     N = metatable.shape[0] #number of samples
-    factor_types = {"dichotomous":[], "continuous":[], "categorical":[], "constant":[]}
+    factor_types = {"dichotomous":[], "continuous":[], "categorical":[]}
     #F is the number of dichotomous and continuous factors + 
     #the number of categories for the categorical factors
     F = 0
@@ -69,14 +69,17 @@ def organize_metadata(metatable, factors):
         column = metatable[:,index]
         options = []
         ftype = None
+        all_cont_values = True
         for value in column:
             if is_numerical(value):
                 ftype = 'continuous'
             else:
-                if value not in options:
+                all_cont_values = False
+            if value not in options:
                     options.append(value)
+                    
         
-        if options:
+        if not all_cont_values:
             if len(options) == N or len(options) == 1:
                 continue #these are invariable factors and we ignore them               
             elif len(options)==2:
@@ -88,8 +91,14 @@ def organize_metadata(metatable, factors):
                 F += len(options)
                 real_factors.extend(options)
         if ftype == 'continuous': 
-            real_factors.append(factor)
-            F += 1
+            #check if all the value are the same, if
+            constant_value = (np.unique(options).shape == (1,))
+            if not constant_value:
+                real_factors.append(factor)
+                F += 1
+            else:
+                continue
+                
         
         #print index, factor, len(options), options
         factor_types[ftype].append({factor:options})
@@ -105,16 +114,16 @@ def is_numerical(value):
         if it has punctuation such as '-' or '/' 
         then it might be a range or a date'''
     
-    if value == "none" or value == "None":
-        return True
-    elif any((char in string.letters) for char in value):
+    #if str.lower(value) == 'none': #chekc for 'none', 'None', 'NONE', etc...
+    #    return True
+    if any((char in string.letters) for char in value):
         return False
     else:
         for p in string.punctuation:
             if p in value:
                 if p =='.': #probably have a float
                     pass
-                elif p == '/': value = value.split(p)[-1] #probably a date...
+                elif p == '/': pass #value = value.split(p)[-1] #probably a date...
                 elif p == '-': value = value.split(p)[-1]
                 else: print "I don't know how to deal with this punctuation: ", p
         try:

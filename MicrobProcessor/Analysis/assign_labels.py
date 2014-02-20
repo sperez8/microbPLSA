@@ -25,7 +25,13 @@ def labeling(study, Z, resultfile = None,
     if datafile == None:
         datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
     if metadatafile == None:
-        metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata.csv'
+        metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata'+study+'.csv'
+
+    print 'Study:', study, 'Z = ', Z
+    print 'Files are:'
+    print datafile
+    print metadatafile
+    print resultfile
 
     #store the name of the metadata columns in FACTORS = ['date', 'soil type', ...]
     #store the metadata in a numpy array with row: sample, col: data
