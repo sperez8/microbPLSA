@@ -28,14 +28,16 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
     Rs = np.zeros((Z,F)) # to be filled
     for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
-            print metafactor
+            print "NOW", metafactor
             if ftype == "continuous":
                 factor = metafactor.keys()[0]
                 m_index = factors.index(factor)
                 r_index = realfactors.index(factor)
                 data = list(metatable[:,m_index])
                 Y = numericize(data)
-                Rs[:,r_index] = correlation_continuous(p_z_d, Y)      
+                Rs[:,r_index] = correlation_continuous(p_z_d, Y)    
+                if sum(Rs[:,r_index] == 0) >0:
+                    print 'ya', factor
             elif ftype == "dichotomous":
                 for factor in metafactor.keys():
                     labels = metafactor[factor]
@@ -43,19 +45,24 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
                     r_index = realfactors.index(factor)
                     Y = np.array([x == labels[0] for x in metatable[:,m_index]])
                     Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
+                    if sum(Rs[:,r_index] == 0) >0:
+                        print 'ya1', factor
             elif ftype == "categorical":
                 for factor, labels in metafactor.iteritems():
                     for label in labels:
-                        print factor, label
                         m_index = factors.index(factor)
                         r_index = realfactors.index(label)
                         Y = np.array([x == label for x in metatable[:,m_index]])
-                        Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)         
+                        Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
+                        if sum(Rs[:,r_index] == 0) >0:
+                            print Rs[:,r_index]
+                            print 'ya3', factor,label                           
+                            print sum(Y)
     
     #now we check that we have filled the correlation matrix!
     print Rs       
     #zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
-    #if zeros >= 1: raise ValueError('Some entries, in the correlation matrix remain unfilled.')
+    #if zeros >= 1: raise ValueError('Some entries, in the correlation matrix remain unfilled. Try changing the number of decimal points for correlations')
     
     return Rs
 
