@@ -15,7 +15,6 @@ from scipy.stats import chisquare
 
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
-_cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
@@ -31,7 +30,10 @@ def perform_correlations(factors, factors_type, metatable, Z, file):
         if type == "constant":
             pass
         elif type == "continuous":
-            pass        
+            for metafactor in metafactors:
+                index = factors.index(factor)
+                Y = metatable[:,index]
+                Rs[:,index] = correlation_continuous(p_z_d, Y)       
         elif type == "dichotomous":
             for metafactor in metafactors:
                 for factor, labels in metafactor.iteritems():
@@ -60,6 +62,16 @@ def correlation_dichotomous(p_z_d, Y):
         R.append(round(r,3))
     return np.array(R)
     
+def correlation_continous(p_z_d, Y):
+    '''calculates the correlation between all topics
+        and a continuous variable'''
+    R = []
+    for z in range(0,p_z_d.shape[0]):
+        X = p_z_d[z]
+        r = spearmanr(X, Y)
+        R.append(round(r,3))
+    return np.array(R)
+
 def assign_topic_labels(R):
     '''for each topic, find the factor to which it is correlated 
         best and assign it the corresponding label'''

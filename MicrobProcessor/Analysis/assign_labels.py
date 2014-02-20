@@ -9,7 +9,12 @@ metdata_tools to assign labels to topics
 
 from metadata_tools import *
 from correlations import *
-
+import sys,os
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir)
+import microbplsa
 
 def labeling(study, Z, resultfile = None,
               datafile = None, metadatafile = None):
