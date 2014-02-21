@@ -97,7 +97,6 @@ def topic_distribution(file,study):
     
     labels_r = labeling(study, Z) 
     labels, r = zip(*labels_r)
-    print labels
     labels = [l.replace('(','\n(') for l in labels]
     
     topiclegend = ['Topic' + str(z+1) + ': '+ str(labels[z]) + '\n ('+ str(r[z]) + ')' for z in range(0,Z)]
