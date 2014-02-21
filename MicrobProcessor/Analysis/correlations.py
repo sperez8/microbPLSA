@@ -17,7 +17,7 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-NUM_DECIMALS = 3
+NUM_DECIMALS = 10
 
 
 def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, file):
@@ -28,7 +28,6 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
     Rs = np.zeros((Z,F)) # to be filled
     for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
-            print "NOW", metafactor
             if ftype == "continuous":
                 factor = metafactor.keys()[0]
                 m_index = factors.index(factor)
@@ -36,8 +35,6 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
                 data = list(metatable[:,m_index])
                 Y = numericize(data)
                 Rs[:,r_index] = correlation_continuous(p_z_d, Y)    
-                if sum(Rs[:,r_index] == 0) >0:
-                    print 'ya', factor
             elif ftype == "dichotomous":
                 for factor in metafactor.keys():
                     labels = metafactor[factor]
@@ -45,24 +42,18 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
                     r_index = realfactors.index(factor)
                     Y = np.array([x == labels[0] for x in metatable[:,m_index]])
                     Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
-                    if sum(Rs[:,r_index] == 0) >0:
-                        print 'ya1', factor
             elif ftype == "categorical":
-                for factor, labels in metafactor.iteritems():
-                    for label in labels:
+                for factor, options in metafactor.iteritems():
+                    for opt in options:
+                        label = opt[opt.index('(')+1:-1] 
                         m_index = factors.index(factor)
-                        r_index = realfactors.index(label)
+                        r_index = realfactors.index(opt)
                         Y = np.array([x == label for x in metatable[:,m_index]])
                         Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
-                        if sum(Rs[:,r_index] == 0) >0:
-                            print Rs[:,r_index]
-                            print 'ya3', factor,label                           
-                            print sum(Y)
-    
-    #now we check that we have filled the correlation matrix!
-    print Rs       
-    #zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
-    #if zeros >= 1: raise ValueError('Some entries, in the correlation matrix remain unfilled. Try changing the number of decimal points for correlations')
+
+    #now we check that we have filled the correlation matrix!     
+    zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
+    if zeros >= 1: raise ValueError(str(zeros)+ ' entries in the correlation matrix remain unfilled. Try changing the number of decimal points for correlations')
     
     return Rs
 
@@ -81,6 +72,7 @@ def correlation_dichotomous(p_z_d, Y):
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
         r = pbcorrelation(X, Y)
+        
         R.append(round(r,NUM_DECIMALS))
     return np.array(R)
     

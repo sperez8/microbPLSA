@@ -10,6 +10,7 @@ import csv
 import json
 import numpy as np
 import string
+from collections import Counter
 
 def get_metadata(csvfile):
     '''returns metadata from csv file as an array'''
@@ -89,6 +90,7 @@ def organize_metadata(metatable, factors):
             elif len(options) > 2:
                 ftype = 'categorical'
                 F += len(options)
+                options = [factor + ' (' + opt + ')' for opt in options]
                 real_factors.extend(options)
         if ftype == 'continuous': 
             #check if all the value are the same, if
@@ -99,10 +101,9 @@ def organize_metadata(metatable, factors):
                 options = []
             else:
                 continue
-                
-        
-        #print index, factor, len(options), options
+
         factor_types[ftype].append({factor:options})
+
     return factor_types, real_factors, F
 
 def sort_metadate_types(factors):
