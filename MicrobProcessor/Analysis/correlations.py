@@ -81,26 +81,10 @@ def correlation_continuous(p_z_d, Y):
         and a continuous variable'''
     R = []
     for z in range(0,p_z_d.shape[0]):
-        X = p_z_d[z]
+        X = p_z_d[z] 
         r = spearmanr(X, Y)[0]
         R.append(round(r,NUM_DECIMALS))
     return np.array(R)
-
-def assign_topic_labels(R):
-    '''for each topic, find the factor to which it is correlated 
-        best and assign it the corresponding label'''
-    
-    labels = {}
-    return labels
-
-def save_labels(labels, filename):
-    '''Given the labels of each topic, they are saved in a 
-        text file for further analysis'''
-    
-    f = open(filename, 'w')
-    for label in labels:
-        f.write(label)
-    f.close()
                                                                            
 def pbcorrelation(X, Y):
     ''' calculates point bisectoral correlation given two variable X and Y:

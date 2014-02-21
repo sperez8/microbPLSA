@@ -16,8 +16,8 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-def labeling(study, Z, resultfile = None,
-              datafile = None, metadatafile = None):
+def labeling(study, Z, resultfile = None, datafile = None, 
+             metadatafile = None, labelfile = None):
     '''handles all the files and calls the right functions
         to create a labeling file.'''
     if resultfile == None:
@@ -26,6 +26,8 @@ def labeling(study, Z, resultfile = None,
         datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
     if metadatafile == None:
         metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata'+study+'.csv'
+    if labelfile == None:
+        labelfile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/topiclabels'+study+'.txt'
 
     print 'Study:', study, 'Z = ', Z
     print 'Files are:'
@@ -48,10 +50,39 @@ def labeling(study, Z, resultfile = None,
     #measure the correlation between each topic and each metadata factor
     #store these in a numpy array where row: topic, col: factor
     R = perform_correlations(real_factors, factors, factors_type, metatable, Z, F, resultfile)
+    
+    topiclabels = assign_topic_labels(R, real_factors)
+    
+    save_labels(topiclabels, labelfile)    
         
     print "Done assigning labels!"
     return R
 
+def assign_topic_labels(R, factorlabels):
+    '''for each topic, find the factor to which it is correlated 
+        best and assign it the corresponding label'''
+    labels = []
+    print R 
+    for topic_r in R:
+        max_r = np.amax(topic_r)
+        max_r_index = np.argmax(topic_r)
+        print max_r, max_r_index
+        label = factorlabels[max_r_index]
+        labels.append([label, max_r]) 
+    return labels
+
+def save_labels(labels, filename):
+    '''Given the labels of each topic, they are saved in a 
+        text file for further analysis'''
+    
+    f = open(filename, 'w')
+    z = 1
+    for (label, r) in labels:
+        f.write('\t'.join([str(z),label,str(r)]))
+        f.write('\n')
+        z+=1
+    f.close()
+    return None
 
 
 
