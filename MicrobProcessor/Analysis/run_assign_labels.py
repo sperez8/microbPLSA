@@ -8,8 +8,5 @@ import os,sys
 from assign_labels import labeling
 
 study = '1037'
-Z = 3
-
-labeling(study, Z)
-
-sys.exit()
+for Z in range(2,14):
+     labeling(study, Z)

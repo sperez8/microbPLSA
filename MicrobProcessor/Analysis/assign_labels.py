@@ -27,9 +27,9 @@ def labeling(study, Z, resultfile = None, datafile = None,
     if metadatafile == None:
         metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/metadata'+study+'.csv'
     if labelfile == None:
-        labelfile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/topiclabels'+study+'.txt'
+        labelfile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/topic'+str(Z)+'labels'+study+'.txt'
 
-    print 'Study:', study, 'Z = ', Z
+    print '\n\n\nStudy:', study, 'Z = ', Z
     print 'Files are:'
     print datafile
     print metadatafile
@@ -62,12 +62,10 @@ def assign_topic_labels(R, factorlabels):
     '''for each topic, find the factor to which it is correlated
         the most and assign it the corresponding label'''
     labels = []
-    print R 
     for row in R:
         rowabs = np.absolute(row) #want to find the highest neg or pos correlation value
         max_r_index = np.argmax(rowabs)
         max_r = row[max_r_index]
-        print max_r, max_r_index
         label = factorlabels[max_r_index]
         labels.append([label, max_r]) 
     return labels

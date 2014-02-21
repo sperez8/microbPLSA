@@ -53,7 +53,17 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
 
     #now we check that we have filled the correlation matrix!     
     zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
-    if zeros >= 1: raise ValueError(str(zeros)+ ' entries in the correlation matrix remain unfilled. Try changing the number of decimal points for correlations')
+    if zeros >= 1:
+        index = np.where(Rs == 0.0)
+        print '******************'*10
+        print 'WARNING: ', str(zeros)+ ' entrie(s) in the correlation matrix remain unfilled at position(s):' + str(index)
+        if zeros >= 2:
+            strangefactors = []
+            for i in index:
+                strangefactors.append(realfactors[i[1]])
+        else: strangefactors =  realfactors[index[1][0]]
+        print 'These positions correspond to following metadata factors:', strangefactors
+        print '******************'*10
     
     #We round the double floats to 2 decimal points, but only after checking for zeros.
     R = np.around(Rs, DECIMALPTS)
@@ -74,7 +84,6 @@ def correlation_dichotomous(p_z_d, Y):
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
         r = pbcorrelation(X, Y)
-        
         R.append(r)
     return np.array(R)
     
@@ -83,7 +92,7 @@ def correlation_continuous(p_z_d, Y):
         and a continuous variable'''
     R = []
     for z in range(0,p_z_d.shape[0]):
-        X = p_z_d[z] 
+        X = p_z_d[z]
         r = spearmanr(X, Y)[0]
         R.append(r)
     return np.array(R)
