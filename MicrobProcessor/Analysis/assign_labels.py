@@ -59,13 +59,14 @@ def labeling(study, Z, resultfile = None, datafile = None,
     return R
 
 def assign_topic_labels(R, factorlabels):
-    '''for each topic, find the factor to which it is correlated 
-        best and assign it the corresponding label'''
+    '''for each topic, find the factor to which it is correlated
+        the most and assign it the corresponding label'''
     labels = []
     print R 
-    for topic_r in R:
-        max_r = np.amax(topic_r)
-        max_r_index = np.argmax(topic_r)
+    for row in R:
+        rowabs = np.absolute(row) #want to find the highest neg or pos correlation value
+        max_r_index = np.argmax(rowabs)
+        max_r = row[max_r_index]
         print max_r, max_r_index
         label = factorlabels[max_r_index]
         labels.append([label, max_r]) 
@@ -77,9 +78,10 @@ def save_labels(labels, filename):
     
     f = open(filename, 'w')
     z = 1
+    f.write('\t'.join(['Topic','Label', 'Correlation']))
     for (label, r) in labels:
-        f.write('\t'.join([str(z),label,str(r)]))
         f.write('\n')
+        f.write('\t'.join([str(z),label,str(r)]))
         z+=1
     f.close()
     return None
