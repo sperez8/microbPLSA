@@ -6,22 +6,25 @@ author: sperez8
 Functions to plot data.
 '''
 import sys, os
+from os.path import join
 import fnmatch
 from time import time
 import re
 import csv
-
-_cur_dir = os.path.dirname(os.path.realpath(__file__))
-_root_dir = os.path.dirname(_cur_dir)
-sys.path.insert(0, _root_dir)
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-
+from math import sqrt
+from matplotlib.font_manager import FontProperties
+   
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir)
 import microbplsa
 
-from math import sqrt
+analysis_dir = _root_dir+ '/Analysis'
+sys.path.insert(0, analysis_dir)
+from assign_labels import labeling
 
 
 def data_count(file):
@@ -64,7 +67,7 @@ def data_count(file):
     return None
 
 
-def topic_distribution(file):
+def topic_distribution(file,study):
     '''Given a model p_z,p_w_z,p_d_z, we can plot the document's distribution
     using p(z|d) = normalized((p(d|z)*p(z))) '''
     
@@ -91,8 +94,20 @@ def topic_distribution(file):
     plt.xlabel('Sample')
     plt.title('Sample\'s topic distribution')
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
-    plt.legend(p, ['Topic'+str(z) for z in range(1,Z+1)] )
     
+    labels_r = labeling(study, Z) 
+    labels, r = zip(*labels_r)
+    print labels
+    labels = [l.replace('(','\n(') for l in labels]
+    
+    topiclegend = ['Topic' + str(z+1) + ': '+ str(labels[z]) + '\n ('+ str(r[z]) + ')' for z in range(0,Z)]
+    fontP = FontProperties()
+    fontP.set_size('small')
+    ax = plt.subplot(111)
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, 0.5, box.height])
+
+    plt.legend(p, topiclegend, prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5))
     return plt
 
 def loglikelihood_curve(study):

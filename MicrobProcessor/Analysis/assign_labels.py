@@ -51,12 +51,10 @@ def labeling(study, Z, resultfile = None, datafile = None,
     #store these in a numpy array where row: topic, col: factor
     R = perform_correlations(real_factors, factors, factors_type, metatable, Z, F, resultfile)
     
-    topiclabels = assign_topic_labels(R, real_factors)
-    
-    save_labels(topiclabels, labelfile)    
+    topiclabels = assign_topic_labels(R, real_factors)   
         
     print "Done assigning labels!"
-    return R
+    return topiclabels
 
 def assign_topic_labels(R, factorlabels):
     '''for each topic, find the factor to which it is correlated
@@ -67,7 +65,7 @@ def assign_topic_labels(R, factorlabels):
         max_r_index = np.argmax(rowabs)
         max_r = row[max_r_index]
         label = factorlabels[max_r_index]
-        labels.append([label, max_r]) 
+        labels.append((label, max_r)) 
     return labels
 
 def save_labels(labels, filename):
