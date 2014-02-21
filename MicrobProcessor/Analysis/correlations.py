@@ -17,7 +17,7 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-NUM_DECIMALS = 10
+DECIMALPTS = 2
 
 
 def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, file):
@@ -55,7 +55,9 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, fi
     zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
     if zeros >= 1: raise ValueError(str(zeros)+ ' entries in the correlation matrix remain unfilled. Try changing the number of decimal points for correlations')
     
-    return Rs
+    #We round the double floats to 2 decimal points, but only after checking for zeros.
+    R = np.around(Rs, DECIMALPTS)
+    return R
 
 def get_topic_proportions(file):
     '''Given a model p_z,p_w_z,p_d_z, stored in a result file, 
@@ -73,7 +75,7 @@ def correlation_dichotomous(p_z_d, Y):
         X = p_z_d[z]
         r = pbcorrelation(X, Y)
         
-        R.append(round(r,NUM_DECIMALS))
+        R.append(r)
     return np.array(R)
     
 def correlation_continuous(p_z_d, Y):
@@ -83,7 +85,7 @@ def correlation_continuous(p_z_d, Y):
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z] 
         r = spearmanr(X, Y)[0]
-        R.append(round(r,NUM_DECIMALS))
+        R.append(r)
     return np.array(R)
                                                                            
 def pbcorrelation(X, Y):
