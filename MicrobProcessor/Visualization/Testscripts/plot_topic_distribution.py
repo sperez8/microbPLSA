@@ -18,13 +18,13 @@ if format == 'svg':
     _cur_dir = os.path.dirname(os.path.realpath(__file__))
     _root_dir = os.path.dirname(_cur_dir)
     sys.path.insert(0, _root_dir)
-    from microbPlotter import *
+    from microbPlotter import * #have to import this AFTER selecting SVG usage.
     
-    z = 10
     end = '_topics_.txt'
-    plot = topic_distribution(f+str(z)+end,study)
-    plt.savefig('/Users/sperez/Desktop/topic_dist_'+study+'plots.svg')
-    print '\n\n\n The topic distribution svg file is ready.'
+    for z in range(2,19):
+        plot = topic_distribution(f+str(z)+end,study)
+        plt.savefig('/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots.svg')
+        print '\n\n\n The topic distribution svg file is ready.'
 
 elif format == 'pdf':
 
