@@ -19,7 +19,7 @@ import microbplsa
 class Labelling():
     '''A class to handle the labelling of topics using metadata'''
     
-    def __init__(self, study, Z, debug = False, resultfile = None, datafile = None):
+    def __init__(self, study, Z, run = False, debug = False, resultfile = None, datafile = None):
         '''handles all the files and calls the right functions
             to create a labeling file.'''
         self.debug = debug
@@ -36,7 +36,13 @@ class Labelling():
             print 'Files are:'
             print self.datafile
             print self.resultfile
+        
         return None
+
+    def getlabels(self):
+        self.metadata()
+        R = self.correlate()
+        return self.assignlabels(R)
 
     def metadata(self, metadatafile = None, reorder = True):
         if metadatafile == None:

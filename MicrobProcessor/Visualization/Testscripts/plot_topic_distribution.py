@@ -5,7 +5,9 @@ author: sperez8
 '''
 
 
-study = '722'
+study = '1037'
+#Z = range(2,19)
+Z = [6]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 
 format = 'svg'
@@ -21,7 +23,7 @@ if format == 'svg':
     from microbPlotter import * #have to import this AFTER selecting SVG usage.
     
     end = '_topics_.txt'
-    for z in range(2,19):
+    for z in Z:
         plot = topic_distribution(f+str(z)+end,study)
         plt.savefig('/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots.svg')
         print '\n\n\n The topic distribution svg file is ready.'
