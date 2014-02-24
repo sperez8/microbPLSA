@@ -86,7 +86,7 @@ def organize_metadata(metatable, factors):
             elif len(options)==2:
                 ftype = 'dichotomous'
                 F += 1
-                real_factors.append(factor)
+                real_factors.append(options[0])
             elif len(options) > 2:
                 ftype = 'categorical'
                 F += len(options)

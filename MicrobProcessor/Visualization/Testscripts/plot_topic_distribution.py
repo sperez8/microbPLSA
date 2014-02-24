@@ -6,11 +6,12 @@ author: sperez8
 
 
 study = '1037'
-#Z = range(2,19)
-Z = [6]
+Z = range(2,13)
+#Z = [6]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
+end = '_topics_.txt'
 
-format = 'svg'
+format = 'pdf'
 
 if format == 'svg':
     import matplotlib
@@ -22,7 +23,6 @@ if format == 'svg':
     sys.path.insert(0, _root_dir)
     from microbPlotter import * #have to import this AFTER selecting SVG usage.
     
-    end = '_topics_.txt'
     for z in Z:
         plot = topic_distribution(f+str(z)+end,study)
         plt.savefig('/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots.svg')
@@ -40,7 +40,7 @@ elif format == 'pdf':
     
     pdf = PdfPages('/Users/sperez/Desktop/topic_dist_'+study+'plots.pdf')
     
-    for z in range(2,19):
+    for z in Z:
         plot = topic_distribution(f+str(z)+end,study)
         plot.savefig(pdf, format='pdf')
         

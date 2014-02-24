@@ -39,8 +39,9 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, file)
             elif ftype == "dichotomous":
                 for factor in metafactor.keys():
                     labels = metafactor[factor]
+                    label = labels[0]
                     m_index = factors.index(factor)
-                    r_index = realfactors.index(factor)
+                    r_index = realfactors.index(label)
                     Y = np.array([x == labels[0] for x in metatable[:,m_index]])
                     Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
             elif ftype == "categorical":
