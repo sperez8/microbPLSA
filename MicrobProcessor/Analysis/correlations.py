@@ -20,11 +20,12 @@ import microbplsa
 DECIMALPTS = 2
 
 
-def perform_correlations(realfactors, factors, factors_type, metatable, Z, F, file):
+def perform_correlations(realfactors, factors, factors_type, metatable, Z, file):
     ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
     p_z_d = get_topic_proportions(file)
+    F = len(realfactors)
     Rs = np.zeros((Z,F)) # to be filled
     for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:

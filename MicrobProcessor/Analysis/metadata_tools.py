@@ -104,7 +104,7 @@ def organize_metadata(metatable, factors):
 
         factor_types[ftype].append({factor:options})
 
-    return factor_types, real_factors, F
+    return factor_types, real_factors
 
 def sort_metadate_types(factors):
     factors_sorted = {}
