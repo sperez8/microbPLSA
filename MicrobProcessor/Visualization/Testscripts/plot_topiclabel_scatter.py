@@ -22,7 +22,7 @@ end = '_topics_.txt'
 
 datafile = f+str(Z)+end
 
-format = 'pdf'
+format = 'svg'
 
 
 
