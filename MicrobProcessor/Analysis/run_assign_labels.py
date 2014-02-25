@@ -16,7 +16,7 @@ for Z in range(2,14):
          labels = Lab.getlabels()
     else:
         Lab.metadata()
-        R = Lab.correlate()
+        R = Lab.correlate(ignore_continuous = False)
         labels = Lab.assignlabels(R)
         
     Lab.save_labels(labels) 

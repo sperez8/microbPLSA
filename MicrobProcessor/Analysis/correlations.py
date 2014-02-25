@@ -20,7 +20,7 @@ import microbplsa
 DECIMALPTS = 2
 
 
-def perform_correlations(realfactors, factors, factors_type, metatable, Z, file):
+def perform_correlations(realfactors, factors, factors_type, metatable, Z, file, ignore_continuous):
     ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
@@ -30,11 +30,14 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, file)
     for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
             if ftype == "continuous":
-                m_index = factors.index(metafactor)
                 r_index = realfactors.index(metafactor)
-                data = list(metatable[:,m_index])
-                Y = numericize(data)
-                Rs[:,r_index] = correlation_continuous(p_z_d, Y)    
+                if not ignore_continuous:
+                    m_index = factors.index(metafactor)
+                    data = list(metatable[:,m_index])
+                    Y = numericize(data)
+                    Rs[:,r_index] = correlation_continuous(p_z_d, Y)    
+                else:
+                    Rs[:,r_index] = [0.01 for r in range(0,Z)]
             elif ftype == "dichotomous":
                 for factor in metafactor.keys():
                     labels = metafactor[factor]

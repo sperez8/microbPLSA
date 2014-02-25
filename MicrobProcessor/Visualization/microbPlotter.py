@@ -95,7 +95,7 @@ def topic_distribution(file,study):
     plt.title('Sample\'s topic distribution')
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
     
-    Lab = Labelling(study, Z)
+    Lab = Labelling(study, Z, ignore_continuous = True)
     labels_r = Lab.getlabels() 
     labels, r = zip(*labels_r)
     labels = [l.replace('(','\n(') for l in labels]
