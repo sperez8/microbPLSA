@@ -6,7 +6,7 @@ author: sperez8
 
 
 study = '1037'
-Z = range(2,13)
+Z = range(2,14)
 #Z = [6]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
@@ -25,7 +25,7 @@ if format == 'svg':
     
     for z in Z:
         plot = topic_distribution(f+str(z)+end,study)
-        plt.savefig('/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots.svg')
+        plot.savefig('/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots.svg')
         print '\n\n\n The topic distribution svg file is ready.'
 
 elif format == 'pdf':

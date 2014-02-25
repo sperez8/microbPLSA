@@ -20,6 +20,7 @@ studies = ['864']
 t0 = time()
 for study in studies:
     file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_.pdf'
+    print "Plotting log likelihood curve for study ", study
     pdf = PdfPages(file)
     plot = loglikelihood_curve(study)
     plot.savefig(pdf, format='pdf')

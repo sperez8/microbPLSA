@@ -30,9 +30,8 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, file)
     for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
             if ftype == "continuous":
-                factor = metafactor.keys()[0]
-                m_index = factors.index(factor)
-                r_index = realfactors.index(factor)
+                m_index = factors.index(metafactor)
+                r_index = realfactors.index(metafactor)
                 data = list(metatable[:,m_index])
                 Y = numericize(data)
                 Rs[:,r_index] = correlation_continuous(p_z_d, Y)    

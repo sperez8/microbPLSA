@@ -19,7 +19,7 @@ import microbplsa
 class Labelling():
     '''A class to handle the labelling of topics using metadata'''
     
-    def __init__(self, study, Z, run = False, debug = False, resultfile = None, datafile = None):
+    def __init__(self, study, Z, debug = False, resultfile = None, datafile = None):
         '''handles all the files and calls the right functions
             to create a labeling file.'''
         self.debug = debug
@@ -60,7 +60,7 @@ class Labelling():
         #or categorical. The embedded dictionaries look like: 
         #factor_types{'categorical':[factorA:{cat1, cat2, cat3...}, factorB...] ....}
         self.factors_type, self.realfactors = organize_metadata(self.metadata,self.factors)
-        return None
+        return self.metadata, self.factors_type, self.factors
         
     def correlate(self):
     #measure the correlation between each topic and each metadata factor

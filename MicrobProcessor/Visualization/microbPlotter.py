@@ -95,7 +95,7 @@ def topic_distribution(file,study):
     plt.title('Sample\'s topic distribution')
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
     
-    Lab = Labelling(study, Z, run = True)
+    Lab = Labelling(study, Z)
     labels_r = Lab.getlabels() 
     labels, r = zip(*labels_r)
     labels = [l.replace('(','\n(') for l in labels]
@@ -109,6 +109,24 @@ def topic_distribution(file,study):
 
     plt.legend(p, topiclegend, prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5))
     return plt
+
+def topiclabel_scatter(X,Y,factor,z):
+    '''Given a study, a topic and a label we make scatter plot'''
+    print 'x', X
+    print Y
+    plt.figure(1, figsize=(8,8))
+    
+    colors = plt.cm.rainbow(np.linspace(0, 1, 8))
+    purple = colors[0]
+    plt.scatter(X,Y, color=purple)
+    
+    
+    plt.ylabel(factor)
+    plt.xlabel('Topic proportion')
+    plt.title('Scatter plot of proportion of Topic ' + str(z+1) + ' and ' + factor)
+     
+    return plt
+
 
 def loglikelihood_curve(study):
     '''Given a dataset we can find the models p_z,p_w_z,p_d_z for 
@@ -138,3 +156,8 @@ def loglikelihood_curve(study):
     plt.xlabel('Z, number of topics')
     
     return plt
+
+
+
+
+

@@ -98,11 +98,11 @@ def organize_metadata(metatable, factors):
             if not constant_value:
                 real_factors.append(factor)
                 F += 1
-                options = []
+                factor_types[ftype].append(factor)
             else:
                 continue
-
-        factor_types[ftype].append({factor:options})
+        else:
+            factor_types[ftype].append({factor:options})
 
     return factor_types, real_factors
 
