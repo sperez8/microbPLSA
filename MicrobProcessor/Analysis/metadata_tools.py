@@ -12,6 +12,8 @@ import numpy as np
 import string
 from collections import Counter
 
+NON_LABELS = ['Barcode Sequence']
+
 def get_metadata(csvfile):
     '''returns metadata from csv file as an array'''
     with open(csvfile, 'rU') as file:
@@ -67,42 +69,43 @@ def organize_metadata(metatable, factors):
     real_factors =[] 
     #we first create a dictionary of {factor: possible types}
     for index, factor in enumerate(factors):
-        column = metatable[:,index]
-        options = []
-        ftype = None
-        all_cont_values = True
-        for value in column:
-            if is_numerical(value):
-                ftype = 'continuous'
+        if factor not in NON_LABELS:
+            column = metatable[:,index]
+            options = []
+            ftype = None
+            all_cont_values = True
+            for value in column:
+                if is_numerical(value):
+                    ftype = 'continuous'
+                else:
+                    all_cont_values = False
+                if value not in options:
+                        options.append(value)
+                        
+            
+            if not all_cont_values:
+                if len(options) == N or len(options) == 1:
+                    continue #these are invariable factors and we ignore them               
+                elif len(options)==2:
+                    ftype = 'dichotomous'
+                    F += 1
+                    real_factors.append(options[0])
+                elif len(options) > 2:
+                    ftype = 'categorical'
+                    F += len(options)
+                    options = [factor + ' (' + opt + ')' for opt in options]
+                    real_factors.extend(options)
+            if ftype == 'continuous': 
+                #check if all the value are the same, if
+                constant_value = (np.unique(options).shape == (1,))
+                if not constant_value:
+                    real_factors.append(factor)
+                    F += 1
+                    factor_types[ftype].append(factor)
+                else:
+                    continue
             else:
-                all_cont_values = False
-            if value not in options:
-                    options.append(value)
-                    
-        
-        if not all_cont_values:
-            if len(options) == N or len(options) == 1:
-                continue #these are invariable factors and we ignore them               
-            elif len(options)==2:
-                ftype = 'dichotomous'
-                F += 1
-                real_factors.append(options[0])
-            elif len(options) > 2:
-                ftype = 'categorical'
-                F += len(options)
-                options = [factor + ' (' + opt + ')' for opt in options]
-                real_factors.extend(options)
-        if ftype == 'continuous': 
-            #check if all the value are the same, if
-            constant_value = (np.unique(options).shape == (1,))
-            if not constant_value:
-                real_factors.append(factor)
-                F += 1
-                factor_types[ftype].append(factor)
-            else:
-                continue
-        else:
-            factor_types[ftype].append({factor:options})
+                factor_types[ftype].append({factor:options})
 
     return factor_types, real_factors
 

@@ -5,8 +5,8 @@ author: sperez8
 '''
 
 
-study = '1037'
-Z = range(2,14)
+study = '722'
+Z = range(2,22)
 #Z = [6]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'

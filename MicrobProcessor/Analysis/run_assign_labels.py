@@ -8,15 +8,15 @@ Shows how to use Labelling class
 
 from labelling import Labelling
 
-study = '864'
-simple = True
-for Z in range(2,14):
-    Lab = Labelling(study, Z, debug = True,ignore_continuous = False)
+study = '722'
+simple = False
+for Z in range(2,23):
+    Lab = Labelling(study, Z, debug = False,ignore_continuous = False)
     if simple:
          labels = Lab.getlabels()
     else:
         Lab.metadata()
-        R = Lab.correlate(ignore_continuous = False)
-        labels = Lab.assignlabels(R)
+        R = Lab.correlate()
+        labels = Lab.assignlabels(R,num_labels = 3)
         
     Lab.save_labels(labels) 

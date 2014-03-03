@@ -73,17 +73,22 @@ class Labelling():
             print "\nDone assigning labels!"
         return R
 
-    def assignlabels(self, R):
+    def assignlabels(self, R, num_labels = 1):
         '''for each topic, find the factor to which it is correlated
             the most and assign it the corresponding label'''
         
         labels = []
-        for row in R:
+        for i, row in enumerate(R):
             rowabs = np.absolute(row) #want to find the highest neg or pos correlation value
-            max_r_index = np.argmax(rowabs)
-            max_r = row[max_r_index]
-            label = self.realfactors[max_r_index]
-            labels.append((label, max_r)) 
+            topic_label = []
+            n = 0
+            while n != num_labels:
+                max_r_index = np.argmax(rowabs)
+                max_r = row[max_r_index]
+                topic_label.append((self.realfactors[max_r_index], max_r))
+                rowabs[max_r_index]=0.0
+                n+=1
+            labels.append(topic_label) 
         return labels
     
     def save_labels(self, labels, labelfile = None):
@@ -94,10 +99,14 @@ class Labelling():
      
         f = open(labelfile, 'w')
         z = 1
-        f.write('\t'.join(['Topic','Label', 'Correlation']))
-        for (label, r) in labels:
+        num_labels = len(labels[0])
+        f.write('\t'.join(['Topic'] +['Label', 'Correlation']*num_labels))
+        for topic_labels in labels:
             f.write('\n')
-            f.write('\t'.join([str(z),label,str(r)]))
+            line = str(z)
+            for (label, r) in topic_labels:
+                line += '\t' + label + '\t' + str(r)
+            f.write(line)
             z+=1
         f.close()
         return None

@@ -17,7 +17,7 @@ from math import sqrt
 #f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
 
 
-for study in ['864','1037','722','1043','1702', '1642','1692',
+for study in ['1037','722','1043','864', '1702', '1642','1692',
               '1579','1578','1526','1289','1034','990']:
     
     f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study
@@ -32,7 +32,7 @@ for study in ['864','1037','722','1043','1702', '1642','1692',
     print 'We will run PLSA with Z = 2 to', num_topics-1 
     
     
-    for z in range(24,num_topics):
+    for z in range(2,num_topics):
         name = f.split('/')[-1].split('_')
         name = name[0]+'_'+name[1] +'_'
         resultsfilename = name + str(z) + '_topics_.txt'
