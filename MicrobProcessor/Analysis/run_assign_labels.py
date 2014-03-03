@@ -15,7 +15,7 @@ for Z in range(2,23):
     if simple:
          labels = Lab.getlabels()
     else:
-        Lab.metadata()
+        Lab.metadata(non_labels = ['BarcodeSequence'])
         R = Lab.correlate()
         labels = Lab.assignlabels(R,num_labels = 3)
         

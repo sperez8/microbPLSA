@@ -12,7 +12,6 @@ import numpy as np
 import string
 from collections import Counter
 
-NON_LABELS = ['BarcodeSequence']
 
 def get_metadata(csvfile):
     '''returns metadata from csv file as an array'''
@@ -54,7 +53,7 @@ def reorder_metadata(datafile,metadata,study):
     return metatable
 
 
-def organize_metadata(metatable, factors):
+def organize_metadata(metatable, factors, non_labels):
     '''organizes the metadata by type in a dictionary of the form:
         {factor_type: {factor: values}} where factor_type is 
         dichotomous, continuous, categorical. All 'constant' or
@@ -69,7 +68,7 @@ def organize_metadata(metatable, factors):
     real_factors =[] 
     #we first create a dictionary of {factor: possible types}
     for index, factor in enumerate(factors):
-        if factor not in NON_LABELS:
+        if factor not in non_labels:
             column = metatable[:,index]
             options = []
             ftype = None

@@ -45,7 +45,7 @@ class Labelling():
         R = self.correlate()
         return self.assignlabels(R)
 
-    def metadata(self, metadatafile = None, reorder = True):
+    def metadata(self, metadatafile = None, reorder = True, non_labels = []):
         if metadatafile == None:
             metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/metadata'+self.study+'.csv'
         
@@ -60,7 +60,7 @@ class Labelling():
         #test if different metadata factors are dichotomous, continuous
         #or categorical. The embedded dictionaries look like: 
         #factor_types{'categorical':[factorA:{cat1, cat2, cat3...}, factorB...] ....}
-        self.factors_type, self.realfactors = organize_metadata(self.metadata,self.factors)
+        self.factors_type, self.realfactors = organize_metadata(self.metadata,self.factors, non_labels)
         return self.metadata, self.factors_type, self.factors
         
     def correlate(self):
