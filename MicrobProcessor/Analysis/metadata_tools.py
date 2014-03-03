@@ -12,7 +12,7 @@ import numpy as np
 import string
 from collections import Counter
 
-NON_LABELS = ['Barcode Sequence']
+NON_LABELS = ['BarcodeSequence']
 
 def get_metadata(csvfile):
     '''returns metadata from csv file as an array'''
