@@ -40,6 +40,7 @@ Y = pdist(X, 'euclidean')
 
 Z = linkage(Y)
 
-dendrogram(Z)
+D = dendrogram(Z)
+print D['ivl']
 show()
 

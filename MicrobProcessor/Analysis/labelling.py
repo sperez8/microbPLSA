@@ -85,7 +85,9 @@ class Labelling():
             while n != num_labels:
                 max_r_index = np.argmax(rowabs)
                 max_r = row[max_r_index]
-                topic_label.append((self.realfactors[max_r_index], max_r))
+                if num_labels == 1:
+                    topic_label = (self.realfactors[max_r_index], max_r)
+                else: topic_label.append((self.realfactors[max_r_index], max_r))
                 rowabs[max_r_index]=0.0
                 n+=1
             labels.append(topic_label) 

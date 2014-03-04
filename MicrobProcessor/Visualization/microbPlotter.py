@@ -66,8 +66,7 @@ def data_count(file):
     plt.show()
     return None
 
-
-def topic_distribution(file,study):
+def topic_distribution(file,study, order = None):
     '''Given a model p_z,p_w_z,p_d_z, we can plot the document's distribution
     using p(z|d) = normalized((p(d|z)*p(z))) '''
     
@@ -78,6 +77,8 @@ def topic_distribution(file,study):
     p_z_d = plsa.document_topics()
     
     Z,N =p_z_d.shape #number of samples
+    if order is not None:
+        p_z_d = p_z_d[:,order]
     n = np.arange(N)
     width = 10.0/float(N) #scale width of bars by number of samples
     p = [] #list of plots
@@ -96,7 +97,7 @@ def topic_distribution(file,study):
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
     
     Lab = Labelling(study, Z, ignore_continuous = True)
-    labels_r = Lab.getlabels() 
+    labels_r = Lab.getlabels()
     labels, r = zip(*labels_r)
     labels = [l.replace('(','\n(') for l in labels]
     
@@ -106,7 +107,9 @@ def topic_distribution(file,study):
     ax = plt.subplot(111)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, 0.5, box.height])
-
+    
+    if order is not None:
+        plt.xticks(n, order, size = 'xx-small')
     plt.legend(p, topiclegend, prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5))
     return plt
 
