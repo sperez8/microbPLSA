@@ -24,8 +24,8 @@ for study in ['1037','722','1043','864', '1702', '1642','1692',
     f += '_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
     
     m = microbplsa.MicrobPLSA()
-    (w,d) = m.open_data(f,sampling = False)
-    
+    m.open_data(f,sampling = False)
+    (w,d) = m.dimensions()
     print '\n\n\nStudy', study, 'has', w, 'otus and', d, 'samples.'
     
     num_topics = int(3*sqrt(d))

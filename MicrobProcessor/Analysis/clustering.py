@@ -40,17 +40,25 @@ f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
 file = f+str(z)+end
 
+datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+
+
+
 def makedendrogram(file):
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file'
-    X = plsa.p_d_z
-    
+    plsa = m.open_model(file) #get model from the result file
+    data = m.open_data(datafile)
+    X = data.T
+
     Y = pdist(X, 'euclidean')
-    
+
     Z = linkage(Y)
-    
-    D = dendrogram(Z)
-    print D['ivl']
+
+    t = 0.7*max(Z[:,2])*0.3
+
+    D = dendrogram(Z, color_threshold = t)
+
+    print len(D['ivl'])
     show()
     return None
 
@@ -74,7 +82,8 @@ def makePCA(file):
     show()
 
     return None
-    
-makePCA(file)
+
+makedendrogram(file)    
+#makePCA(file)
     
     
