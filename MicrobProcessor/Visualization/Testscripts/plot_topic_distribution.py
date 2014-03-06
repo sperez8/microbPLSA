@@ -4,18 +4,28 @@ Created on 20/11/2013
 author: sperez8
 '''
 import numpy as np
+import sys,os
+   
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+_root_dir = os.path.dirname(_root_dir)
+analysis_dir = _root_dir+ '/Analysis'
+sys.path.insert(0, analysis_dir)
+from clustering import *
 
-study = '1037'
+study = '722'
 #Z = range(2,22)
 Z = [8]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
+datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
-format = 'pdf'
-order = ['1', '12', '3', '0', '4', '5', '13', '15', '6', '7', '10', '11', '23', '9', '22', '2', '14', '17', '8', '20', '21', '19', '16', '18']
+format = 'svg'
+
+order = None
+order = makedendrogram(datafile, show = False)
 order = [int(o) for o in order]
 order = np.array(order)
-print order
 
 if format == 'svg':
     import matplotlib

@@ -39,9 +39,9 @@ for study in ['1037','722','1043','864', '1702', '1642','1692',
         try:
             open(_root_dir + '/Results/' + resultsfilename, "r")
             print "The results file already exists for study", study, "and ", z, "topics."
-            continue #if result files already exists, we don't overide
+            continue #if result files already exists, we don't override
         except IOError:
-            #plsa has not been run with that topic nubmer and study so we run it!
+            #plsa has not been run with that topic number and study so we run it!
             today = datetime.datetime.today()
             print '\n', today.strftime('%b %d, %Y @ %I:%M%p')
             print 'ZZZZZZZzzzz is ',z, '\n' 

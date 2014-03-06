@@ -83,11 +83,11 @@ def topic_distribution(file,study, order = None):
     width = 10.0/float(N) #scale width of bars by number of samples
     p = [] #list of plots
     colors = plt.cm.rainbow(np.linspace(0, 1, Z))
-    p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0]))
+    p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0], linewidth = 0))
     height = p_z_d[0,:]
     for z in range(1,Z):
         height
-        p.append(plt.bar(n, p_z_d[z,:], width, color=colors[z], bottom=height))
+        p.append(plt.bar(n, p_z_d[z,:], width, color=colors[z], bottom=height, linewidth = 0))
         height += p_z_d[z,:]
     
     

@@ -31,22 +31,13 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-study = '722'
-z = 22
+# study = '722'
+# z = 22
+# datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 
-
-f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
-end = '_topics_.txt'
-file = f+str(z)+end
-
-datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
-
-
-
-def makedendrogram(file):
+def makedendrogram(datafile, show = True):
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the result file
     data = m.open_data(datafile)
     X = data.T
 
@@ -54,16 +45,18 @@ def makedendrogram(file):
 
     Z = linkage(Y)
 
-    t = 0.7*max(Z[:,2])*0.3
+    t = 0.7*max(Z[:,2])
 
     D = dendrogram(Z, color_threshold = t)
 
-    print len(D['ivl'])
-    show()
-    return None
+    leaves_order = D['ivl']
+    if show:
+        show()
+    else: plt.clf()
+    return leaves_order
 
 
-def makePCA(file):
+def makePCA(datafile):
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(file) #get model from the results file'
     X = plsa.p_d_z    
@@ -82,8 +75,4 @@ def makePCA(file):
     show()
 
     return None
-
-makedendrogram(file)    
-#makePCA(file)
-    
     
