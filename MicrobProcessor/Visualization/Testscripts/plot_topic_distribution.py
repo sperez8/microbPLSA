@@ -20,7 +20,7 @@ f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
-format = 'svg'
+format = 'pdf'
 
 order = None
 order = makedendrogram(datafile, show = False)
@@ -51,15 +51,15 @@ elif format == 'pdf':
     from microbPlotter import *
     
     from matplotlib.backends.backend_pdf import PdfPages
-    
-    pdf = PdfPages('/Users/sperez/Desktop/topic_dist_'+study+'plots.pdf')
+    pdffile = '/Users/sperez/Desktop/topic_dist_'+study+'plots.pdf'
+    pdf = PdfPages(pdffile)
     
     for z in Z:
         plot = topic_distribution(f+str(z)+end,study, order)
         plot.savefig(pdf, format='pdf')
         
     pdf.close()
-    print '\n\n\n The topic distribution pdf file is ready.'
+    print '\n\n\n The topic distribution pdf file is ready:', pdffile
 
 
 

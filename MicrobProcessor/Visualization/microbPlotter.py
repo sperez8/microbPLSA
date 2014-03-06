@@ -86,7 +86,6 @@ def topic_distribution(file,study, order = None):
     p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0], linewidth = 0))
     height = p_z_d[0,:]
     for z in range(1,Z):
-        height
         p.append(plt.bar(n, p_z_d[z,:], width, color=colors[z], bottom=height, linewidth = 0))
         height += p_z_d[z,:]
     
@@ -103,8 +102,13 @@ def topic_distribution(file,study, order = None):
     
     topiclegend = ['Topic' + str(z+1) + ': '+ str(labels[z]) + '\n ('+ str(r[z]) + ')' for z in range(0,Z)]
     fontP = FontProperties()
-    fontP.set_size('small')
+    if N >60:
+        fontP.set_size('xx-small')
+    else: fontP.set_size('small')
     ax = plt.subplot(111)
+    ratio = float(N)*0.5
+    ax.set_aspect(ratio)
+    ax.tick_params(axis = 'x', colors='w') #remove tick labels by setting them the same color as background
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, 0.5, box.height])
     
