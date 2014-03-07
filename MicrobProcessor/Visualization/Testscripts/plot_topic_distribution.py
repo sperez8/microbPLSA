@@ -4,6 +4,7 @@ Created on 20/11/2013
 author: sperez8
 '''
 import numpy as np
+from time import time
 import sys,os
    
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
@@ -13,9 +14,10 @@ analysis_dir = _root_dir+ '/Analysis'
 sys.path.insert(0, analysis_dir)
 from clustering import *
 
+t0 = time()
 study = '722'
-#Z = range(2,22)
-Z = [8]
+Z = range(8,22)
+#Z = [8]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
@@ -59,7 +61,9 @@ elif format == 'pdf':
         plot.savefig(pdf, format='pdf')
         
     pdf.close()
-    print '\n\n\n The topic distribution pdf file is ready:', pdffile
+    print '\n\n\n The topic distribution pdf file is ready.'
+    print 'Process took', round(time()-t0,1), 'seconds'
+    print pdffile
 
 
 

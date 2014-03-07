@@ -80,7 +80,7 @@ def topic_distribution(file,study, order = None):
     if order is not None:
         p_z_d = p_z_d[:,order]
     n = np.arange(N)
-    width = 10.0/float(N) #scale width of bars by number of samples
+    width = 20.0/float(N) #scale width of bars by number of samples
     p = [] #list of plots
     colors = plt.cm.rainbow(np.linspace(0, 1, Z))
     p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0], linewidth = 0))
@@ -96,10 +96,12 @@ def topic_distribution(file,study, order = None):
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
     
     Lab = Labelling(study, Z, ignore_continuous = True)
-    labels_r = Lab.getlabels()
+    Lab.metadata(non_labels = ['BarcodeSequence'])
+    R = Lab.correlate()
+    labels_r = Lab.assignlabels(R,num_labels = 1)
     labels, r = zip(*labels_r)
     labels = [l.replace('(','\n(') for l in labels]
-    
+
     topiclegend = ['Topic' + str(z+1) + ': '+ str(labels[z]) + '\n ('+ str(r[z]) + ')' for z in range(0,Z)]
     fontP = FontProperties()
     if N >60:
@@ -111,10 +113,13 @@ def topic_distribution(file,study, order = None):
     ax.tick_params(axis = 'x', colors='w') #remove tick labels by setting them the same color as background
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, 0.5, box.height])
-    
+
     if order is not None:
         plt.xticks(n, order, size = 'xx-small')
-    plt.legend(p, topiclegend, prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5))
+    if Z > 12: 
+        columns = 2
+    else: columns = 1
+    plt.legend(p, topiclegend, prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5), ncol = columns)
     return plt
 
 def topiclabel_scatter(X,Y,factor,z):
