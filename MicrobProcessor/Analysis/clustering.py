@@ -4,7 +4,6 @@ Created on 22/01/2014
 author: sperez8
 
 Performs clustering on raw otu counts
-PCA stuff from http://scikit-learn.org/stable/auto_examples/decomposition/plot_pca_3d.html
 '''
 from sklearn.decomposition import PCA
 
@@ -54,25 +53,4 @@ def makedendrogram(datafile, show = True):
         show()
     else: plt.clf()
     return leaves_order
-
-
-def makePCA(datafile):
-    m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file'
-    X = plsa.p_d_z    
-    
-    
-    pca = PCA(n_components=2, whiten = True, )
-    pca.fit(X)
-    pca_score = pca.explained_variance_ratio_
-    V = pca.components_
-    print V.shape
-    print V
-    print pca_score* V.T
-
-    x_pca_axis, y_pca_axis = V
-    pcaplot = plt.scatter(x_pca_axis, y_pca_axis)
-    show()
-
-    return None
     
