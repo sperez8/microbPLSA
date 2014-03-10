@@ -37,7 +37,8 @@ import microbplsa
 
 def makedendrogram(datafile, show = True):
     m = microbplsa.MicrobPLSA()
-    data = m.open_data(datafile)
+    m.open_data(datafile)
+    data = m.datamatrix
     X = data.T
 
     Y = pdist(X, 'euclidean')

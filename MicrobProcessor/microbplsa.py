@@ -74,7 +74,7 @@ class MicrobPLSA():
        
     def open_data(self,file,sampling = False):
         self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
-        return self.datamatrix
+        return None
     
     def dimensions(self):
         return self.datamatrix.shape

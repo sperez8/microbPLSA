@@ -151,7 +151,8 @@ def loglikelihood_curve(study):
             Z = int(re.findall(r'\d+', file)[1])
             f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
             m = microbplsa.MicrobPLSA()
-            (w,d) = m.open_data(f,sampling = False)
+            m.open_data(f,sampling = False)
+            (w,d) = m.dimensions()
             td = m.datamatrix
             plsa = m.open_model(_root_dir+'/Results/'+file) #get model from the results file
             L = m.loglikelihood()
@@ -168,8 +169,6 @@ def loglikelihood_curve(study):
     plt.xlabel('Z, number of topics')
     
     return plt
-
-
-
+    
 
 

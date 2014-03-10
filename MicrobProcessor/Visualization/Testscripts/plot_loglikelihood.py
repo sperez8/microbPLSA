@@ -14,7 +14,7 @@ from time import time
 
 
 f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
-studies = ['864']
+studies = ['1526']
 
 
 t0 = time()

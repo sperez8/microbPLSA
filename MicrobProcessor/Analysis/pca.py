@@ -16,20 +16,21 @@ sys.path.insert(0, analysis_dir)
 from labelling import Labelling
 
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.font_manager import FontProperties
 from sklearn.decomposition import PCA
 import numpy as np
 
-study = '1037'
-z = 8
+study = '722'
+z = 12
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 resultfile = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
+num_components = 3
 
-
-def makePCA(datafile):
+def makePCA(datafile, num_components):
     m = microbplsa.MicrobPLSA()
-    data = m.open_data(datafile) #get data of OTU abundances per sample
-    X = data.T
+    m.open_data(datafile) #get data of OTU abundances per sample
+    X = m.datamatrix.T
     print X.shape
     
     plsa = m.open_model(resultfile) #get model from the results file
@@ -51,7 +52,7 @@ def makePCA(datafile):
         max_topic_index = np.argmax(row)
         topics.append(max_topic_index)    
     topics = np.array(topics)
-    pca = PCA(n_components=2, whiten = True)
+    pca = PCA(n_components=num_components, whiten = True)
     pca.fit(X)
     X_r = pca.fit(X).transform(X)
     
@@ -61,13 +62,18 @@ def makePCA(datafile):
     
     colors = [float(c)/float(Z) for c in range(0,Z)]
     colors = plt.cm.rainbow(np.linspace(0, 1, Z))
-    plt.figure()
-    for c, i, l in zip(colors, range(0,Z), labels):
-        plt.scatter(X_r[topics == i, 0], X_r[topics == i, 1], c=c, cmap = 'rainbow', label=l)
-    
+    fig = plt.figure(1, figsize=(4, 3))
+    plt.clf()
     ax = plt.subplot(111)
-    box = ax.get_position()
-    ax.set_position([box.x0, box.y0, 0.5, box.height])
+    if num_components == 2:
+        for c, i, l in zip(colors, range(0,Z), labels):
+            ax.scatter(X_r[topics == i, 0], X_r[topics == i, 1], c=c, cmap = 'rainbow', label=l)
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0, 0.5, box.height])
+    elif num_components == 3:
+        ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+        for c, i, l in zip(colors, range(0,Z), labels):
+            ax.scatter(X_r[topics == i, 0], X_r[topics == i, 1], X_r[topics == i, 2], c=c, cmap = 'rainbow', label=l)
     fontP = FontProperties()
     if Z > 12: 
         columns = 2
@@ -78,4 +84,4 @@ def makePCA(datafile):
     plt.show()
     return None
 
-makePCA(datafile)
+makePCA(datafile, num_components)
