@@ -2,16 +2,21 @@
 Created on 22/01/2014
 
 author: sperez8
+
+Shows how to use Labelling class
 '''
 
-import os,sys
-from assign_labels import labeling
+from labelling import Labelling
 
-study = '1037'
-Z = 7
-
-labeling(study, Z)
-
-sys.exit()
-
-#### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
+study = '722'
+simple = False
+for Z in range(2,23):
+    Lab = Labelling(study, Z, debug = False,ignore_continuous = False)
+    if simple:
+         labels = Lab.getlabels()
+    else:
+        Lab.metadata(non_labels = ['BarcodeSequence'])
+        R = Lab.correlate()
+        labels = Lab.assignlabels(R,num_labels = 3)
+        
+    Lab.save_labels(labels) 

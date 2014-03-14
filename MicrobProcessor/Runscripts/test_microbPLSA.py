@@ -17,15 +17,15 @@ from math import sqrt
 #f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
 
 
-for study in ['864','1037','722','1043','1702', '1642','1692',
+for study in ['1037','722','1043','864', '1702', '1642','1692',
               '1579','1578','1526','1289','1034','990']:
-
+    
     f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study
     f += '_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
     
     m = microbplsa.MicrobPLSA()
-    (w,d) = m.open_data(f,sampling = False)
-    
+    m.open_data(f,sampling = False)
+    (w,d) = m.dimensions()
     print '\n\n\nStudy', study, 'has', w, 'otus and', d, 'samples.'
     
     num_topics = int(3*sqrt(d))
@@ -39,9 +39,9 @@ for study in ['864','1037','722','1043','1702', '1642','1692',
         try:
             open(_root_dir + '/Results/' + resultsfilename, "r")
             print "The results file already exists for study", study, "and ", z, "topics."
-            continue #if result files already exists, we don't overide
+            continue #if result files already exists, we don't override
         except IOError:
-            #plsa has not been run with that topic nubmer and study so we run it!
+            #plsa has not been run with that topic number and study so we run it!
             today = datetime.datetime.today()
             print '\n', today.strftime('%b %d, %Y @ %I:%M%p')
             print 'ZZZZZZZzzzz is ',z, '\n' 

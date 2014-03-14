@@ -4,7 +4,6 @@ Created on 29/01/2014
 author: sperez8
 
 contains a bunch of different utilities to read EMP data
-
 '''
 import numpy as np
 import json
@@ -15,45 +14,63 @@ from scipy.stats import spearmanr
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
-from microbplsa import MicrobPLSA
+import microbplsa
+
+DECIMALPTS = 2
 
 
-def perform_correlations(factors, factors_type, metatable, Z, F, file):
+def perform_correlations(realfactors, factors, factors_type, metatable, Z, file, ignore_continuous):
     ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
     p_z_d = get_topic_proportions(file)
+    F = len(realfactors)
     Rs = np.zeros((Z,F)) # to be filled
-    for type,metafactors in factors_type.iteritems():
+    for ftype,metafactors in factors_type.iteritems():
         for metafactor in metafactors:
-            if type == "constant":
-                #we skip these since they irrelevant
-                pass
-            elif type == "continuous":
-                index = factors.index(metafactor)
-                data = list(metatable[:,index])
-                Y = [0 if y == 'none' else float(y) for y in data]
-                Rs[:,index] = correlation_continuous(p_z_d, Y)       
-            elif type == "dichotomous":
+            if ftype == "continuous":
+                r_index = realfactors.index(metafactor)
+                if not ignore_continuous:
+                    m_index = factors.index(metafactor)
+                    data = list(metatable[:,m_index])
+                    Y = numericize(data)
+                    Rs[:,r_index] = correlation_continuous(p_z_d, Y)    
+                else:
+                    Rs[:,r_index] = [0.01 for r in range(0,Z)]
+            elif ftype == "dichotomous":
                 for factor in metafactor.keys():
-                    labels = metfactor[factor]
-                    index = factors.index(factor)
-                    Y = np.array([True if labels[0] in x else False for x in metatable[:,index]])
-                    Rs[:,index] = correlation_dichotomous(p_z_d, Y)
-            elif type == "categorical":
-                for factor, labels in metafactor.iteritems():
-                    for label in labels:
-                        index = factors.index(factor) ###not right...
-                        Y = np.array([True if label in x else False for x in metatable[:,index]])
-                        Rs[:,index] = correlation_dichotomous(p_z_d, Y)         
-    #now we check that we have file the correlation matrix!       
-    #zeroes = sum(Rs == 0)
-    #if zeroes >= 1: raise CorrelationProblem('Some entries, in the correlation matrix remain unfilled.')
+                    labels = metafactor[factor]
+                    label = labels[0]
+                    m_index = factors.index(factor)
+                    r_index = realfactors.index(label)
+                    Y = np.array([x == labels[0] for x in metatable[:,m_index]])
+                    Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
+            elif ftype == "categorical":
+                for factor, options in metafactor.iteritems():
+                    for opt in options:
+                        label = opt[opt.index('(')+1:-1] 
+                        m_index = factors.index(factor)
+                        r_index = realfactors.index(opt)
+                        Y = np.array([x == label for x in metatable[:,m_index]])
+                        Rs[:,r_index] = correlation_dichotomous(p_z_d, Y)
+
+    #now we check that we have filled the correlation matrix!     
+    zeros = sum(sum(Rs == 0)) #measure how many entries are 0. need to sum twice over both dimensions
+    if zeros >= 1:
+        index = np.where(Rs == 0.0)
+        print '******************'*10
+        print 'WARNING: ', str(zeros)+ ' entrie(s) in the correlation matrix remain unfilled at position(s):' + str(index)
+        if zeros >= 2:
+            strangefactors = []
+            for i in index:
+                strangefactors.append(realfactors[i[1]])
+        else: strangefactors =  realfactors[index[1][0]]
+        print 'These positions correspond to following metadata factors:', strangefactors
+        print '******************'*10
     
-    
-    #### NOTE: currently the order of factors and columns and Rs dont correspond!!!!
-    
-    return Rs
+    #We round the double floats to 2 decimal points, but only after checking for zeros.
+    R = np.around(Rs, DECIMALPTS)
+    return R
 
 def get_topic_proportions(file):
     '''Given a model p_z,p_w_z,p_d_z, stored in a result file, 
@@ -70,34 +87,18 @@ def correlation_dichotomous(p_z_d, Y):
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
         r = pbcorrelation(X, Y)
-        R.append(round(r,3))
+        R.append(r)
     return np.array(R)
     
-def correlation_continous(p_z_d, Y):
+def correlation_continuous(p_z_d, Y):
     '''calculates the correlation between all topics
         and a continuous variable'''
     R = []
     for z in range(0,p_z_d.shape[0]):
         X = p_z_d[z]
-        r = spearmanr(X, Y)
-        R.append(round(r,3))
+        r = spearmanr(X, Y)[0]
+        R.append(r)
     return np.array(R)
-
-def assign_topic_labels(R):
-    '''for each topic, find the factor to which it is correlated 
-        best and assign it the corresponding label'''
-    
-    labels = {}
-    return labels
-
-def save_labels(labels, filename):
-    '''Given the labels of each topic, they are saved in a 
-        text file for further analysis'''
-    
-    f = open(filename, 'w')
-    for label in labels:
-        f.write(label)
-    f.close()
                                                                            
 def pbcorrelation(X, Y):
     ''' calculates point bisectoral correlation given two variable X and Y:
@@ -112,3 +113,49 @@ def pbcorrelation(X, Y):
     s_n = np.std(X)
     r = ((M1-M0)/s_n)*sqrt((n1*n0)/((n1+n0)**2))
     return r
+
+def numericize(data):
+    ''' Data is a list f strings that need to be turned
+    into floats. However sometimes they contain ',' instead of
+    '.' and '-' to show ranges. We transform the data here'''
+    data1 = [d.replace(',','.') for d in data]
+    #check for range variables like '30-39'
+    data2=[]
+    for d in data1:
+        if '-' in d and d.split('-')[0]: #need both statements here in case of neg numbs.
+                start_range = float(d.split('-')[0])
+                end_range = float(d.split('-')[1])
+                middle = (start_range + end_range)/2.0
+                data2.append(middle)
+        else:
+            data2.append(float(d))
+    return data2
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

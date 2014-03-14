@@ -6,22 +6,25 @@ author: sperez8
 Functions to plot data.
 '''
 import sys, os
+from os.path import join
 import fnmatch
 from time import time
 import re
 import csv
-
-_cur_dir = os.path.dirname(os.path.realpath(__file__))
-_root_dir = os.path.dirname(_cur_dir)
-sys.path.insert(0, _root_dir)
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-
+from math import sqrt
+from matplotlib.font_manager import FontProperties
+   
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir)
 import microbplsa
 
-from math import sqrt
+analysis_dir = _root_dir+ '/Analysis'
+sys.path.insert(0, analysis_dir)
+from labelling import Labelling
 
 
 def data_count(file):
@@ -63,8 +66,7 @@ def data_count(file):
     plt.show()
     return None
 
-
-def topic_distribution(file):
+def topic_distribution(file,study, order = None):
     '''Given a model p_z,p_w_z,p_d_z, we can plot the document's distribution
     using p(z|d) = normalized((p(d|z)*p(z))) '''
     
@@ -75,15 +77,16 @@ def topic_distribution(file):
     p_z_d = plsa.document_topics()
     
     Z,N =p_z_d.shape #number of samples
+    if order is not None:
+        p_z_d = p_z_d[:,order]
     n = np.arange(N)
     width = 10.0/float(N) #scale width of bars by number of samples
     p = [] #list of plots
     colors = plt.cm.rainbow(np.linspace(0, 1, Z))
-    p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0]))
+    p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0], linewidth = 0))
     height = p_z_d[0,:]
     for z in range(1,Z):
-        height
-        p.append(plt.bar(n, p_z_d[z,:], width, color=colors[z], bottom=height))
+        p.append(plt.bar(n, p_z_d[z,:], width, color=colors[z], bottom=height, linewidth = 0))
         height += p_z_d[z,:]
     
     
@@ -91,9 +94,46 @@ def topic_distribution(file):
     plt.xlabel('Sample')
     plt.title('Sample\'s topic distribution')
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
-    plt.legend(p, ['Topic'+str(z) for z in range(1,Z+1)] )
     
+    Lab = Labelling(study, Z, ignore_continuous = True)
+    labels_r = Lab.getlabels()
+    labels, r = zip(*labels_r)
+    labels = [l.replace('(','\n(') for l in labels]
+    
+    topiclegend = ['Topic' + str(z+1) + ': '+ str(labels[z]) + '\n ('+ str(r[z]) + ')' for z in range(0,Z)]
+    fontP = FontProperties()
+    if N >60:
+        fontP.set_size('xx-small')
+    else: fontP.set_size('small')
+    ax = plt.subplot(111)
+    ratio = float(N)*0.5
+    ax.set_aspect(ratio)
+    ax.tick_params(axis = 'x', colors='w') #remove tick labels by setting them the same color as background
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, 0.5, box.height])
+    
+    if order is not None:
+        plt.xticks(n, order, size = 'xx-small')
+    plt.legend(p, topiclegend, prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5))
     return plt
+
+def topiclabel_scatter(X,Y,factor,z):
+    '''Given a study, a topic and a label we make scatter plot'''
+    print 'x', X
+    print Y
+    plt.figure(1, figsize=(8,8))
+    
+    colors = plt.cm.rainbow(np.linspace(0, 1, 8))
+    purple = colors[0]
+    plt.scatter(X,Y, color=purple)
+    
+    
+    plt.ylabel(factor)
+    plt.xlabel('Topic proportion')
+    plt.title('Scatter plot of proportion of Topic ' + str(z+1) + ' and ' + factor)
+     
+    return plt
+
 
 def loglikelihood_curve(study):
     '''Given a dataset we can find the models p_z,p_w_z,p_d_z for 
@@ -123,3 +163,8 @@ def loglikelihood_curve(study):
     plt.xlabel('Z, number of topics')
     
     return plt
+
+
+
+
+
