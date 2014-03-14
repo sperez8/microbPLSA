@@ -51,22 +51,22 @@ class Labelling():
         
         #store the name of the metadata columns in FACTORS = ['date', 'soil type', ...]
         #store the metadata in a numpy array with row: sample, col: data
-        self.factors, self.metadata = get_metadata(metadatafile)
+        self.factors, self.metadatamatrix = get_metadata(metadatafile)
         #sometimes the samples aren't in the same order in the metadata 
         #as in the result files
         if reorder:
-            self.metadata = reorder_metadata(self.datafile,self.metadata,self.study)
+            self.metadatamatrix = reorder_metadata(self.datafile,self.metadatamatrix,self.study)
         
         #test if different metadata factors are dichotomous, continuous
         #or categorical. The embedded dictionaries look like: 
         #factor_types{'categorical':[factorA:{cat1, cat2, cat3...}, factorB...] ....}
-        self.factors_type, self.realfactors = organize_metadata(self.metadata,self.factors, non_labels)
-        return self.metadata, self.factors_type, self.factors
+        self.factors_type, self.realfactors = organize_metadata(self.metadatamatrix,self.factors, non_labels)
+        return self.metadatamatrix, self.factors_type, self.factors
         
     def correlate(self):
     #measure the correlation between each topic and each metadata factor
     #store these in a numpy array where row: topic, col: factor
-        R = perform_correlations(self.realfactors, self.factors, self.factors_type, self.metadata, self.Z, self.resultfile, self.ignore_continuous)
+        R = perform_correlations(self.realfactors, self.factors, self.factors_type, self.metadatamatrix, self.Z, self.resultfile, self.ignore_continuous)
         
         if self.debug:
             print '\nThe correlation matrix is:\n', R
