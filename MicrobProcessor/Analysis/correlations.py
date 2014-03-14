@@ -10,8 +10,7 @@ import numpy as np
 import json
 import sys, os
 from math import sqrt
-#from scipy.stats import spearmanr
-
+from scipy.stats import spearmanr
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
