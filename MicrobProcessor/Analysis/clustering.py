@@ -35,7 +35,7 @@ import microbplsa
 # datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 
-def makedendrogram(datafile, show = True):
+def makedendrogram(datafile, showme = True):
     m = microbplsa.MicrobPLSA()
     m.open_data(datafile)
     data = m.datamatrix
@@ -50,7 +50,7 @@ def makedendrogram(datafile, show = True):
     D = dendrogram(Z, color_threshold = t)
 
     leaves_order = D['ivl']
-    if show:
+    if showme:
         show()
     else: plt.clf()
     return leaves_order

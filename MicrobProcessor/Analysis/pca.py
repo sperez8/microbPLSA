@@ -22,7 +22,7 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 study = '722'
-z = 12
+z = 20
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 resultfile = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
 num_components = 3
@@ -31,7 +31,6 @@ def makePCA(datafile, num_components):
     m = microbplsa.MicrobPLSA()
     m.open_data(datafile) #get data of OTU abundances per sample
     X = m.datamatrix.T
-    print X.shape
     
     plsa = m.open_model(resultfile) #get model from the results file
     #return document's distribution
@@ -60,26 +59,28 @@ def makePCA(datafile, num_components):
     print('Explained variance ratio (first two components): %s'
           % str(pca.explained_variance_ratio_))
     
+    #initiate plot and colors
     colors = [float(c)/float(Z) for c in range(0,Z)]
     colors = plt.cm.rainbow(np.linspace(0, 1, Z))
     fig = plt.figure(1, figsize=(4, 3))
     plt.clf()
-    ax = plt.subplot(111)
+    ax = plt.subplot(111, projection ='3d')
     if num_components == 2:
         for c, i, l in zip(colors, range(0,Z), labels):
-            ax.scatter(X_r[topics == i, 0], X_r[topics == i, 1], c=c, cmap = 'rainbow', label=l)
+            ax.plot(X_r[topics == i, 0], X_r[topics == i, 1], 'o', color=c, label=l)
         box = ax.get_position()
         ax.set_position([box.x0, box.y0, 0.5, box.height])
     elif num_components == 3:
-        ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
         for c, i, l in zip(colors, range(0,Z), labels):
-            ax.scatter(X_r[topics == i, 0], X_r[topics == i, 1], X_r[topics == i, 2], c=c, cmap = 'rainbow', label=l)
+            ax.plot(X_r[topics == i, 0], X_r[topics == i, 1], X_r[topics == i, 2], 'o', color=c, label=l)
     fontP = FontProperties()
     if Z > 12: 
         columns = 2
     else: columns = 1
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, 0.5, box.height])
     plt.legend(prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5), ncol = columns)
-    plt.title('PCA of Study %s' %study)
+    plt.title('PCA of Study %s with Z=%s' %(study, str(z)))
 
     plt.show()
     return None

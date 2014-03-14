@@ -14,8 +14,9 @@ sys.path.insert(0, analysis_dir)
 from labelling import Labelling
 from correlations import numericize
 
-study = '864'
+study = '722'
 Z = 18
+only_continuous = False
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
@@ -58,11 +59,18 @@ Y = None
 
 for z in range(0,Z):
     factor = labels[z]
-    if factor in factor_types['continuous']:
-        print factor
+    if only_continuous:
+        if factor not in factor_types['continuous']:
+            continue
+    else:
+        factor = factor.split('(')
+        print factors
         i = factors.index(factor)
         data = list(metatable[:,i])
-        Y = numericize(data)
+        if factor in factor_types['continuous']:
+            Y = numericize(data)
+        else:
+            Y = []
         X = p_z_d[z,:]
         if format == 'svg':    
             plot = topiclabel_scatter(X,Y,factor,z)
@@ -75,6 +83,7 @@ for z in range(0,Z):
 
 if Y == None:
     print "No continuous factors found."
+    
                           
 if format == 'pdf':
     pdf.close()
