@@ -18,6 +18,8 @@ from labelling import Labelling
 studies = ['1526']
 topics = range(2,29)
 topics = [5] # for testing purposes
+jsonfile = False
+
 for study in studies:
     for z in topics:
         f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
@@ -34,14 +36,57 @@ for study in studies:
         labels_r = Lab.assignlabels(R,num_labels = 1)
         labels, r = zip(*labels_r)
         samplenames = Lab.metadatamatrix[:,0]
-        if study == '1526': samples = [s.split('.')[0] for s in samplenames]
+        if study == '1526': samples = [s.split('.')[0] for s in samplenames] #removes numerical id after sample name
         
-        parallelcoords = {} #holds json data in shape {Sample X: {topic 1: 0.4, topic2:0.6}}
-        for n,row in enumerate(p_z_d.T):
-            parallelcoords[samples[n]]={}
-            for i,r in enumerate(row):
-                parallelcoords[samples[n]][labels[i]] = round(r,3)
-
-print parallelcoords
+        if jsonfile == True:
+            pcoordfile = 'pcoords_'+study+'.json'
+            parallelcoords = {} #holds json data in shape {Sample X: {topic 1: 0.4, topic2:0.6}}
+            for n,row in enumerate(p_z_d.T):
+                parallelcoords[samples[n]]={}
+                for i,r in enumerate(row):
+                    parallelcoords[samples[n]][labels[i]] = round(r,3)
+            print parallelcoords
+        else:
+            pcoordfile = 'pcoords_'+study+'.js'
+            f = open(pcoordfile, 'w')
+            f.write('var topics = [\n')
+            
+            for s,dist in enumerate(p_z_d.T):
+                line = '  {sample: '+samples[s]
+                for i,r in enumerate(row):
+                    line += ', ' + labels[i] + ':' + str(round(r,3)) 
+                line += '},\n'
+                f.write(line)
+            f.write('];')
+            
         
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
