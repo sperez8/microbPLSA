@@ -18,7 +18,7 @@ from labelling import Labelling
 studies = ['1526']
 topics = range(2,29)
 topics = [5] # for testing purposes
-jsonfile = False
+jsfile = True
 
 for study in studies:
     for z in topics:
@@ -36,9 +36,12 @@ for study in studies:
         labels_r = Lab.assignlabels(R,num_labels = 1)
         labels, r = zip(*labels_r)
         samplenames = Lab.metadatamatrix[:,0]
-        if study == '1526': samples = [s.split('.')[0] for s in samplenames] #removes numerical id after sample name
+        samples = []
+        if study == '1526': 
+            samples = [s.split('.')[0] for s in samplenames] #removes numerical id after sample name
+            types = Lab.metadatamatrix[:,1] #column with types for color coding later
         
-        if jsonfile == True:
+        if jsfile == False:
             pcoordfile = 'pcoords_'+study+'.json'
             parallelcoords = {} #holds json data in shape {Sample X: {topic 1: 0.4, topic2:0.6}}
             for n,row in enumerate(p_z_d.T):
@@ -47,18 +50,38 @@ for study in studies:
                     parallelcoords[samples[n]][labels[i]] = round(r,3)
             print parallelcoords
         else:
-            pcoordfile = 'pcoords_'+study+'.js'
+            pcoordfile = 'topics.js'
             f = open(pcoordfile, 'w')
             f.write('var topics = [\n')
             
-            for s,dist in enumerate(p_z_d.T):
+            for s,distribution in enumerate(p_z_d.T):
                 line = '  {sample: '+samples[s]
-                for i,r in enumerate(row):
-                    line += ', ' + labels[i] + ':' + str(round(r,3)) 
+                line += ', type:'+ types[s]
+                for i,p in enumerate(distribution):
+                    line += ', ' + labels[i] + ':' + str(round(p,3)) 
                 line += '},\n'
                 f.write(line)
-            f.write('];')
+            f.write('];\n')
             
+            f.write('var dim = [\n\"')
+            f.write('\",\"'.join(labels))
+            f.write('\"];\n')            
+            
+            
+            f.write('var types = {\n')
+            f.write('\"samples\": \"string\",')
+            f.write('\"type\": \"number\",')
+            #write down all possible factors as dimensions even though
+            #only a fraction of them may be used...
+            #could be more efficient but it would mean changing the way
+            #the factor type is stored.
+            for ftype,factors in Lab.factors_type.iteritems():
+                for factor in factors:
+                    if ftype == "continuous":
+                        f.write('\"'+factor+'\": \"number\",')
+                    elif ftype == "dichotomous" or ftype == "categorical":
+                        f.write('\"'+factor+'\": \"string\",')
+            f.write('};\n')   
         
     
 
