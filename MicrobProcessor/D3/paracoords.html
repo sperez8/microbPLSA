@@ -1,10 +1,10 @@
 <!doctype html>
-<title>PLSA Topic distributions: Food toy model</title>
+<title>PLSA Topic distributions: Study 1526</title>
 <link rel="stylesheet" type="text/css" href="d3.parcoords.css">
 <link rel="stylesheet" type="text/css" href="style.css">
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="d3.parcoords.js"></script>
-<div id="example" class="parcoords" style="width:960px;height:200px;"></div>
+<div id="example" class="parcoords" style="width:1800px;height:300px;"></div>
 <p>An example of a topic distribution for microbial samples on a parallel coordinates plot
 with enabled brushing. 
 <p><button id="btnReset">Reset Brushes</button>
@@ -13,19 +13,28 @@ with enabled brushing.
 		
 //color scale used to color samples of same type
 var colors = d3.scale.category10()
-	.domain(0, d3.set(topics, function(d) {return d.type}))
+	.domain(0, d3.set(topics, function(d) {return d.type}).length)
 
-console.log(topics[0].type)
 var parcoords = d3.parcoords()("#example")
     .color(function(d) { return colors(d.type); })
     .types(types)
-    .dimensions(dim)
-    .alpha(0.4);
+//    .dimensions(dim)
+    .alpha(0.4)
+    .height(300)
+    .width(1800)
+    .margin({
+    	bottom: 12,
+		left: 30,
+		right: 30,
+		top: 24
+	})
 
 parcoords.data(topics)
     .render()
-    .shadows()
+    .shadows()	
     .brushable();  // enable brushing
+
+console.log(parcoords.state)
 
 d3.select('#btnReset').on('click', function() {parcoords.brushReset();})
 </script>
