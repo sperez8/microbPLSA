@@ -17,7 +17,7 @@ from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 8
+z = 20
 pcoordfile = _root_dir+ '/D3/topics.js'
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'

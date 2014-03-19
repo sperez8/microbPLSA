@@ -4,7 +4,9 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="d3.parcoords.js"></script>
-<div id="example" class="parcoords" style="width:1800px;height:300px;"></div>
+<body>
+<p> Here is an example of a parallel coordinates plot. <p>
+<div id="plot" class="parcoords" style="width:1800px;height:300px;"></div>
 <p>An example of a topic distribution for microbial samples on a parallel coordinates plot
 with enabled brushing. 
 <p><button id="btnReset">Reset Brushes</button>
@@ -15,7 +17,7 @@ with enabled brushing.
 var colors = d3.scale.category10()
 	.domain(0, d3.set(topics, function(d) {return d.type}).length)
 
-var parcoords = d3.parcoords()("#example")
+var parcoords = d3.parcoords()("#plot")
     .color(function(d) { return colors(d.type); })
     .types(types)
 //    .dimensions(dim)
@@ -31,6 +33,7 @@ var parcoords = d3.parcoords()("#example")
 
 parcoords.data(topics)
     .render()
+    //.reorderable()
     .shadows()	
     .brushable();  // enable brushing
 
