@@ -14,20 +14,27 @@ with 5 axis
 import csv
 import numpy as np
 import json
+import sys, os
+
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir)
+
 
 #global variables
 MODNAME = 'C'
 MOD = 9
+IND = 4
 modulenames = {1:'4', 2:'2', 9:'3', 4:'1', 11:'5'} #numbers in str encode for the A,B,C,D,E modules
 NUM_AXIS = 6
 AXIS_INDEX = [0,2,4]
 LOW_DEG = 1
 HIGH_DEG = 15
 
-outnodesfile = '/Users/sperez/D3/hiveplots/WebContent/nodesmod' + MODNAME + '.js'
-outlinksfile = '/Users/sperez/D3/hiveplots/WebContent/linksmod' + MODNAME + '.js'
-innodesfile = '/Users/sperez/D3/hiveplots/Data/nodes_mod_ind.txt'
-inlinksfile = '/Users/sperez/D3/hiveplots/Data/links.txt'
+outnodesfile = _root_dir + '/WebContent/nodesmod' + MODNAME + '.js'
+outlinksfile = _root_dir +'/WebContent/linksmod' + MODNAME + '.js'
+innodesfile = _root_dir +'/Data/nodes_mod_ind.txt'
+inlinksfile = _root_dir +'/Data/links.txt'
 
 def get_nodes(file):
 	'''returns node data from csv file'''
@@ -201,7 +208,7 @@ def write_nodes(file, nodes, positions, axis, modulegroup, indicators):
 	#then we put indicator species for this module on top:
 	mod = int(modulenames[MOD])
 	for i,n in enumerate(nodes):
-		if indicators[i] == mod:
+		if indicators[i] == IND:
 			nn = nodes.pop(i)
 			nodes.append(nn)
 			ii = indicators.pop(i)

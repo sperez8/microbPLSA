@@ -15,13 +15,21 @@ from collections import Counter
 
 def get_metadata(csvfile):
     '''returns metadata from csv file as an array'''
-    with open(csvfile, 'rU') as file:
-        spamreader = csv.reader(file, delimiter=',', quotechar='|')
-        header = spamreader.next()
-        x = [spamreader.next(),spamreader.next()]
-        x = np.array(x)
-        for row in spamreader:
-            x = np.append(x,[row], axis = 0)
+    filename = csvfile.split('.csv')[0]
+    end = '.csv'
+    print filename, end
+    try:
+        filename += 'adjusted' + end
+        mfile = open(csvfile, 'rU')
+    except IOError:
+        filename += end
+    if 'adjusted' in filename: print "*NOTE*: Using the adjusted metadata file"
+    spamreader = csv.reader(mfile, delimiter=',', quotechar='|')
+    header = spamreader.next()
+    x = [spamreader.next(),spamreader.next()]
+    x = np.array(x)
+    for row in spamreader:
+        x = np.append(x,[row], axis = 0)
     return header, x
 
 def reorder_metadata(datafile,metadata,study):

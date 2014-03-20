@@ -15,9 +15,9 @@ sys.path.insert(0, analysis_dir)
 from clustering import *
 
 t0 = time()
-study = '722'
+study = '1526'
 #Z = range(8,24)
-Z = [24]
+Z = [5]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'

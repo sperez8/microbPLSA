@@ -17,6 +17,7 @@
 var SVGTitle = 'Hive Plot Module D'
 
 var show_indicator = true
+	IND = 5
 
 var width = 960
     height = 500
@@ -94,7 +95,7 @@ svg.selectAll(".node")
     	})
 	 .style("fill", function(d) { 
 	 	if (show_indicator){
-			if (d.mod == d.ind){
+			if (d.ind == IND){
 				return indYES}
 			else if (d.ind > 0){
 				return indNO}

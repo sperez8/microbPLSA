@@ -18,7 +18,8 @@ from string import replace
 
 study = '1526'
 z = 20
-pcoordfile = _root_dir+ '/D3/topics.js'
+CORRELATION_THRESHOLD = 0.8
+pcoordfile = _root_dir+ '/D3/pcplots/topics.js'
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
@@ -32,9 +33,14 @@ Lab = Labelling(study, Z, ignore_continuous = True) #get labels!
 Lab.metadata(non_labels = ['BarcodeSequence'])
 R = Lab.correlate()
 labels_r = Lab.assignlabels(R,num_labels = 1)
-labels, r = zip(*labels_r)
-print labels
-labels = [replace(l,' (', '_') for l in labels]
+oldlabels, r = zip(*labels_r)
+goodlabels = []
+for lab, r in labels_r:
+    if r > CORRELATION_THRESHOLD:
+        goodlabels.append(lab)
+print ("Only %i/%i passed the correlation threshold of %1.1f"%(len(goodlabels), len(oldlabels), CORRELATION_THRESHOLD))
+
+labels = [replace(l,' (', '_') for l in oldlabels]
 labels = [replace(l,' ', '_') for l in labels]
 labels = [replace(l,')','') for l in labels]
 labels = [replace(l,':', '_') for l in labels]
@@ -56,7 +62,8 @@ for s,distribution in enumerate(p_z_d.T):
     #line += '  sample: \"'+samples[s]+'\",'
     line += ' type:\"'+ types[s]+'\"'
     for i,p in enumerate(distribution):
-        line += ', ' + labels[i] + ':' + str(round(p,3)) 
+        if oldlabels[i] in goodlabels:
+            line += ', ' + labels[i] + ':' + str(round(p,3)) 
     line += '},\n'
     f.write(line)
 f.write('];\n')
