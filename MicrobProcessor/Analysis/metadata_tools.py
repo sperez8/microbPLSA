@@ -17,14 +17,15 @@ def get_metadata(csvfile):
     '''returns metadata from csv file as an array'''
     filename = csvfile.split('.csv')[0]
     end = '.csv'
-    print filename, end
     try:
-        filename += 'adjusted' + end
-        mfile = open(csvfile, 'rU')
+        newfile = filename + 'adjusted' + end
+        nfile = open(newfile, 'rU')
+        print "hurra"
     except IOError:
-        filename += end
-    if 'adjusted' in filename: print "*NOTE*: Using the adjusted metadata file"
-    spamreader = csv.reader(mfile, delimiter=',', quotechar='|')
+        newfile = filename + end
+        nfile = open(newfile, 'rU')
+    if 'adjusted' in newfile: print "*NOTE*: Using the adjusted metadata file"
+    spamreader = csv.reader(nfile, delimiter=',', quotechar='|')
     header = spamreader.next()
     x = [spamreader.next(),spamreader.next()]
     x = np.array(x)

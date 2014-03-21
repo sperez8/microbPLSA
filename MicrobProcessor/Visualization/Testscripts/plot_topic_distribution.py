@@ -15,7 +15,7 @@ sys.path.insert(0, analysis_dir)
 from clustering import *
 
 t0 = time()
-study = '1526'
+study = '1037'
 #Z = range(8,24)
 Z = [5]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
@@ -25,7 +25,7 @@ datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_libr
 format = 'svg'
 
 order = None
-order = makedendrogram(datafile, show = False)
+order = makedendrogram(datafile, showme = False)
 order = [int(o) for o in order]
 order = np.array(order)
 
