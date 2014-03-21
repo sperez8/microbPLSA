@@ -22,6 +22,7 @@ sys.path.insert(0, _root_dir)
 
 
 #global variables
+INDMULTI = True
 MODNAME = 'D'
 MOD = 1
 modulenames = {1:'4', 2:'2', 9:'3', 4:'1', 11:'5'} #numbers in str encode for the A,B,C,D,E modules
@@ -45,13 +46,17 @@ def get_nodes(file):
 	degrees = []
 	modules = []
 	indicators = []
+	if INDMULTI: 
+		ind_index = 5
+	else:
+		ind_index = 4
 	for i,m in enumerate(mods):
 		if m == MOD:
 			nodes.append(data[i,0])
 			depths.append(data[i,1])
 			modules.append(data[i,2])
 			degrees.append(data[i,3])
-			indicators.append(data[i,4])
+			indicators.append(data[i,ind_index])
 			
 			
 	nodesa = [str(n)+'a' for n in nodes]

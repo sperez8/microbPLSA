@@ -13,15 +13,18 @@ import string
 from collections import Counter
 
 
-def get_metadata(csvfile):
+def get_metadata(csvfile, adjusted_metadata):
     '''returns metadata from csv file as an array'''
     filename = csvfile.split('.csv')[0]
     end = '.csv'
-    try:
-        newfile = filename + 'adjusted' + end
-        nfile = open(newfile, 'rU')
-        print "hurra"
-    except IOError:
+    if adjusted_metadata:
+        try:
+            newfile = filename + 'adjusted' + end
+            nfile = open(newfile, 'rU')
+        except IOError:
+            newfile = filename + end
+            nfile = open(newfile, 'rU')
+    else:
         newfile = filename + end
         nfile = open(newfile, 'rU')
     if 'adjusted' in newfile: print "*NOTE*: Using the adjusted metadata file"
@@ -137,7 +140,10 @@ def is_numerical(value):
                 if p =='.': #probably have a float
                     pass
                 elif p == '/': pass #value = value.split(p)[-1] #probably a date...
-                elif p == '-': value = value.split(p)[-1]
+                elif p == '-': 
+                    if p == value[0]:
+                        pass #probably have a negative number
+                    else: value = value.split(p)[-1] #probably have a range
                 else: print "I don't know how to deal with this punctuation: ", p
         try:
             v = float(value)

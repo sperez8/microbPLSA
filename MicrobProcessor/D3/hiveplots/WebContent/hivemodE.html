@@ -17,6 +17,9 @@
 var SVGTitle = 'Hive Plot Module E'
 
 var show_indicator = true
+    indYES = "orange"
+    indORG = "green"
+    indMIN = "brown";
 
 var width = 960
     height = 500
@@ -96,8 +99,14 @@ svg.selectAll(".node")
 	 	if (show_indicator){
 			if (d.mod == d.ind){
 				return indYES}
-			else if (d.ind > 0){
-				return indNO}
+			else if (d.ind == 7){
+				return indORG}
+			else if (d.ind == 6){
+				return indMIN}
+			else if (d.ind == 3 || d.ind == 4 || d.ind == 5){
+				return indMIN}
+			else if (d.ind == 1 || d.ind == 2){
+				return indORG}
 			else {return colors(d.mod)}
 			}
     	else {return colors(d.mod)}

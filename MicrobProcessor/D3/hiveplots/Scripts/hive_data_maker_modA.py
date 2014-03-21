@@ -14,8 +14,14 @@ with 5 axis
 import csv
 import numpy as np
 import json
+import sys, os
+
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir)
 
 #global variables
+INDMULTI = True
 MODNAME = 'A'
 MOD = 4
 modulenames = {1:'4', 2:'2', 9:'3', 4:'1', 11:'5'} #numbers in str encode for the A,B,C,D,E modules
@@ -24,10 +30,11 @@ AXIS_INDEX = [0,2,4]
 LOW_DEG = 1
 HIGH_DEG = 15
 
-outnodesfile = '/Users/sperez/D3/hiveplots/WebContent/nodesmod' + MODNAME + '.js'
-outlinksfile = '/Users/sperez/D3/hiveplots/WebContent/linksmod' + MODNAME + '.js'
-innodesfile = '/Users/sperez/D3/hiveplots/Data/nodes_mod_ind.txt'
-inlinksfile = '/Users/sperez/D3/hiveplots/Data/links.txt'
+outnodesfile = _root_dir + '/WebContent/nodesmod' + MODNAME + '.js'
+outlinksfile = _root_dir +'/WebContent/linksmod' + MODNAME + '.js'
+innodesfile = _root_dir +'/Data/nodes_mod_ind.txt'
+inlinksfile = _root_dir +'/Data/links.txt'
+
 
 def get_nodes(file):
 	'''returns node data from csv file'''
@@ -38,13 +45,17 @@ def get_nodes(file):
 	degrees = []
 	modules = []
 	indicators = []
+	if INDMULTI: 
+		ind_index = 5
+	else:
+		ind_index = 4
 	for i,m in enumerate(mods):
 		if m == MOD:
 			nodes.append(data[i,0])
 			depths.append(data[i,1])
 			modules.append(data[i,2])
 			degrees.append(data[i,3])
-			indicators.append(data[i,4])
+			indicators.append(data[i,ind_index])
 			
 			
 	nodesa = [str(n)+'a' for n in nodes]

@@ -19,11 +19,12 @@ import microbplsa
 class Labelling():
     '''A class to handle the labelling of topics using metadata'''
     
-    def __init__(self, study, Z, debug = False,  ignore_continuous = False, resultfile = None, datafile = None):
+    def __init__(self, study, Z, debug = False,  ignore_continuous = False, adjusted_metadata = True, resultfile = None, datafile = None):
         '''handles all the files and calls the right functions
             to create a labeling file.'''
         self.debug = debug
         self.ignore_continuous = ignore_continuous
+        self.adjusted_metadata = adjusted_metadata
         self.Z = Z
         self.study = study
         
@@ -51,7 +52,7 @@ class Labelling():
         
         #store the name of the metadata columns in FACTORS = ['date', 'soil type', ...]
         #store the metadata in a numpy array with row: sample, col: data
-        self.factors, self.metadatamatrix = get_metadata(metadatafile)
+        self.factors, self.metadatamatrix = get_metadata(metadatafile, self.adjusted_metadata)
         #sometimes the samples aren't in the same order in the metadata 
         #as in the result files
         if reorder:

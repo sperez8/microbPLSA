@@ -17,8 +17,8 @@ from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 20
-CORRELATION_THRESHOLD = 0.8
+z = 15
+CORRELATION_THRESHOLD = 0.6
 pcoordfile = _root_dir+ '/D3/pcplots/topics.js'
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
@@ -29,10 +29,12 @@ plsa = m.open_model(f) #get model from the results file
 p_z_d = plsa.document_topics() #return document's distribution
 Z,N =p_z_d.shape #number of samples
         
-Lab = Labelling(study, Z, ignore_continuous = True) #get labels!
-Lab.metadata(non_labels = ['BarcodeSequence'])
+Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
+x,y,z = Lab.metadata(non_labels = [])
+print y
 R = Lab.correlate()
 labels_r = Lab.assignlabels(R,num_labels = 1)
+print labels_r
 oldlabels, r = zip(*labels_r)
 goodlabels = []
 for lab, r in labels_r:
@@ -60,7 +62,7 @@ f.write('var topics = [\n')
 for s,distribution in enumerate(p_z_d.T):
     line ='{'
     #line += '  sample: \"'+samples[s]+'\",'
-    line += ' type:\"'+ types[s]+'\"'
+    line += ' site:\"'+ types[s]+'\"'
     for i,p in enumerate(distribution):
         if oldlabels[i] in goodlabels:
             line += ', ' + labels[i] + ':' + str(round(p,3)) 
@@ -75,7 +77,7 @@ f.write('\'];\n')
 
 f.write('var types = {\n')
 f.write('\"samples\": \"string\",')
-f.write('\"type\": \"string\",')
+f.write('\"site\": \"string\",')
 
 for label in labels:
     f.write('\"'+label+'\": \"number\",')
