@@ -15,10 +15,10 @@ with enabled brushing.
 		
 //color scale used to color samples of same type
 var colors = d3.scale.category10()
-	.domain(0, d3.set(topics, function(d) {return d.type}).length)
+	.domain(0, d3.set(topics, function(d) {return d.site}).length)
 
 var parcoords = d3.parcoords()("#plot")
-    .color(function(d) { return colors(d.type); })
+    .color(function(d) { return colors(d.site); })
     .types(types)
 //    .dimensions(dim)
     .alpha(0.4)
