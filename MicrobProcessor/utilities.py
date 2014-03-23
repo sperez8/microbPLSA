@@ -169,4 +169,15 @@ def make_dictionary(data, k):
         otu_id_map[otu_id] = otu_name
         index +=1
 
-    return {'OTU_MAP': otu_map, 'OTU_ID_MAP':otu_id_map}            
+    return {'OTU_MAP': otu_map, 'OTU_ID_MAP':otu_id_map}   
+
+
+classes = {'k':'kingdom', 'p':'phylum', 'c':'class', 'o':'order', 'f':'family', 'g':'genus', 's':'species'}
+def get_otu_ranks(otu_map, level = "phylum"):         
+    ranks_otus = []
+    cut = classes[level]
+    for otu in otu_map.values():
+        piece = otu.split(cut+"__")
+        rank = piece.split('\"')[0]
+        ranks_otus.append(rank)
+    return ranks_otus
