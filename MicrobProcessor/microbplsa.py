@@ -42,7 +42,7 @@ class MicrobPLSA():
         return plsa
     
     def open_otu_maps(self,biom_data):
-        '''Opens a file in the .biom format and opens or creates an {id:otu} dicitonary 
+        '''Opens a file in the .biom format and opens or creates an {id:otu} dictionary 
         if not already created'''
  
         reference = OTU_MAP_NAME + biom_data.split('/')[-1] +'.txt'
@@ -62,7 +62,7 @@ class MicrobPLSA():
             ref.close()
             
         self.otu_map = otu_maps
-        return None
+        return otu_maps
        
     def topic_OTUS(self, file, N=5):
         '''Open a results file, finds the primary OTU ids 

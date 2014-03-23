@@ -33,11 +33,17 @@ var parcoords = d3.parcoords()("#plot")
 
 parcoords.data(topics)
     .render()
-    //.reorderable()
+    .reorderable()
     .shadows()	
     .brushable();  // enable brushing
 
 console.log(parcoords.state)
+
+context = parcoords.canvas
+
+console.log(context)
+context.font = "5px Arial";
+context.fillStyle = "#000099";
 
 d3.select('#btnReset').on('click', function() {parcoords.brushReset();})
 </script>

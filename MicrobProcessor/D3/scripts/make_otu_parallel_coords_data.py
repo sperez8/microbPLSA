@@ -5,7 +5,7 @@ author: sperez8
 '''
 
 import sys, os
-import numpy
+import numpy as np
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
@@ -19,14 +19,16 @@ from string import replace
 study = '1526'
 z = 15
 pcoordfile = './pcplots/otus.js'
+level = "phylum"
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 m = microbplsa.MicrobPLSA()
 plsa = m.open_model(f) #get model from the results file
-p_z_d = plsa.p_w_z #return otuès topic distribution
-Z,N =p_z_d.shape #number of samples
+p_w_z = plsa.p_w_z #return otuès topic distribution
+otus_map = m.open_otu_maps(datafile) # create {otu id: otu name} dictionary
+W,Z =p_w_z.shape #number of otus and topics
    
 #get labels     
 Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
@@ -48,36 +50,32 @@ labels = [replace(l,'.', '_') for l in labels]
 labels = [replace(l,'-', '_') for l in labels]
 
 #get phylums
-
-
-
-
-
-types = Lab.metadatamatrix[:,1] #column with types for color coding later
-
+allotus = m.topic_OTUS(f,W)
+otus = np.array(otus).T #reformat embedded listes to be order bye otus then topic
+ranks = get_otus_ranks(otus_map, level = level)
     
 f = open(pcoordfile, 'w')
-f.write('var topics = [\n')
+f.write('var otus = [\n')
 
-for s,distribution in enumerate(p_z_d.T):
-    line ='{'
-    #line += '  sample: \"'+samples[s]+'\",'
-    line += ' site:\"'+ types[s]+'\"'
-    for i,p in enumerate(distribution):
-        if oldlabels[i] in goodlabels:
-            line += ', ' + labels[i] + ':' + str(round(p,3)) 
-    line += '},\n'
-    f.write(line)
+for i,dist,o in zip(enumerate(p_w_z), otus):
+    for rank in ranks:
+        if rank in o:
+            line ='{'
+            line += level+':\"'+rank+'\"'
+            for j,p in enumerate(dist):
+                line += ', ' + labels[j] + ':' + str(round(p,3)) 
+            line += '},\n'
+            f.write(line)
 f.write('];\n')
 
 f.write('var dim = [\n\'')
-f.write('type\',\'')
+f.write('rank\',\'')
 f.write('\',\''.join(labels))
 f.write('\'];\n')
 
 f.write('var types = {\n')
-f.write('\"samples\": \"string\",')
-f.write('\"site\": \"string\",')
+f.write('\"otus\": \"string\",')
+f.write('\"rank\": \"string\",')
 
 for label in labels:
     f.write('\"'+label+'\": \"number\",')
