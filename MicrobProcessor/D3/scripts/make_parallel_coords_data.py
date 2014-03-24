@@ -18,7 +18,7 @@ from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 6
+z = 10
 CORRELATION_THRESHOLD = 0.0
 pcoordfile = _root_dir +'/D3/pcplots/topics.js'
 
@@ -39,7 +39,7 @@ print labels_r
 oldlabels, r = zip(*labels_r)
 goodlabels = []
 for lab, r in labels_r:
-    if r > CORRELATION_THRESHOLD:
+    if r > CORRELATION_THRESHOLD or r < -CORRELATION_THRESHOLD:
         goodlabels.append(lab)
 print ("Only %i/%i passed the correlation threshold of %1.1f"%(len(goodlabels), len(oldlabels), CORRELATION_THRESHOLD))
 
