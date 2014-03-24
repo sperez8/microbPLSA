@@ -17,7 +17,7 @@ from plsa import pLSA
 from plsa import loglikelihood
 
 OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
-LEVELS = 1 #number of levels to add to name of OTU in OTU_MAP
+LEVELS = 10 #number of levels to add to name of OTU in OTU_MAP
 
 
 class MicrobPLSA():
@@ -48,11 +48,11 @@ class MicrobPLSA():
         reference = OTU_MAP_NAME + biom_data.split('/')[-1] +'.txt'
         reference = os.path.join(_cur_dir,reference)
         try:
-            with open(reference) as ref: #read the json file
+            with open(reference) as ref: #read the json file if it exists
                 pickled_map=open(reference)
                 otu_maps = pickle.load(pickled_map)
                 pickled_map.close()
-        except IOError: #create the json file.
+        except IOError: #create the json file if it doesn't exist yet
             json_data=open(biom_data)
             data = json.load(json_data)
             json_data.close()
