@@ -21,6 +21,7 @@ from string import replace
 study = '1526'
 z = 8
 CORRELATION_THRESHOLD = 0.0
+MANUAL_LABELS = ['Topic 1', 'Topic 2', 'Year Last submerged', 'Under water', 'Topic 5', 'Topic 6', 'Submerged between 2002-1999', 'Moki Camp']
 pcoordfile = _root_dir + '/D3/pcplots/otus.js'
 level = "phylum"
 
@@ -36,21 +37,7 @@ W,Z =p_w_z.shape #number of otus and topics
 #get labels     
 Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
 Lab.metadata(non_labels = [])
-R = Lab.correlate()
-labels_r = Lab.assignlabels(R,num_labels = 1)
-oldlabels, r = zip(*labels_r)
-goodlabels = []
-for lab, r in labels_r:
-    if r > CORRELATION_THRESHOLD or r < -CORRELATION_THRESHOLD:
-        goodlabels.append(lab)
-print ("Only %i/%i passed the correlation threshold of %1.1f"%(len(goodlabels), len(oldlabels), CORRELATION_THRESHOLD))
-
-labels = [replace(l,' (', '_') for l in oldlabels]
-labels = [replace(l,' ', '_') for l in labels]
-labels = [replace(l,')','') for l in labels]
-labels = [replace(l,':', '_') for l in labels]
-labels = [replace(l,'.', '_') for l in labels]
-labels = [replace(l,'-', '_') for l in labels]
+labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
 
 #get phylums
 topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YETTTTT
@@ -60,6 +47,7 @@ print ("There are %i different %s."%(len(ranks), level))
     
 f = open(pcoordfile, 'w')
 f.write('var otus = [\n')
+
 
 otus_index = otus_map["OTU_MAP"]
 for (i,dist) in enumerate(p_w_z):
