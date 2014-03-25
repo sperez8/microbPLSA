@@ -22,7 +22,9 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 study = '1526'
-z = 6
+z = 8
+MANUAL_LABELS = ['Topic ' + str(k+1) for k in range(0,z)]
+print MANUAL_LABELS
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 resultfile = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
 num_components = 3
@@ -38,12 +40,15 @@ def makePCA(datafile, num_components):
     N,Z =p_d_z.shape
     
     #get topic labels
-    Lab = Labelling(study, Z, ignore_continuous = False)
-    Lab.metadata(non_labels = ['BarcodeSequence'])
-    R = Lab.correlate()
-    labels_r = Lab.assignlabels(R,num_labels = 1)
-    labels, r = zip(*labels_r)
-    labels = [l.replace('(','\n(') for l in labels]
+    if MANUAL_LABELS:
+        labels  = MANUAL_LABELS
+    else:
+        Lab = Labelling(study, Z, ignore_continuous = False)
+        Lab.metadata(non_labels = ['BarcodeSequence'])
+        R = Lab.correlate()
+        labels_r = Lab.assignlabels(R,num_labels = 1)
+        labels, r = zip(*labels_r)
+        labels = [l.replace('(','\n(') for l in labels]
     
     #get primary topic per sample
     topics = []
@@ -79,7 +84,7 @@ def makePCA(datafile, num_components):
     else: columns = 1
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, 0.5, box.height])
-    plt.legend(prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5), ncol = columns)
+    plt.legend(prop = fontP, loc='center left', bbox_to_anchor=(1, 0.5), ncol = columns)
     plt.title('PCA of Study %s with Z=%s' %(study, str(z)))
 
     plt.show()
