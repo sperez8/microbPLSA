@@ -13,13 +13,11 @@ from microbPlotter import *
 from time import time
 
 
-f = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/results_"
 studies = ['1526']
-
 
 t0 = time()
 for study in studies:
-    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_.pdf'
+    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'2.pdf'
     print "Plotting log likelihood curve for study ", study
     pdf = PdfPages(file)
     plot = loglikelihood_curve(study)

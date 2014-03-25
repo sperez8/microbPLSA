@@ -18,7 +18,7 @@ from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 10
+z = 8
 CORRELATION_THRESHOLD = 0.0
 pcoordfile = _root_dir +'/D3/pcplots/topics.js'
 

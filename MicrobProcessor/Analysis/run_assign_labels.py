@@ -8,10 +8,10 @@ Shows how to use Labelling class
 
 from labelling import Labelling
 
-study = '722'
+study = '1526'
 simple = False
-for Z in range(2,23):
-    Lab = Labelling(study, Z, debug = False,ignore_continuous = False)
+for Z in range(2,39):
+    Lab = Labelling(study, Z, debug = False,ignore_continuous = False, adjusted_metadata = True)
     if simple:
          labels = Lab.getlabels()
     else:

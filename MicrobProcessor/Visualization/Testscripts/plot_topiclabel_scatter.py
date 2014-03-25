@@ -14,9 +14,9 @@ sys.path.insert(0, analysis_dir)
 from labelling import Labelling
 from correlations import numericize
 
-study = '722'
-Z = 18
-only_continuous = False
+study = '1526'
+Z = 8
+only_continuous = True
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
@@ -41,7 +41,9 @@ plsa = m.open_model(datafile) #get model from the results file
 #return document's distribution
 p_z_d = plsa.document_topics()
 
-
+colorlabel = list(metatable[:,1])
+    
+    
 if format == 'svg':
     import matplotlib
     matplotlib.use('SVG')
@@ -60,26 +62,26 @@ Y = None
 for z in range(0,Z):
     factor = labels[z]
     if only_continuous:
-        if factor not in factor_types['continuous']:
-            continue
-    else:
-        factor = factor.split('(')
-        print factors
-        i = factors.index(factor)
-        data = list(metatable[:,i])
         if factor in factor_types['continuous']:
-            Y = numericize(data)
-        else:
-            Y = []
-        X = p_z_d[z,:]
-        if format == 'svg':    
-            plot = topiclabel_scatter(X,Y,factor,z)
-            plot.savefig('/Users/sperez/Desktop/topic_scatter_'+study+'_'+factor+'plots.svg')
-            plot.clf()
-        elif format == 'pdf':
-            plot = topiclabel_scatter(X,Y,factor,z)
-            plot.savefig(pdf, format='pdf')
-            plot.clf()
+            pass
+        else: continue
+    if '(' in factor:
+        factor = factor.split('(')[0]
+    i = factors.index(factor)
+    data = list(metatable[:,i])
+    if factor in factor_types['continuous']:
+        Y = numericize(data)
+    else:
+        Y = []
+    X = p_z_d[z,:]
+    if format == 'svg':    
+        plot = topiclabel_scatter(X,Y,factor,z,colorlabel)
+        plot.savefig('/Users/sperez/Desktop/topic_scatter_'+study+'_'+factor+'plots.svg')
+        plot.clf()
+    elif format == 'pdf':
+        plot = topiclabel_scatter(X,Y,factor,z,colorlabel)
+        plot.savefig(pdf, format='pdf')
+        plot.clf()
 
 if Y == None:
     print "No continuous factors found."

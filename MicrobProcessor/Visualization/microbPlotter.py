@@ -122,21 +122,26 @@ def topic_distribution(file,study, order = None):
     plt.legend(p, topiclegend, prop = fontP, title = 'Topic Label', loc='center left', bbox_to_anchor=(1, 0.5), ncol = columns)
     return plt
 
-def topiclabel_scatter(X,Y,factor,z):
+def topiclabel_scatter(X,Y,factor,z, colorlabel):
     '''Given a study, a topic and a label we make scatter plot'''
     print 'x', X
     print Y
     plt.figure(1, figsize=(8,8))
     
-    colors = plt.cm.rainbow(np.linspace(0, 1, 8))
-    purple = colors[0]
-    plt.scatter(X,Y, color=purple)
+    labelset = list(set(colorlabel))
+    #print labelset
+    colors = plt.cm.rainbow(np.linspace(0, 1,len(labelset)+1))
+    #colors = ['r','b','y','m']
+    
+    for x,y,c in zip(X,Y,colorlabel):
+        plt.scatter(x,y, color=colors[labelset.index(c)])
     
     
     plt.ylabel(factor)
     plt.xlabel('Topic proportion')
     plt.title('Scatter plot of proportion of Topic ' + str(z+1) + ' and ' + factor)
      
+    plt.legend(labelset)
     return plt
 
 
@@ -147,7 +152,7 @@ def loglikelihood_curve(study):
     topic = []
 
     for file in os.listdir(_root_dir+'/Results/'):
-        if fnmatch.fnmatch(file, 'study_'+study+'*.txt'):
+        if fnmatch.fnmatch(file, 'study_'+study+'*_topics_run2.txt'):
             Z = int(re.findall(r'\d+', file)[1])
             f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
             m = microbplsa.MicrobPLSA()
