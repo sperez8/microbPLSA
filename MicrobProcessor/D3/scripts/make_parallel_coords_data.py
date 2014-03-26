@@ -9,6 +9,7 @@ import numpy
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
+_root_dir = os.path.dirname(_root_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 analysis_dir = _root_dir+ '/Analysis'
@@ -17,9 +18,9 @@ from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 15
-CORRELATION_THRESHOLD = 0.6
-pcoordfile = './pcplots/topics.js'
+z = 10
+CORRELATION_THRESHOLD = 0.0
+pcoordfile = _root_dir +'/D3/pcplots/topics.js'
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
@@ -38,7 +39,7 @@ print labels_r
 oldlabels, r = zip(*labels_r)
 goodlabels = []
 for lab, r in labels_r:
-    if r > CORRELATION_THRESHOLD:
+    if r > CORRELATION_THRESHOLD or r < -CORRELATION_THRESHOLD:
         goodlabels.append(lab)
 print ("Only %i/%i passed the correlation threshold of %1.1f"%(len(goodlabels), len(oldlabels), CORRELATION_THRESHOLD))
 

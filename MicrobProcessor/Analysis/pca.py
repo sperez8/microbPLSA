@@ -21,8 +21,8 @@ from matplotlib.font_manager import FontProperties
 from sklearn.decomposition import PCA
 import numpy as np
 
-study = '722'
-z = 20
+study = '1526'
+z = 6
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 resultfile = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
 num_components = 3
@@ -38,7 +38,7 @@ def makePCA(datafile, num_components):
     N,Z =p_d_z.shape
     
     #get topic labels
-    Lab = Labelling(study, Z, ignore_continuous = True)
+    Lab = Labelling(study, Z, ignore_continuous = False)
     Lab.metadata(non_labels = ['BarcodeSequence'])
     R = Lab.correlate()
     labels_r = Lab.assignlabels(R,num_labels = 1)

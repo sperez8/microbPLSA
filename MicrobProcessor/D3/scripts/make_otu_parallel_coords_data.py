@@ -9,16 +9,19 @@ import numpy as np
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
+_root_dir = os.path.dirname(_root_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
+from utilities import get_otu_ranks
 analysis_dir = _root_dir+ '/Analysis'
 sys.path.insert(0, analysis_dir)
 from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 15
-pcoordfile = './pcplots/otus.js'
+z = 10
+CORRELATION_THRESHOLD = 0.0
+pcoordfile = _root_dir + '/D3/pcplots/otus.js'
 level = "phylum"
 
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
@@ -26,7 +29,7 @@ datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_libr
 
 m = microbplsa.MicrobPLSA()
 plsa = m.open_model(f) #get model from the results file
-p_w_z = plsa.p_w_z #return otuès topic distribution
+p_w_z = plsa.p_w_z #return otus topic distribution
 otus_map = m.open_otu_maps(datafile) # create {otu id: otu name} dictionary
 W,Z =p_w_z.shape #number of otus and topics
    
@@ -38,7 +41,7 @@ labels_r = Lab.assignlabels(R,num_labels = 1)
 oldlabels, r = zip(*labels_r)
 goodlabels = []
 for lab, r in labels_r:
-    if r > CORRELATION_THRESHOLD:
+    if r > CORRELATION_THRESHOLD or r < -CORRELATION_THRESHOLD:
         goodlabels.append(lab)
 print ("Only %i/%i passed the correlation threshold of %1.1f"%(len(goodlabels), len(oldlabels), CORRELATION_THRESHOLD))
 
@@ -50,16 +53,18 @@ labels = [replace(l,'.', '_') for l in labels]
 labels = [replace(l,'-', '_') for l in labels]
 
 #get phylums
-allotus = m.topic_OTUS(f,W)
-otus = np.array(otus).T #reformat embedded listes to be order bye otus then topic
-ranks = get_otus_ranks(otus_map, level = level)
+topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YETTTTT
+
+ranks = get_otu_ranks(otus_map, level = level)
+print ("There are %i different %s."%(len(ranks), level))
     
 f = open(pcoordfile, 'w')
 f.write('var otus = [\n')
 
-for i,dist,o in zip(enumerate(p_w_z), otus):
+otus_index = otus_map["OTU_MAP"]
+for (i,dist) in enumerate(p_w_z):
     for rank in ranks:
-        if rank in o:
+        if rank in otus_index[i]:
             line ='{'
             line += level+':\"'+rank+'\"'
             for j,p in enumerate(dist):
@@ -69,13 +74,12 @@ for i,dist,o in zip(enumerate(p_w_z), otus):
 f.write('];\n')
 
 f.write('var dim = [\n\'')
-f.write('rank\',\'')
+f.write(level+'\',\'')
 f.write('\',\''.join(labels))
 f.write('\'];\n')
 
 f.write('var types = {\n')
-f.write('\"otus\": \"string\",')
-f.write('\"rank\": \"string\",')
+f.write('\"'+level+'\": \"string\",')
 
 for label in labels:
     f.write('\"'+label+'\": \"number\",')
