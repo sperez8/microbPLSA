@@ -70,7 +70,7 @@ f.write('var types = {\n')
 f.write('\"'+level+'\": \"string\",')
 
 for label in labels:
-    f.write('\"'+label+'\": \"number\",')
+    f.write(label+': \"number\",')
 #unfortunately we have to iter through all possible factors
 #to find the ones that are labels
 #could be more efficient but it would mean changing the way

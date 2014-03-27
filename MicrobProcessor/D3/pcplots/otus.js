@@ -10363,4 +10363,4 @@ var otus = [
 var dim = [
 'phylum','"Topic 1"','"Topic 2"','"Year Last submerged"','"Under water"','"Topic 5"','"Topic 6"','"Submerged between 2002-1999"','"Moki Camp"'];
 var types = {
-"phylum": "string",""Topic 1"": "number",""Topic 2"": "number",""Year Last submerged"": "number",""Under water"": "number",""Topic 5"": "number",""Topic 6"": "number",""Submerged between 2002-1999"": "number",""Moki Camp"": "number",};
+"phylum": "string","Topic 1": "number","Topic 2": "number","Year Last submerged": "number","Under water": "number","Topic 5": "number","Topic 6": "number","Submerged between 2002-1999": "number","Moki Camp": "number",};

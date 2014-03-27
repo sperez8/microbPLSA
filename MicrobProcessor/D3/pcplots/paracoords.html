@@ -39,11 +39,15 @@ parcoords.data(topics)
 
 console.log(parcoords.state)
 
-context = parcoords.canvas
+context = parcoords.ctx
 
 console.log(context)
 context.font = "5px Arial";
 context.fillStyle = "#000099";
+
+var canvas = document.getElementById("plot");
+var img  = canvas.toDataURL("image/png");
+document.write('<img src="'+img+'"/>');
 
 d3.select('#btnReset').on('click', function() {parcoords.brushReset();})
 </script>
