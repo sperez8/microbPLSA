@@ -40,7 +40,7 @@ Lab.metadata(non_labels = [])
 labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
 
 #get phylums
-topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YETTTTT
+topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YET
 
 ranks = get_otu_ranks(otus_map, level = level)
 print ("There are %i different %s."%(len(ranks), level))

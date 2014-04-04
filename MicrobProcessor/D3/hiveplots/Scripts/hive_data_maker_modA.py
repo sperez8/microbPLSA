@@ -116,12 +116,21 @@ def doublelinks(sources, targets, axis, nodes):
 				if (axis[sa] == 0 and axis [tb] == 1):
 					newsources.append(sa)
 					newtargets.append(tb)
+					#need to double within doubled axis links for symmetry
+					newsources.append(sb)
+					newtargets.append(ta)
 				elif (axis[sa] == 2 and axis [tb] == 3):
 					newsources.append(sa)
 					newtargets.append(tb)
+					#need to double within doubled axis links for symmetry
+					newsources.append(sb)
+					newtargets.append(ta)
 				elif (axis[sa] == 4 and axis [tb] == 5):
 					newsources.append(sa)
 					newtargets.append(tb)
+					#need to double within doubled axis links for symmetry
+					newsources.append(sb)
+					newtargets.append(ta)
 				elif (axis[sb] == 1 and axis [ta] == 2):
 					newsources.append(sb)
 					newtargets.append(ta)

@@ -11,6 +11,11 @@ with 5 axis
 import csv
 import numpy as np
 import json
+import sys, os
+
+_cur_dir = os.path.dirname(os.path.realpath(__file__))
+_root_dir = os.path.dirname(_cur_dir)
+sys.path.insert(0, _root_dir)
 
 #global variables
 NUM_AXIS = 6
@@ -18,10 +23,10 @@ AXIS_INDEX = [0,2,4]
 LOW_DEG = 1
 HIGH_DEG = 15
 
-outnodesfile = '/Users/sperez/D3/hiveplots/WebContent/nodesmod' + str(NUM_AXIS) + '.js'
-outlinksfile = '/Users/sperez/D3/hiveplots/WebContent/linksmod' + str(NUM_AXIS) + '.js'
-innodesfile = '/Users/sperez/D3/hiveplots/Data/nodes_mod.txt'
-inlinksfile = '/Users/sperez/D3/hiveplots/Data/links.txt'
+outnodesfile = _root_dir + '/WebContent/nodesmod' + str(NUM_AXIS) + '.js'
+outlinksfile = _root_dir +'/WebContent/linksmod' + str(NUM_AXIS)+ '.js'
+innodesfile = _root_dir +'/Data/nodes_mod.txt'
+inlinksfile = _root_dir +'/Data/links.txt'
 
 def get_nodes(file):
 	'''returns node data from csv file'''
@@ -85,12 +90,21 @@ def doublelinks(degrees, sources, targets, axis):
 			if (axis[sa] == 0 and axis [tb] == 1):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sa] == 2 and axis [tb] == 3):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sa] == 4 and axis [tb] == 5):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sb] == 1 and axis [ta] == 2):
 				newsources.append(sb)
 				newtargets.append(ta)

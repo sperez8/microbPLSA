@@ -12,25 +12,26 @@
 <script src="linksmod6.js"></script>
 <script>
 
-var SVGTitle = 'Hive Plot Whole'
+var SVGTitle = 'Hive Plot Whole Network'
 
 var show_indicator = false
 
-var width = 960
+var nodesize = 4
+	nodestroke = 0.1
+	nodestrokecolor = "grey"
+	
+var width = 600
     height = 500
     innerRadius = 40,
     outerRadius = 240;
 
 var linkfill = "none"
-	linkwidth = 1
-	oplink = 1
-	opnode = 0.7
+	linkwidth = 0.7
+	oplink = 0.6
+	opnode = 0.5
 	bkgcolor = "white"
     modulecolor = ["#bdbdbd","#c7eae5","#80cdc1","#35978f","#01665e","#003c30"]
     num_axis = 6	//want 6 axis
-    indYES = "orange"
-    indNO = "blue"
-    indNULL = "grey";
 	
 var angle = [-0.35, 0.35, 1.75, 2.44, 3.84, 4.54], // for 6 axis
     radius = d3.scale.linear().range([innerRadius, outerRadius]);
@@ -79,9 +80,9 @@ svg.selectAll(".node")
     .attr("class", "node")
     .attr("transform", function(d) { return "rotate(" + degrees(angles(d.axis)) + ")"; })
     .attr("cx", function(d) { return radius(d.pos); })
-    .attr("r", 3)
-    .attr("stroke-width", 0.3)
-    .attr("stroke", "grey")
+    .attr("r", nodesize)
+    .attr("stroke-width", nodestroke)
+    .attr("stroke", nodestrokecolor)
     .style("fill-opacity", function(d) {
     	if (show_indicator){
 			if (d.ind == 0){
