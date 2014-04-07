@@ -28,9 +28,14 @@ class MicrobPLSA():
     def __init__(self):
         return None
         
-    def open_model(self, file):
+    def open_model(self, study = None, z = 0, file = None):
         ''' Opens the probs of a model previously computed and saved in a json file '''
-        f = open(file,'r')
+        if file:
+            f = open(file,'r')
+        elif study and z:
+            file = _cur_dir + '/Results/study_'+study +'_'+str(z)+'_topics_.txt'
+            f = open(file,'r')
+        else: print "Need study and topic input for this function."
         data = json.load(f)
         p_z = np.array(data['p_z'])
         p_w_z = np.array(data['p_w_z'])
@@ -71,8 +76,14 @@ class MicrobPLSA():
         #labels = model.topic_labels(self.otu_map['OTU_MAP'],N)
         labels = model.topic_labels(None, N)
         return labels
-       
-    def open_data(self,file,sampling = False):
+
+    def open_data(self, study = None, file = None,sampling = False):
+        if file:
+            f = open(file,'r')
+        elif study:
+            file = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+            f = open(file,'r')
+        else: print "Need study and topic input for this function."      
         self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
         return None
     

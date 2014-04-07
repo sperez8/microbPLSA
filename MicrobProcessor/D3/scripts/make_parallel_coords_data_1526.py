@@ -18,7 +18,7 @@ from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 30
+z = 8
 CORRELATION_THRESHOLD = 0.0
 MANUAL_LABELS = ['Topic 1', 'Topic 2', 'Year Last submerged', 'Under water', 'Topic 5', 'Topic 6', 'Submerged between 2002-1999', 'Moki Camp']
 pcoordfile = _root_dir +'/D3/pcplots/topics.js'
