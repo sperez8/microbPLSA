@@ -18,7 +18,7 @@ from labelling import Labelling
 from string import replace
 
 study = '1526'
-z = 8
+z = 30
 CORRELATION_THRESHOLD = 0.0
 MANUAL_LABELS = ['Topic 1', 'Topic 2', 'Year Last submerged', 'Under water', 'Topic 5', 'Topic 6', 'Submerged between 2002-1999', 'Moki Camp']
 pcoordfile = _root_dir +'/D3/pcplots/topics.js'
@@ -37,7 +37,10 @@ samplenames = Lab.metadatamatrix[:,0]
 samples = [s.split('.')[0] for s in samplenames] #removes numerical id after sample name
 types = Lab.metadatamatrix[:,1] #column with types for color coding later
 year = Lab.metadatamatrix[:,5]
-labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
+if len(MANUAL_LABELS) == Z:
+    labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
+else: 
+    labels = ['\"Topic '+str(i)+'\"' for i in range(0,Z)]
     
 f = open(pcoordfile, 'w')
 f.write('var topics = [\n')

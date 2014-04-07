@@ -29,9 +29,10 @@ datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_libr
 
 m = microbplsa.MicrobPLSA()
 plsa = m.open_model(f) #get model from the results file
-p_w_z = plsa.p_w_z #return otus topic distribution
+p_z_w = plsa.word_topics() #return otus topic distribution
 otus_map = m.open_otu_maps(datafile) # create {otu id: otu name} dictionary
-W,Z =p_w_z.shape #number of otus and topics
+Z,W =p_z_w.shape #number of otus and topics
+print W,Z
    
 #get labels     
 Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
@@ -62,7 +63,8 @@ f = open(pcoordfile, 'w')
 f.write('var otus = [\n')
 
 otus_index = otus_map["OTU_MAP"]
-for (i,dist) in enumerate(p_w_z):
+for (i,dist) in enumerate(p_z_w.T):
+    print i, dist
     for rank in ranks:
         if rank in otus_index[i]:
             line ='{'
