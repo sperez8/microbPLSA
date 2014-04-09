@@ -27,7 +27,7 @@ f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 m = microbplsa.MicrobPLSA()
-plsa = m.open_model(f) #get model from the results file
+plsa = m.open_model(file = f) #get model from the results file
 p_z_d = plsa.document_topics() #return document's distribution
 Z,N =p_z_d.shape #number of samples
 
@@ -36,7 +36,7 @@ Lab.metadata(non_labels = [])
 samplenames = Lab.metadatamatrix[:,0]
 samples = [s.split('.')[0] for s in samplenames] #removes numerical id after sample name
 types = Lab.metadatamatrix[:,1] #column with types for color coding later
-year = Lab.metadatamatrix[:,5]
+year = Lab.metadatamatrix[:,6]
 if len(MANUAL_LABELS) == Z:
     labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
 else: 
