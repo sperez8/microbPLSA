@@ -81,6 +81,7 @@ class MicrobPLSA():
         if file:
             f = open(file,'r')
         elif study:
+            study = str(study)
             file = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
             f = open(file,'r')
         else: print "Need study and topic input for this function."      

@@ -18,24 +18,28 @@ import microbplsa
 class NetworkAnalysis():
     ''' Build and analysis network from OTUs abundances '''
     
-    def __init__(self, study = None, biomfile = None):
+    def __init__(self, study = None, biomFile = None):
         ''' Opens the probs of a model previously computed and saved in a json file '''
         m = microbplsa.MicrobPLSA()
-        m.open_data(study = study, file = biomfile) #get data matrix from the results file
-        self.rawdata = m.datamatrix
-        self.N,self.S = self.rawdata.shape 
+        m.open_data(study = study, file = biomFile) #get data matrix from the results file
+        self.rawData = m.datamatrix
+        self.N,self.S = self.rawData.shape 
         return None
          
     def remove_rare_otus(self,minSamples = None):
         if minSamples == None:
             minSamples = int(0.1*self.S) #default is that otus must be present in 10 percent of samples 
-        newdata = np.append(self.rawdata.T, np.array(range(0,N)),axis=0)###
-        print newdata.shape
-        for i,row in enumerate(self.rawdata):
-            print len(row)
-            if np.count_nonzero(row) >= minSamples:
-                newdata = 0
+        if minSamples <=1: 
+            newData = np.copy(self.rawData)
+            return None
+        newData = np.copy(self.rawData)
         
+        
+        print newData.shape
+        newData = newData[np.all(np.count_nonzero(newData) >= minSamples, axis = 0)]
+        print np.all(np.count_nonzero(newData) >= minSamples, axis = 0)
+        
+        print newData
         return None     
     
     def normalize(self):
@@ -45,8 +49,8 @@ class NetworkAnalysis():
         return None
     
     def measure_correlations(self):
-        for i in range(0,N):
-            for j in range(0,N):
+        for i in range(0,self.N):
+            for j in range(0,self.N):
                 break
                 if i!= j :
                     r,p = spearmanr(data[i,:],data[j,:])
