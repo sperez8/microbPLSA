@@ -1,0 +1,76 @@
+<!doctype html>
+<title>Phylum abundance across ocean depth</title>
+<link rel="stylesheet" type="text/css" href="d3.parcoords.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="d3.parcoords.js"></script>
+<body>
+<p> Here is an example of a parallel coordinates plot. <p>
+<div id="plot" class="parcoords" style="width:1800px;height:300px;"></div>
+<p>An example of a topic distribution for microbial samples on a parallel coordinates plot
+with enabled brushing. 
+<p><button id="btnReset">Reset Brushes</button>
+<script>
+
+var otus = [
+{phylum:"Actinobacteria", 	10m: 0.10, 20m: 0.20, 50m: 0.30, 70m: 0.50, 100m: 0.55},
+{phylum:"Firmicutes", 		10m: 0.00, 20m: 0.00, 50m: 0.10, 70m: 0.20, 100m: 0.45},
+{phylum:"Firmicutes", 		10m: 0.00, 20m: 0.20, 50m: 0.23, 70m: 0.25, 100m: 0.35},
+{phylum:"Proteobacteria",	10m: 0.00, 20m: 0.20, 50m: 0.30, 70m: 0.0.30, 100m: 0.0},
+{phylum:"Verrucomicrobia", 	10m: 0.20, 20m: 0.20, 50m: 0.05, 70m: 0.0, 100m: 0.0},
+{phylum:"Nitrospirae", 		10m: 0.25, 20m: 0.20, 50m: 0.00, 70m: 0.00, 100m: 0.05},
+{phylum:"Firmicutes", 		10m: 0.00, 20m: 0.20, 50m: 0.23, 70m: 0.25, 100m: 0.35},
+{phylum:"Proteobacteria",	10m: 0.00, 20m: 0.20, 50m: 0.20, 70m: 0.0.30, 100m: 0.10},
+{phylum:"Verrucomicrobia", 	10m: 0.20, 20m: 0.20, 50m: 0.05, 70m: 0.0, 100m: 0.09},
+{phylum:"Nitrospirae", 		10m: 0.20, 20m: 0.10, 50m: 0.00, 70m: 0.30, 100m: 0.15},
+{phylum:"Firmicutes", 		10m: 0.0, 20m: 0.20, 50m: 0.23, 70m: 0.25, 100m: 0.35},
+{phylum:"Proteobacteria",	10m: 0.00, 20m: 0.10, 50m: 0.30, 70m: 0.0.30, 100m: 0.0},
+{phylum:"Verrucomicrobia", 	10m: 0.05, 20m: 0.10, 50m: 0.05, 70m: 0.0, 100m: 0.10},
+{phylum:"Nitrospirae", 		10m: 0.0.6, 20m: 0.00, 50m: 0.10, 70m: 0.05, 100m: 0.35},
+];
+
+var dim = ['phylum','"10m"','"20m"','"50m"','"70m"','"100m"'];
+var types = {'phylum': 'string',"10m": 'string',"20m": 'string',"50m": 'string',"70m": 'string',"100m": 'string'}
+
+
+//color scale used to color samples of same type
+var colors = d3.scale.category10()
+	.domain(0, d3.set(otus, function(d) {return d.phylum}).length)
+
+var parcoords = d3.parcoords()("#plot")
+    .color(function(d) { return colors(d.phylum); })
+    .types(types)
+//    .dimensions(dim)
+    .alpha(0.4)
+    .height(300)
+    .width(1800)
+    .margin({
+    	bottom: 12,
+		left: 30,
+		right: 30,
+		top: 24
+	})
+
+parcoords.data(otus)
+    .render()
+    .reorderable()
+    .shadows()	
+    .brushable();  // enable brushing
+
+console.log(parcoords.state)
+
+context = parcoords.ctx
+
+console.log(context)
+context.font = "5px Arial";
+context.fillStyle = "#000099";
+
+var canvas = document.getElementById("plot");
+var img  = canvas.toDataURL("image/png");
+document.write('<img src="'+img+'"/>');
+
+d3.select('#btnReset').on('click', function() {parcoords.brushReset();})
+</script>
+
+
+
