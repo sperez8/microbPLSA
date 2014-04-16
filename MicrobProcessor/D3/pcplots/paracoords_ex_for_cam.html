@@ -13,24 +13,24 @@ with enabled brushing.
 <script>
 
 var otus = [
-{phylum:"Actinobacteria", 	10m: 0.10, 20m: 0.20, 50m: 0.30, 70m: 0.50, 100m: 0.55},
-{phylum:"Firmicutes", 		10m: 0.00, 20m: 0.00, 50m: 0.10, 70m: 0.20, 100m: 0.45},
-{phylum:"Firmicutes", 		10m: 0.00, 20m: 0.20, 50m: 0.23, 70m: 0.25, 100m: 0.35},
-{phylum:"Proteobacteria",	10m: 0.00, 20m: 0.20, 50m: 0.30, 70m: 0.0.30, 100m: 0.0},
-{phylum:"Verrucomicrobia", 	10m: 0.20, 20m: 0.20, 50m: 0.05, 70m: 0.0, 100m: 0.0},
-{phylum:"Nitrospirae", 		10m: 0.25, 20m: 0.20, 50m: 0.00, 70m: 0.00, 100m: 0.05},
-{phylum:"Firmicutes", 		10m: 0.00, 20m: 0.20, 50m: 0.23, 70m: 0.25, 100m: 0.35},
-{phylum:"Proteobacteria",	10m: 0.00, 20m: 0.20, 50m: 0.20, 70m: 0.0.30, 100m: 0.10},
-{phylum:"Verrucomicrobia", 	10m: 0.20, 20m: 0.20, 50m: 0.05, 70m: 0.0, 100m: 0.09},
-{phylum:"Nitrospirae", 		10m: 0.20, 20m: 0.10, 50m: 0.00, 70m: 0.30, 100m: 0.15},
-{phylum:"Firmicutes", 		10m: 0.0, 20m: 0.20, 50m: 0.23, 70m: 0.25, 100m: 0.35},
-{phylum:"Proteobacteria",	10m: 0.00, 20m: 0.10, 50m: 0.30, 70m: 0.0.30, 100m: 0.0},
-{phylum:"Verrucomicrobia", 	10m: 0.05, 20m: 0.10, 50m: 0.05, 70m: 0.0, 100m: 0.10},
-{phylum:"Nitrospirae", 		10m: 0.0.6, 20m: 0.00, 50m: 0.10, 70m: 0.05, 100m: 0.35},
+{phylum:"Actinobacteria", 	d10m: 0.10, d20m: 0.20, d50m: 0.30, d70m: 0.50, d100m: 0.55},
+{phylum:"Firmicutes", 		d10m: 0.00, d20m: 0.00, d50m: 0.10, d70m: 0.20, d100m: 0.45},
+{phylum:"Firmicutes", 		d10m: 0.00, d20m: 0.20, d50m: 0.23, d70m: 0.25, d100m: 0.35},
+{phylum:"Proteobacteria",	d10m: 0.00, d20m: 0.20, d50m: 0.30, d70m: 0.30, d100m: 0.0},
+{phylum:"Verrucomicrobia", 	d10m: 0.20, d20m: 0.20, d50m: 0.05, d70m: 0.0, d100m: 0.0},
+{phylum:"Nitrospirae", 		d10m: 0.25, d20m: 0.20, d50m: 0.00, d70m: 0.00, d100m: 0.05},
+{phylum:"Firmicutes", 		d10m: 0.00, d20m: 0.20, d50m: 0.23, d70m: 0.25, d100m: 0.35},
+{phylum:"Proteobacteria",	d10m: 0.00, d20m: 0.20, d50m: 0.20, d70m: 0.30, d100m: 0.10},
+{phylum:"Verrucomicrobia", 	d10m: 0.20, d20m: 0.20, d50m: 0.05, d70m: 0.0, d100m: 0.09},
+{phylum:"Nitrospirae", 		d10m: 0.20, d20m: 0.10, d50m: 0.00, d70m: 0.30, d100m: 0.15},
+{phylum:"Firmicutes", 		d10m: 0.0, d20m: 0.20, d50m: 0.23, d70m: 0.25, d100m: 0.35},
+{phylum:"Proteobacteria",	d10m: 0.00, d20m: 0.10, d50m: 0.30, d70m: 0.30, d100m: 0.0},
+{phylum:"Verrucomicrobia", 	d10m: 0.05, d20m: 0.10, d50m: 0.05, d70m: 0.0, d100m: 0.10},
+{phylum:"Nitrospirae", 		d10m: 0.06, d20m: 0.00, d50m: 0.10, d70m: 0.05, d100m: 0.35},
 ];
 
-var dim = ['phylum','"10m"','"20m"','"50m"','"70m"','"100m"'];
-var types = {'phylum': 'string',"10m": 'string',"20m": 'string',"50m": 'string',"70m": 'string',"100m": 'string'}
+var dim = ['phylum','"d10m"','"d20m"','"d50m"','"d70m"','"d100m"'];
+var types = {'phylum': 'string',"d10m": 'string',"d20m": 'string',"d50m": 'string',"d70m": 'string',"d100m": 'string'}
 
 
 //color scale used to color samples of same type
