@@ -17,11 +17,12 @@ from plsa import pLSA
 from plsa import loglikelihood
 
 OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
+RESULTS_LOCATION = 'Results/'
+MAX_ITER_PLSA = 10000
 LEVELS = 10 #number of levels to add to name of OTU in OTU_MAP
 
-
 class MicrobPLSA():
-    '''A class to handle metagenomic data from in particular the Earth Microbiome Project
+    '''A class to handle metagenomic data in particular from the Earth Microbiome Project
     and apply statistical tools such as Probabilistic Latent Semantic Analysis.
     This class is actually a wrapper on Mathieu Blondel's PLSA package'''
 
@@ -33,7 +34,7 @@ class MicrobPLSA():
         if file:
             f = open(file,'r')
         elif study and z:
-            file = _cur_dir + '/Results/study_'+study +'_'+str(z)+'_topics_.txt'
+            file = _cur_dir + RESULT_LOCATION + 'study_'+study +'_'+str(z)+'_topics_.txt'
             f = open(file,'r')
         else: print "Need study and topic input for this function."
         data = json.load(f)
@@ -91,7 +92,7 @@ class MicrobPLSA():
     def dimensions(self):
         return self.datamatrix.shape
 
-    def runplsa(self, topic_number, maxiter=10000, verbatim = True):
+    def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True):
         '''runs plsa on sample data in filename'''
         samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
         Z = topic_number #number of topics
@@ -180,10 +181,6 @@ class MicrobPLSA():
             _cur_dir = os.path.dirname(os.path.realpath(__file__))
             filename = _cur_dir +'/Results/'+filename
         return filename
-    
-
-
-
 
 
 
