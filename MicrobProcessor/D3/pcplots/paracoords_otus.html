@@ -6,7 +6,7 @@
 <script src="d3.parcoords.js"></script>
 <body>
 <p> Here is an example of a parallel coordinates plot. <p>
-<div id="plot" class="parcoords" style="width:1800px;height:800px;"></div>
+<div id="plot" class="parcoords" style="width:1800px;height:900px;"></div>
 <p>An example of a topic distribution for microbial samples on a parallel coordinates plot
 with enabled brushing. 
 <p><button id="btnReset">Reset Brushes</button>
@@ -22,7 +22,7 @@ var parcoords = d3.parcoords()("#plot")
     .types(types)
 //    .dimensions(dim)
     .alpha(0.4)
-    .height(800)
+    .height(900)
     .width(1800)
     .margin({
     	bottom: 12,

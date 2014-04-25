@@ -25,22 +25,22 @@ MANUAL_LABELS = ['Topic 1', 'Topic 2', 'Year Last submerged', 'Under water', 'To
 pcoordfile = _root_dir + '/D3/pcplots/otus.js'
 level = "phylum"
 
-f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
+
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 m = microbplsa.MicrobPLSA()
-plsa = m.open_model(f) #get model from the results file
+plsa = m.open_model(study = study, z = z) #get model from the results file
 p_w_z = plsa.p_w_z #return otus topic distribution
 otus_map = m.open_otu_maps(datafile) # create {otu id: otu name} dictionary
 W,Z =p_w_z.shape #number of otus and topics
    
 #get labels     
-Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
-Lab.metadata(non_labels = [])
+#Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
+#Lab.metadata(non_labels = [])
 labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
 
 #get phylums
-topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YET
+#topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YET
 
 ranks = get_otu_ranks(otus_map, level = level)
 print ("There are %i different %s."%(len(ranks), level))
