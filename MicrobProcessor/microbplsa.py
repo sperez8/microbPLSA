@@ -44,7 +44,7 @@ class MicrobPLSA():
         model = p_z, p_w_z, p_d_z
         plsa = pLSA()
         plsa.set_model(model)
-        self.model = model
+        self.model = plsa
         return plsa
     
     def open_otu_maps(self,biom_data):
@@ -69,14 +69,6 @@ class MicrobPLSA():
             
         self.otu_map = otu_maps
         return otu_maps
-       
-    def topic_OTUS(self, file, N=5):
-        '''Open a results file, finds the primary OTU ids 
-        for each topic and translates them using an OTU-MAP file.'''
-        model = self.open_model(file) #get model from the results file  
-        #labels = model.topic_labels(self.otu_map['OTU_MAP'],N)
-        labels = model.topic_labels(None, N)
-        return labels
 
     def open_data(self, study = None, file = None,sampling = False):
         if file:
@@ -165,7 +157,7 @@ class MicrobPLSA():
         """
         Compute the log-likelihood that the model generated the data.
         """
-        p_z, p_w_z, p_d_z = self.model
+        p_z, p_w_z, p_d_z = self.model.get_model()
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
     
