@@ -17,7 +17,7 @@ from plsa import pLSA
 from plsa import loglikelihood
 
 OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
-RESULTS_LOCATION = 'Results/'
+RESULTS_LOCATION = '/Results/'
 MAX_ITER_PLSA = 10000
 LEVELS = 10 #number of levels to add to name of OTU in OTU_MAP
 
@@ -34,7 +34,7 @@ class MicrobPLSA():
         if file:
             f = open(file,'r')
         elif study and z:
-            file = _cur_dir + RESULT_LOCATION + 'study_'+study +'_'+str(z)+'_topics_.txt'
+            file = _cur_dir + RESULTS_LOCATION + 'study_'+study +'_'+str(z)+'_topics_.txt'
             f = open(file,'r')
         else: print "Need study and topic input for this function."
         data = json.load(f)
@@ -87,7 +87,7 @@ class MicrobPLSA():
             f = open(file,'r')
         else: print "Need study and topic input for this function."      
         self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
-        return None
+        return file
     
     def dimensions(self):
         return self.datamatrix.shape
@@ -108,7 +108,7 @@ class MicrobPLSA():
         print "\n Running PLSA...\n"
         plsa.train(datamatrix, Z, maxiter)   #runs plsa!
         self.model = plsa
-        return plsa
+        return plsa        
     
     def saveresults(self, filename = 'Results/results', extension = '.txt'):
         ''' functions saves plsa probabilities into a csv or txt file'''

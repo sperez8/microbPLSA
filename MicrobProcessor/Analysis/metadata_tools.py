@@ -36,18 +36,13 @@ def get_metadata(csvfile, adjusted_metadata):
         x = np.append(x,[row], axis = 0)
     return header, x
 
-def reorder_metadata(datafile,metadata,study):
+def reorder_metadata(data, metadata,study):
     '''gets the order of the sample names in the .biom data file. 
     Reorders the metadata in the table according to that sample order.'''
     
-    #First get the sample order
-    json_data=open(datafile)
-    data = json.load(json_data)
-    json_data.close()
-    columns = data['columns']
     samples = {}
     i=0
-    for item in columns:
+    for item in data:
         sample_name = item['id']
         if study == '1037':
             s = str(sample_name).split('.')

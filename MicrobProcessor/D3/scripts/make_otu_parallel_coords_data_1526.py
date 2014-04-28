@@ -17,14 +17,13 @@ analysis_dir = _root_dir+ '/Analysis'
 sys.path.insert(0, analysis_dir)
 from labelling import Labelling
 from string import replace
-
+from math import log
 study = '1526'
 z = 8
 CORRELATION_THRESHOLD = 0.0
 MANUAL_LABELS = ['Topic 1', 'Topic 2', 'Year Last submerged', 'Under water', 'Topic 5', 'Topic 6', 'Submerged between 2002-1999', 'Moki Camp']
 pcoordfile = _root_dir + '/D3/pcplots/otus.js'
 level = "phylum"
-
 
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
@@ -33,15 +32,15 @@ plsa = m.open_model(study = study, z = z) #get model from the results file
 p_w_z = plsa.p_w_z #return otus topic distribution
 otus_map = m.open_otu_maps(datafile) # create {otu id: otu name} dictionary
 W,Z =p_w_z.shape #number of otus and topics
-   
+
 #get labels     
 #Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
 #Lab.metadata(non_labels = [])
 labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
 
-#get phylums
 #topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YET
 
+#get phylum of otus to color them appropriately
 ranks = get_otu_ranks(otus_map, level = level)
 print ("There are %i different %s."%(len(ranks), level))
     
@@ -56,7 +55,7 @@ for (i,dist) in enumerate(p_w_z):
             line ='{'
             line += level+':\"'+rank+'\"'
             for j,p in enumerate(dist):
-                line += ', ' + labels[j] + ':' + str(round(p,3)) 
+                line += ', ' + labels[j] + ':' + str(round(p,3))
             line += '},\n'
             f.write(line)
 f.write('];\n')

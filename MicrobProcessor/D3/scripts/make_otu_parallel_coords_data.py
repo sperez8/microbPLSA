@@ -24,11 +24,10 @@ CORRELATION_THRESHOLD = 0.0
 pcoordfile = _root_dir + '/D3/pcplots/otus.js'
 level = "phylum"
 
-f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 m = microbplsa.MicrobPLSA()
-plsa = m.open_model(f) #get model from the results file
+plsa = m.open_model(study = study, z = z) #get model from the results file
 p_z_w = plsa.word_topics() #return otus topic distribution
 otus_map = m.open_otu_maps(datafile) # create {otu id: otu name} dictionary
 Z,W =p_z_w.shape #number of otus and topics
@@ -54,8 +53,6 @@ labels = [replace(l,'.', '_') for l in labels]
 labels = [replace(l,'-', '_') for l in labels]
 
 #get phylums
-topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YETTTTT
-
 ranks = get_otu_ranks(otus_map, level = level)
 print ("There are %i different %s."%(len(ranks), level))
     
@@ -64,7 +61,6 @@ f.write('var otus = [\n')
 
 otus_index = otus_map["OTU_MAP"]
 for (i,dist) in enumerate(p_z_w.T):
-    print i, dist
     for rank in ranks:
         if rank in otus_index[i]:
             line ='{'
