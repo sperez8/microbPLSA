@@ -7,6 +7,7 @@ author: sperez8
 import sys, os
 from time import time
 import datetime
+import itertools
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
@@ -16,15 +17,15 @@ import microbplsa
 from math import sqrt
 #f = '/Users/sperez/Documents/workspace/myprojects/myplsa/otu_table.txt'
 
+#for study in ['1526'] #, '1037','722','1043','864', '1702', '1642','1692','1579','1578','1526','1289','1034','990']:
 
-for study in ['1526', '1037','722','1043','864', '1702', '1642','1692',
-              '1579','1578','1526','1289','1034','990']:
-    
-    f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study
-    f += '_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+study = '1526'
+N= 3
+
+for _ in xrange(N):
     
     m = microbplsa.MicrobPLSA()
-    m.open_data(f,sampling = False)
+    m.open_data(study =study,sampling = False)
     (w,d) = m.dimensions()
     print '\n\n\nStudy', study, 'has', w, 'otus and', d, 'samples.'
     
@@ -33,8 +34,7 @@ for study in ['1526', '1037','722','1043','864', '1702', '1642','1692',
     
     
     for z in range(2,40):
-        name = f.split('/')[-1].split('_')
-        name = name[0]+'_'+name[1] +'_'
+        name = study
         resultsfilename = name + str(z) + '_topics_.txt'
         try:
             open(_root_dir + '/Results/' + resultsfilename, "r")

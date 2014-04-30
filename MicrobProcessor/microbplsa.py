@@ -19,7 +19,9 @@ from plsa import loglikelihood
 OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
 RESULTS_LOCATION = '/Results/'
 MAX_ITER_PLSA = 10000
-LEVELS = 10 #number of levels to add to name of OTU in OTU_MAP
+LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
+K_DEFAULT = 1 #default number of samples to leave out when cross validating
+
 
 class MicrobPLSA():
     '''A class to handle metagenomic data in particular from the Earth Microbiome Project
@@ -160,7 +162,24 @@ class MicrobPLSA():
         p_z, p_w_z, p_d_z = self.model.get_model()
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
-    
+
+    def top_otus(self, study, z, N_otus = 5):
+        biom_data =self.open_data(study = study)
+        map = self.open_otu_maps(biom_data)['OTU_MAP']
+        self.open_model(study = study, z = z)
+        
+        otu_labels = self.model.topic_labels(map, N_otus)
+        for label in otu_labels:
+            print label
+        
+        return None
+
+    def cross_validate(self, k=K_DEFAULT):
+        score = 0
+        
+        
+        return score
+
     @staticmethod
     def formatfile(filename, extension):
         '''formats name of file to get correct file format and avoid conflicts'''

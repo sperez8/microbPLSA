@@ -21,6 +21,7 @@ import microbplsa
 SAMPLE_SIZE = 100
 classes = {'kingdom':'k', 'phylum':'p', 'class':'c', 'order':'o', 'family':'f', 'genus':'g', 'species':'s'}
 
+
 def extract_data(file,sampling):
     if file[-4:]=='.txt':
         return import_tab_file(file, sampling)

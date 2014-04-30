@@ -17,7 +17,6 @@ from scipy.cluster.vq import kmeans
 import os, sys
 
 from matplotlib.pyplot import show
-import numpy as np
 from scipy.cluster.hierarchy import fclusterdata
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import dendrogram

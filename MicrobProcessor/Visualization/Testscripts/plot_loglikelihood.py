@@ -13,14 +13,15 @@ from microbPlotter import *
 from time import time
 
 
-studies = ['1526']
+studies = ['1037']
+run = 'all'
 
 t0 = time()
 for study in studies:
-    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'2.pdf'
+    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_run_'+str(run)+'.pdf'
     print "Plotting log likelihood curve for study ", study
     pdf = PdfPages(file)
-    plot = loglikelihood_curve(study)
+    plot = loglikelihood_curve(study, run, save = True)
     plot.savefig(pdf, format='pdf')
     print "Figure saved for study ", study
     plot.clf() 
