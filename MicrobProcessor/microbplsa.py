@@ -46,6 +46,7 @@ class MicrobPLSA():
         model = p_z, p_w_z, p_d_z
         plsa = pLSA()
         plsa.set_model(model)
+        self.study = study
         self.model = plsa
         return plsa
     
@@ -73,6 +74,8 @@ class MicrobPLSA():
         return otu_maps
 
     def open_data(self, study = None, file = None,sampling = False):
+        self.study = study
+        
         if file:
             f = open(file,'r')
         elif study:
@@ -88,22 +91,26 @@ class MicrobPLSA():
 
     def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True):
         '''runs plsa on sample data in filename'''
-        samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
+        datamatrix = self.datamatrix
         Z = topic_number #number of topics
-#         if verbatim: 
-#             print '\nData in matrix form:\n', datamatrix.shape, '\n'
-#             print datamatrix
-#             print len(otus), 'Otus:',otus
-#             print len(samples), 'Samples:', samples
-#             print Z, 'Topics.'
-            
+
         plsa = pLSA()
         plsa.debug = verbatim
         print "\n Running PLSA...\n"
         plsa.train(datamatrix, Z, maxiter)   #runs plsa!
         self.model = plsa
         return plsa        
-    
+
+    def save_data(self):
+        ''' functions saves original abundance data to a csv or txt file'''
+        filename = _cur_dir + '/Results/data_study_'+self.study+'.txt'
+        f = open(filename,'w')
+        data = self.datamatrix
+        d = [list(row) for row in data]
+        json.dump(d,f)   
+        f.close()
+        return None
+        
     def saveresults(self, filename = 'Results/results', extension = '.txt'):
         ''' functions saves plsa probabilities into a csv or txt file'''
         filename = self.formatfile(filename, extension)

@@ -34,7 +34,7 @@ else: num_topics = int(3*sqrt(d))
 print 'We will run PLSA with Z = 2 to', num_topics
 
 
-for z in range(10,num_topics):
+for z in range(2,num_topics):
     ext = '.txt'
     resultsfilename = 'study_' + study + '_' + str(z) + '_topics_'
     run = ''
@@ -63,7 +63,7 @@ for z in range(10,num_topics):
 
     t0 = time()
     model = m.runplsa(z, maxiter=5000, verbatim = False)        
-    m.saveresults(filename = resultsfilename, extension =  '.txt')
+    m.saveresults(filename = filename, extension =  '.txt')
     print 'Topic Labels', model.topic_labels(None)
     print 'Time for analysis:', int(time()-t0)
     
