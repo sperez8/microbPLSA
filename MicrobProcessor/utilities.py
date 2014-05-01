@@ -67,7 +67,7 @@ def import_biom_file(f,sampling):
             if sampling and row > SAMPLE_SIZE: break 
     
         
-    return [], datamatrix, []
+    return datamatrix
 
 def import_tab_file(filename, sampling):
     '''imports the date from filename and saves it in numpy array format'''
@@ -99,7 +99,7 @@ def convert_2_R(results_file):
     '''converts the result matrix probabilities into tab delimited files readable by R'''
     dir = os.path.dirname(os.path.realpath(__file__)) + "/Results/"  
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(dir + results_file) #get model from the results file
+    plsa = m.open_model(file = dir + results_file) #get model from the results file
     p_z = plsa.p_z
     p_w_z = plsa.p_w_z
     #return document's distribution

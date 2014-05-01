@@ -80,7 +80,7 @@ class MicrobPLSA():
             file = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
             f = open(file,'r')
         else: print "Need study and topic input for this function."      
-        self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
+        self.datamatrix= extract_data(file, sampling)
         return file
     
     def dimensions(self):
