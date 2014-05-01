@@ -175,7 +175,7 @@ def loglikelihood_curve(study, run = 'all', save = False):
                 logl.append([L])
     print topic
     print logl
-    logl_std = [np.std(x) for x in logl]
+    logl_std = [np.std(x)*10 for x in logl]
     logl = [np.mean(x) for x in logl]
     print logl_std
     if not files_found: 
@@ -186,7 +186,7 @@ def loglikelihood_curve(study, run = 'all', save = False):
     logl, logl_std = zip(*sorted(zip(logl,logl_std)))
     plt.plot(topic,logl,'b-')
     #plt.plot(topic,logl,'m.')
-    plt.errorbar(topic, logl, yerr=logl_std, fmt='o')
+    plt.errorbar(topic, logl, yerr=logl_std, fmt='m.')
     plt.ylabel('LogLikelihood')
     plt.title('Loglikelihood versus number of topics for study '+study)
     plt.xlabel('Z, number of topics')

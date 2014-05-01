@@ -13,7 +13,7 @@ from microbPlotter import *
 from time import time
 
 
-studies = ['1037']
+studies = ['1526']
 run = 'all'
 
 t0 = time()
