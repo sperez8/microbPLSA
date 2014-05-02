@@ -101,13 +101,16 @@ class MicrobPLSA():
         self.model = plsa
         return plsa        
 
-    def save_data(self):
+    def save_data(self, normalize = False):
         ''' functions saves original abundance data to a csv or txt file'''
         filename = _cur_dir + '/Results/data_study_'+self.study+'.txt'
         f = open(filename,'w')
         data = self.datamatrix
+        if normalize:
+            data = self.normalizeArray(data)
         d = [list(row) for row in data]
-        json.dump(d,f)   
+        json.dump(d,f)
+        f.write('\n')
         f.close()
         return None
         
@@ -200,6 +203,14 @@ class MicrobPLSA():
             filename = _cur_dir +'/Results/'+filename
         return filename
 
+    @staticmethod
+    def normalizeArray(data_array):
+        '''normalizes a numpy array along the columns'''
+        data = data_array.astype(float)
+        totals = np.sum(data, axis=0).astype(float)
+        norm_data = data/totals
+        return norm_data 
+    
 
 
 

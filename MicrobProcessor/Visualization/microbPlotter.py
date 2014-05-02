@@ -175,7 +175,8 @@ def loglikelihood_curve(study, run = 'all', save = False):
                 logl.append([L])
     print topic
     print logl
-    logl_std = [np.std(x)*10 for x in logl]
+    logl_std = [np.std(x) for x in logl]
+    log_count = [len(x) for x in logl]
     logl = [np.mean(x) for x in logl]
     print logl_std
     if not files_found: 
@@ -193,10 +194,13 @@ def loglikelihood_curve(study, run = 'all', save = False):
     
     if save:
         topic = [str(round(t,2)) for t in topic]
+        count = [str(t) for t in log_count]
         logl = [str(round(t,2)) for t in logl]
         logl_std = [str(round(t,1)) for t in logl_std]
         logfile = open(_root_dir+'/Results/'+'Loglikelihoods/logs_'+study+'.txt', 'w')
         logfile.write('\t'.join(topic))
+        logfile.write('\n')
+        logfile.write('\t'.join(count))
         logfile.write('\n')
         logfile.write('\t'.join(logl))
         logfile.write('\n')
