@@ -47,6 +47,7 @@ class MicrobPLSA():
         plsa = pLSA()
         plsa.set_model(model)
         self.study = study
+        self.z = z
         self.model = plsa
         return plsa
     
@@ -173,7 +174,7 @@ class MicrobPLSA():
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
 
-    def top_otus(self, study, z, N_otus = 5):
+    def top_otus_labels(self, study, z, N_otus = 5):
         biom_data =self.open_data(study = study)
         map = self.open_otu_maps(biom_data)['OTU_MAP']
         self.open_model(study = study, z = z)
@@ -183,6 +184,16 @@ class MicrobPLSA():
             print label
         
         return None
+
+    def significant_otus(self, cutoff = 0.8):
+        self.open_model(study = self.study, z = self.z)
+        
+        p_w_z = self.model.p_w_z
+        
+        print p_w_z.shape
+        
+        return None
+
 
     def cross_validate(self, k=K_DEFAULT):
         score = 0

@@ -17,4 +17,4 @@ study = '1526'
 N = 5
 
 m = microbplsa.MicrobPLSA()
-m.top_otus(study,  z, N_otus = N)
+m.top_otus_labels(study,  z, N_otus = N)
