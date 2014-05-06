@@ -34,17 +34,27 @@ class IndSpecies():
         filename = folder + "indspecies_study_" + self.study + ".txt"
         
         indTable = np.loadtxt(filename, delimiter = '\t', skiprows = 1, usecols = (0,1,2,3,4,6), dtype = {'names':('otus', 'A','B','stat', 'pvalue','group'),'formats':('i4','f  4','f4','f4','f4','i4')})
-        
-        return indTable
+        self.indTable = np.array(indTable)
+        return None
     
     def get_significant_otus(self, cutoff = 0.8):
         '''gets the otus with a p(w|z) > 0.8 for each topic'''
         otusTable = self.m.significant_otus(cutoff = cutoff)
-                
+        self.otusTable = otusTable
+        return otusTable 
         
-        return None
-    
     def compare(self):
+        inds = self.indTable
+        otus = self.otusTable
+        
+        print inds
+        groups = {}
+        for o, A,B, stat, pvalue, group in inds:
+            if group not in groups.keys():
+                groups[group] = [0 for x in range(0,self.z+1)]
+                groups[group][0] = np.sum([inds[:,4]==group])
+            print groups
+            break
         
         return None
     
