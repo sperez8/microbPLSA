@@ -33,7 +33,7 @@ class IndSpecies():
         folder =  '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/'
         filename = folder + "indspecies_study_" + self.study + ".txt"
         
-        indTable = np.loadtxt(filename, delimiter = '\t', skiprows = 1, usecols = (0,1,2,3,4,6), dtype = {'names':('otus', 'A','B','stat', 'pvalue','group'),'formats':('i4','f  4','f4','f4','f4','i4')})
+        indTable = np.loadtxt(filename, delimiter = '\t', skiprows = 1, usecols = [0,1,2,3,4,6]) #, dtype = {'names':['otus', 'A','B','stat', 'pvalue','group'],'formats':['i4','f  4','f4','f4','f4','i4']})
         self.indTable = np.array(indTable)
         return None
     
@@ -47,14 +47,20 @@ class IndSpecies():
         inds = self.indTable
         otus = self.otusTable
         
-        print inds
         groups = {}
-        for o, A,B, stat, pvalue, group in inds:
+        for ind, A,B, stat, pvalue, group in inds:
+            group = int(group)  
             if group not in groups.keys():
                 groups[group] = [0 for x in range(0,self.z+1)]
-                groups[group][0] = np.sum([inds[:,4]==group])
-            print groups
-            break
+                groups[group][0] = np.sum([inds[:,5]==group]) #gets total number of indicator otus for group
+                
+            #now we find if the otu is a topic indicator:
+            #CAN BE MORE EFFICIENT
+            for otu, p_w_z, z in otus:
+                
+                if ind == otu:
+                    groups[group][int(z)] += 1
+        print groups
         
         return None
     
