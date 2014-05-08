@@ -208,5 +208,37 @@ def loglikelihood_curve(study, run = 'all', save = False):
         
     return plt
     
+def piechart(z, groups):
+    '''gets the indicator species values, compares them
+        to the top otus per topic and plots a pie chart to show the
+        representation of otus in each category'''
+    labels = ["topic" + str(z) for z in range(1,z+1)]
+    labels.insert(0,"Other")
+    
+    for group, values in groups.iteritems():
+        total = float(values[0])
+        sum = float(np.sum(values[1:]))
+        sizes = [float(x)/total*100 for x in values[1:]]
+        sizes.insert(0,(1- sum/total)*100)
+        
+        print total, sum, sizes
+        colors = plt.cm.rainbow(np.linspace(0, 1, z+1))
+        explode = [0 for x in range(0,z)]
+        explode.insert(0,0.1)
+        
+        plt.pie(sizes, labels=labels, colors = colors, explode = explode,
+                autopct='%1.1f%%', shadow=True, startangle=90)
+        # Set aspect ratio to be equal so that pie is drawn as a circle.
+        plt.axis('equal')
+        plt.title("Proportion of Indicator Otus for Group" + str(group), verticalalignment = 'bottom', horizontalalignment = 'right')
+        plt.show()
+    
+    return plt
+
+
+
+
+
+
 
 

@@ -55,15 +55,12 @@ class IndSpecies():
                 groups[group][0] = np.sum([inds[:,5]==group]) #gets total number of indicator otus for group
                 
             #now we find if the otu is a topic indicator:
-            #CAN BE MORE EFFICIENT
+            #CAN BE MORE EFFICIENT using np.where()
             for otu, p_w_z, z in otus:
                 
                 if ind == otu:
                     groups[group][int(z)] += 1
-        print groups
-        
-        return None
-    
+        return groups
     
     
     
