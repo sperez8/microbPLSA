@@ -14,7 +14,7 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from math import sqrt
+import math
 from matplotlib.font_manager import FontProperties
    
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
@@ -215,7 +215,18 @@ def piechart(z, groups):
     labels = ["topic" + str(z) for z in range(1,z+1)]
     labels.insert(0,"Other")
     
-    for group, values in groups.iteritems():
+    Nplots = len(groups.keys())
+    N = math.ceil(Nplots/4) 
+    plots = []
+    for n in range(0,N):
+        f, subplots = plt.subplots(2,2)
+        sub_locations = []
+        for group,values in groups.iteritems():
+            
+    return plt
+
+
+def make_pies(subplot, group, values, z):
         total = float(values[0])
         sum = float(np.sum(values[1:]))
         sizes = [float(x)/total*100 for x in values[1:]]
@@ -226,17 +237,12 @@ def piechart(z, groups):
         explode = [0 for x in range(0,z)]
         explode.insert(0,0.1)
         
-        plt.pie(sizes, labels=labels, colors = colors, explode = explode,
+        subplot.pie(sizes, labels=labels, colors = colors, explode = explode,
                 autopct='%1.1f%%', shadow=True, startangle=90)
         # Set aspect ratio to be equal so that pie is drawn as a circle.
-        plt.axis('equal')
-        plt.title("Proportion of Indicator Otus for Group" + str(group), verticalalignment = 'bottom', horizontalalignment = 'right')
-        plt.show()
-    
-    return plt
-
-
-
+        #plt.axis('equal')
+        subplot.title("Proportion of Indicator Otus for Group" + str(group), verticalalignment = 'bottom', horizontalalignment = 'right')
+        return subplot
 
 
 

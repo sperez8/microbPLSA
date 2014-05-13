@@ -71,11 +71,14 @@ class IndSpecies():
         otus = self.otusTable
         groups = self.compare()
         
-        print "\n\n***Report for study %s and %i topics***" % (self.m.study, self.z)
-        print "There are %i indicator otus and %i otus associated with minimum %1.2f probability to topics" % (inds.shape[0], otus.shape[0], np.min(otus[:,1]))
+        print "\n***Report for study %s and %i topics***" % (self.m.study, self.z)
+        print "There are %i indicator otus and %i otus associated with minimum %1.1f probability to topics" % (inds.shape[0], otus.shape[0], np.min(otus[:,1]))
         sum = np.sum([v[1:] for v in groups.values()])
-        print sum
-            
+        
+        print "A total of %i/%i = %0.3f of the topic otus were represented." % (sum, otus.shape[0], float(sum)/float(otus.shape[0]))
+        print "\n"
+        
+        return None
             
             
     
