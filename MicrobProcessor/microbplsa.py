@@ -192,7 +192,7 @@ class MicrobPLSA():
         
         table = []
         for z,w in enumerate(p_z_w):
-            ind_otus = np.array(np.where(w>0.9))
+            ind_otus = np.array(np.where(w>cutoff))
             for otu in ind_otus[0]:
                 table.append([otu, p_z_w[z,otu], z+1])
         return np.array(table) # usecols = (0,1,2), dtype = {'name':('otus','score','topics'), 'format':('f4','f8','f4')})

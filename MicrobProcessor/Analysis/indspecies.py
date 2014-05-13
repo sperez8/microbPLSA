@@ -46,7 +46,6 @@ class IndSpecies():
     def compare(self):
         inds = self.indTable
         otus = self.otusTable
-        
         groups = {}
         for ind, A,B, stat, pvalue, group in inds:
             group = int(group)  
@@ -56,10 +55,17 @@ class IndSpecies():
                 
             #now we find if the otu is a topic indicator:
             #CAN BE MORE EFFICIENT using np.where()
-            for otu, p_w_z, z in otus:
-                
-                if ind == otu:
+            #for otu, p_w_z, z in otus:
+            row = np.where(otus[:,0]== int(ind))[0]
+            if row :
+                if len(row) == 1: #check that we found a row with the matching indicator and that we only found one!
+                    row = row[0]
+                    z = otus[row][2]
                     groups[group][int(z)] += 1
+                else: 
+                    print "Error: Found otu", ind, "to be an indicator and to be highly associated with multiple topics!!"          
+                    sys.exit()
+
         return groups
     
     
