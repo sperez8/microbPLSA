@@ -37,7 +37,7 @@ class IndSpecies():
         self.indTable = np.array(indTable)
         return None
     
-    def get_significant_otus(self, cutoff = 0.8):
+    def get_significant_otus(self, cutoff = None):
         '''gets the otus with a p(w|z) > 0.8 for each topic'''
         otusTable = self.m.significant_otus(cutoff = cutoff)
         self.otusTable = otusTable
@@ -47,15 +47,13 @@ class IndSpecies():
         inds = self.indTable
         otus = self.otusTable
         groups = {}
+        
         for ind, A,B, stat, pvalue, group in inds:
             group = int(group)  
             if group not in groups.keys():
                 groups[group] = [0 for x in range(0,self.z+1)]
                 groups[group][0] = np.sum([inds[:,5]==group]) #gets total number of indicator otus for group
                 
-            #now we find if the otu is a topic indicator:
-            #CAN BE MORE EFFICIENT using np.where()
-            #for otu, p_w_z, z in otus:
             row = np.where(otus[:,0]== int(ind))[0]
             if row :
                 if len(row) == 1: #check that we found a row with the matching indicator and that we only found one!
@@ -65,8 +63,21 @@ class IndSpecies():
                 else: 
                     print "Error: Found otu", ind, "to be an indicator and to be highly associated with multiple topics!!"          
                     sys.exit()
-
+                    
         return groups
+    
+    def get_stats_report(self):
+        inds = self.indTable
+        otus = self.otusTable
+        groups = self.compare()
+        
+        print "\n\n***Report for study %s and %i topics***" % (self.m.study, self.z)
+        print "There are %i indicator otus and %i otus associated with minimum %1.2f probability to topics" % (inds.shape[0], otus.shape[0], np.min(otus[:,1]))
+        sum = np.sum([v[1:] for v in groups.values()])
+        print sum
+            
+            
+            
     
     
     
