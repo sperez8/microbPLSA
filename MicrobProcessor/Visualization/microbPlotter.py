@@ -215,18 +215,29 @@ def piechart(z, groups):
     labels = ["topic" + str(z) for z in range(1,z+1)]
     labels.insert(0,"Other")
     
-    Nplots = len(groups.keys())
-    N = math.ceil(Nplots/4) 
+    N = len(groups.keys())
+    #Nsub = math.ceil(Nplots/4) 
     plots = []
-    for n in range(0,N):
+    sub_locations = [(0,0),(0,1),(1,0),(1,1)]
+
+    while True:
+        print 'N', N
+        i=0
         f, subplots = plt.subplots(2,2)
-        sub_locations = []
-        for group,values in groups.iteritems():
-            
-    return plt
+        while i !=4:
+            print 'i', i
+            make_pies(subplots[sub_locations[i]], labels, groups, z).next()
+            i+=1
+            N-=1
+            if N==0: break
+        plots.append(subplots)
+        if N==0:break
+    plt.show()
+    return plots
 
 
-def make_pies(subplot, group, values, z):
+def make_pies(plot, labels, groups, z):
+    for group,values in groups.items():
         total = float(values[0])
         sum = float(np.sum(values[1:]))
         sizes = [float(x)/total*100 for x in values[1:]]
@@ -237,12 +248,12 @@ def make_pies(subplot, group, values, z):
         explode = [0 for x in range(0,z)]
         explode.insert(0,0.1)
         
-        subplot.pie(sizes, labels=labels, colors = colors, explode = explode,
+        plot.pie(sizes, labels=labels, colors = colors, explode = explode,
                 autopct='%1.1f%%', shadow=True, startangle=90)
         # Set aspect ratio to be equal so that pie is drawn as a circle.
-        #plt.axis('equal')
-        subplot.title("Proportion of Indicator Otus for Group" + str(group), verticalalignment = 'bottom', horizontalalignment = 'right')
-        return subplot
+        plot.axis('equal')
+        plot.set_title("Proportion of Indicator Otus for Group" + str(group)) #, verticalalignment = 'bottom', horizontalalignment = 'right')
+        yield plot
 
 
 
