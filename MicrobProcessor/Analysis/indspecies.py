@@ -37,6 +37,13 @@ class IndSpecies():
         self.indTable = np.array(indTable)
         return None
     
+    def cut_indicator_otus(self, cutoff):
+        inds = self.indTable
+        new_table = inds[np.where(inds[:,3]>cutoff)]
+        self.indTable = new_table
+        return None
+                
+    
     def get_significant_otus(self, cutoff = None):
         '''gets the otus with a p(w|z) > 0.8 for each topic'''
         otusTable = self.m.significant_otus(cutoff = cutoff)

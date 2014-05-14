@@ -23,13 +23,15 @@ study = '1526'
 z = 8
 #group_names = '_metadata_dryness'
 group_names = '_kmeans5'
+ind_cut = 0.8
 
 for c in [0.5,0.6,0.7,0.8,0.9,0.97,0.99]:
-    pdffile = '/Users/sperez/Desktop/pie_chart_'+study+'_plots'+group_names+str(c)+'.pdf'
+    pdffile = '/Users/sperez/Desktop/pie_'+study+'_'+group_names+'_'+str(ind_cut)+'_'+str(c)+'.pdf'
     pdf = PdfPages(pdffile)
 
     indspecies = IndSpecies(study, z)
     indspecies.find_indspecies(group_names)
+    indspecies.cut_indicator_otus(ind_cut)
     indspecies.get_significant_otus(cutoff = c)
     groups = indspecies.compare()
     
