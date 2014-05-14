@@ -26,12 +26,12 @@ class IndSpecies():
         self.plsa = self.m.open_model(study = self.study, z = self.z)
         return None
     
-    def find_indspecies(self):
+    def find_indspecies(self, group_names):
         ''' Obtains indicator species table resulting from
             analysis in R using the indspecies package '''
         
         folder =  '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/'
-        filename = folder + "indspecies_study_" + self.study + ".txt"
+        filename = folder + "indspecies_study_" + self.study + group_names + ".txt"
         
         indTable = np.loadtxt(filename, delimiter = '\t', skiprows = 1, usecols = [0,1,2,3,4,6]) #, dtype = {'names':['otus', 'A','B','stat', 'pvalue','group'],'formats':['i4','f  4','f4','f4','f4','i4']})
         self.indTable = np.array(indTable)
