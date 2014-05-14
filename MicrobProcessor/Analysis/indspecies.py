@@ -55,13 +55,15 @@ class IndSpecies():
                 groups[group][0] = np.sum([inds[:,5]==group]) #gets total number of indicator otus for group
                 
             row = np.where(otus[:,0]== int(ind))[0]
+                        
             if row :
                 if len(row) == 1: #check that we found a row with the matching indicator and that we only found one!
                     row = row[0]
                     z = otus[row][2]
                     groups[group][int(z)] += 1
                 else: 
-                    print "Error: Found otu", ind, "to be an indicator and to be highly associated with multiple topics!!"          
+                    print "Error: Found otu", ind, "to be an indicator and to be highly associated with multiple topics!!"
+                    print "Either the topics otus table was constructed wrong or the cut off is below 0.5"          
                     sys.exit()
                     
         return groups
