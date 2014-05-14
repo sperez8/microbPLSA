@@ -208,6 +208,7 @@ def loglikelihood_curve(study, run = 'all', save = False):
         
     return plt
     
+
 def piechart(z, groups):
     '''gets the indicator species values, compares them
         to the top otus per topic and plots a pie chart to show the
@@ -215,45 +216,23 @@ def piechart(z, groups):
     labels = ["topic" + str(z) for z in range(1,z+1)]
     labels.insert(0,"Other")
     
-    N = len(groups.keys())
-    #Nsub = math.ceil(Nplots/4) 
-    plots = []
-    sub_locations = [(0,0),(0,1),(1,0),(1,1)]
-
-    while True:
-        print 'N', N
-        i=0
-        f, subplots = plt.subplots(2,2)
-        while i !=4:
-            print 'i', i
-            make_pies(subplots[sub_locations[i]], labels, groups, z).next()
-            i+=1
-            N-=1
-            if N==0: break
-        plots.append(subplots)
-        if N==0:break
-    plt.show()
-    return plots
-
-
-def make_pies(plot, labels, groups, z):
-    for group,values in groups.items():
+    for group, values in groups.items():
+        plt.close('all')
         total = float(values[0])
         sum = float(np.sum(values[1:]))
         sizes = [float(x)/total*100 for x in values[1:]]
         sizes.insert(0,(1- sum/total)*100)
         
-        print total, sum, sizes
         colors = plt.cm.rainbow(np.linspace(0, 1, z+1))
         explode = [0 for x in range(0,z)]
         explode.insert(0,0.1)
         
-        plot.pie(sizes, labels=labels, colors = colors, explode = explode,
+        plt.pie(sizes, labels=labels, colors = colors, explode = explode,
                 autopct='%1.1f%%', shadow=True, startangle=90)
         # Set aspect ratio to be equal so that pie is drawn as a circle.
-        plot.axis('equal')
-        plot.set_title("Proportion of Indicator Otus for Group" + str(group)) #, verticalalignment = 'bottom', horizontalalignment = 'right')
-        yield plot
+        plt.axis('equal')
+        plt.title("Proportion of Indicator Otus for Group" + str(group), verticalalignment = 'bottom', horizontalalignment = 'right')
+        yield group, plt
 
 
 
