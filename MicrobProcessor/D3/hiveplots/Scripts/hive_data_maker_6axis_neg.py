@@ -4,7 +4,7 @@ modified 13/05/2014
 
 by sperez
 
-Makes positive edges network
+Makes negative edges network
 '''
 import os
 import sys
@@ -25,10 +25,10 @@ delimiter = ","
 modulenames = {1:'1',2:'2',3:'3',4:'4'} #numbers in str encode for four components modules
 
 
-outnodesfile = _root_dir + '/WebContent/nodesmod' + str(NUM_AXIS) + 'pos' + '.js'
-outlinksfile = _root_dir + '/WebContent/linksmod' + str(NUM_AXIS) + 'pos' + '.js'
+outnodesfile = _root_dir + '/WebContent/nodesmod' + str(NUM_AXIS) + 'neg' + '.js'
+outlinksfile = _root_dir + '/WebContent/linksmod' + str(NUM_AXIS) + 'neg' + '.js'
 innodesfile = _root_dir + '/Data/WL_Nodes_ALL.csv'
-inlinksfile = _root_dir + '/Data/WL_Pos_Edges_Ensemble.csv'
+inlinksfile = _root_dir + '/Data/WL_NEGEGDES.csv'
 
 def get_nodes(file):
 	'''returns node data from csv file'''
@@ -53,8 +53,6 @@ def get_links(file):
 	#ta = [str(t)+'a' for t in targets]
 	#tb = [str(t)+'b' for t in targets]
 	#targets = ta + tb
-	print '\n', sources[0:4]
-	print targets[0:4]
 	return sources, targets
 	
 def axis_assignment(nodes, sources, targets, degrees, low, high):
@@ -62,24 +60,19 @@ def axis_assignment(nodes, sources, targets, degrees, low, high):
 		a variable such as degree'''
 	degrees = [int(d) for d in degrees]
 	axis = {}
-	a,b,c = 0,0,0
 	for n,degree in zip(nodes,degrees):
 		if degree <= low: #low degree nodes
 			axis[n] = AXIS_INDEX[0]
-			a+=1
 		elif degree <= high: #medium degree nodes
 			axis[n] = AXIS_INDEX[1]
-			b+=1
 		else: #high degree nodes
 			axis[n] = AXIS_INDEX[2]
-			c+=1
 		if 'b' in n:
 			if NUM_AXIS == 6:
 				axis[n]+=1 #populate all 0-5 axis
 			elif axis[n] != 0 :
 				if n == '2581.0b': print n
 				axis[n]+=1 #populate all 0-4 axis
-	print 'degreees', a,b,c
 	return axis
 
 def doublelinks(degrees, sources, targets, axis):

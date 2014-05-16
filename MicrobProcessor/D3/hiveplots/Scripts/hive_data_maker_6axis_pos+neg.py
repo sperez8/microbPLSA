@@ -4,7 +4,8 @@ modified 13/05/2014
 
 by sperez
 
-Makes positive edges network
+Makes positive + negative edges network
+We colour each differently!
 '''
 import os
 import sys
@@ -22,13 +23,15 @@ AXIS_INDEX = [0,2,4]
 LOW_DEG = 1
 HIGH_DEG = 15
 delimiter = ","
-modulenames = {1:'1',2:'2',3:'3',4:'4'} #numbers in str encode for four components modules
+
+# instead of modules we colour by neg/pos
+modulenames = {'mutualExclusion':'1', 'copresence':'2'}
 
 
-outnodesfile = _root_dir + '/WebContent/nodesmod' + str(NUM_AXIS) + 'pos' + '.js'
-outlinksfile = _root_dir + '/WebContent/linksmod' + str(NUM_AXIS) + 'pos' + '.js'
+outnodesfile = _root_dir + '/WebContent/nodesmod' + str(NUM_AXIS) + 'pos+neg' + '.js'
+outlinksfile = _root_dir + '/WebContent/linksmod' + str(NUM_AXIS) + 'pos+neg' + '.js'
 innodesfile = _root_dir + '/Data/WL_Nodes_ALL.csv'
-inlinksfile = _root_dir + '/Data/WL_Pos_Edges_Ensemble.csv'
+inlinksfile = _root_dir + '/Data/WL_EDGES_ALL.csv'
 
 def get_nodes(file):
 	'''returns node data from csv file'''
@@ -38,48 +41,36 @@ def get_nodes(file):
 	nodesb = [str(n)+'b' for n in nodes]
 	nodes = nodesa+nodesb
 	depths = list(data[:,2])*2
-	modules = list(data[:,1])*2
+	modules = [] #list(data[:,1])*2
 	degrees = list(data[:,4])*2
 	return nodes, depths, modules, degrees
     
 def get_links(file):
 	'''returns link data from csv file'''
-	data = np.loadtxt(file, delimiter=delimiter, skiprows=1, usecols = (0,1))
+	data = np.loadtxt(file, delimiter=delimiter, skiprows=1, usecols = (0,1,2), converters = {2: (lambda s: modulenames[s])})
 	sources = list(data[:,0])
-	#sa = [str(s)+'a' for s in sources]
-	#sb = [str(s)+'b' for s in sources]
-	#sources = sa + sb
 	targets = list(data[:,1])
-	#ta = [str(t)+'a' for t in targets]
-	#tb = [str(t)+'b' for t in targets]
-	#targets = ta + tb
-	print '\n', sources[0:4]
-	print targets[0:4]
-	return sources, targets
+	linktypes = list(data[:,2])
+	return sources, targets, linktypes
 	
 def axis_assignment(nodes, sources, targets, degrees, low, high):
 	'''assigns nodes to axis number given 
 		a variable such as degree'''
 	degrees = [int(d) for d in degrees]
 	axis = {}
-	a,b,c = 0,0,0
 	for n,degree in zip(nodes,degrees):
 		if degree <= low: #low degree nodes
 			axis[n] = AXIS_INDEX[0]
-			a+=1
 		elif degree <= high: #medium degree nodes
 			axis[n] = AXIS_INDEX[1]
-			b+=1
 		else: #high degree nodes
 			axis[n] = AXIS_INDEX[2]
-			c+=1
 		if 'b' in n:
 			if NUM_AXIS == 6:
 				axis[n]+=1 #populate all 0-5 axis
 			elif axis[n] != 0 :
 				if n == '2581.0b': print n
 				axis[n]+=1 #populate all 0-4 axis
-	print 'degreees', a,b,c
 	return axis
 
 def doublelinks(degrees, sources, targets, axis):
@@ -166,19 +157,29 @@ def axis_position(nodes, depths):
 	return newdepths_dict
 
 
-def module_assignment(nodes, modules, modulenames):
+# def module_assignment(nodes, modules, modulenames):
+# 	'''assignes numbers to the nodes depending on which module
+# 		they belong too, give the dictionary modulename. The nodes
+# 		will then be colored given their module group number'''
+# 	modulegroups = {}
+# 	for m, n in zip(modules,nodes):
+# 		if m in modulenames.keys(): 
+# 			modulegroups[n] = modulenames[m]
+# 		else:
+# 			modulegroups[n] = 0
+# 	return modulegroups
+
+def linktype_assignment(nodes, linktypes):
 	'''assignes numbers to the nodes depending on which module
 		they belong too, give the dictionary modulename. The nodes
 		will then be colored given their module group number'''
 	modulegroups = {}
-	for m, n in zip(modules,nodes):
-		if m in modulenames.keys(): 
-			modulegroups[n] = modulenames[m]
-		else:
-			modulegroups[n] = 0
+	for t, n in zip(linktypes,nodes):
+		modulegroups[n] = t
+
 	return modulegroups
-
-
+	
+	
 def write_nodes(file, nodes, positions, axis, modulegroup):
 	'''outputs node info to a text file
 		in a javascript variable format'''
@@ -201,11 +202,11 @@ def write_links(file, nodes, sources, targets):
     
 #What to run
 nodes, depths, modules, degrees = get_nodes(innodesfile)
-sources, targets = get_links(inlinksfile)
+sources, targets, linktypes = get_links(inlinksfile)
 positions = axis_position(nodes, depths)
 axis = axis_assignment(nodes, sources, targets, degrees,  LOW_DEG, HIGH_DEG)
-modulegroup = module_assignment(nodes, modules, modulenames)
-write_nodes(outnodesfile, nodes, positions, axis, modulegroup)
+linktype = linktype_assignment(nodes, linktypes)
+write_nodes(outnodesfile, nodes, positions, axis, linktype)
 sources, targets = doublelinks(degrees, sources, targets, axis)
 write_links(outlinksfile, nodes, sources, targets)
 print "All done :)"
