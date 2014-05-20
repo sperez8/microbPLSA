@@ -169,34 +169,43 @@ def axis_position(nodes, depths):
 # 			modulegroups[n] = 0
 # 	return modulegroups
 
-def linktype_assignment(nodes, linktypes):
-	'''assignes numbers to the nodes depending on which module
-		they belong too, give the dictionary modulename. The nodes
-		will then be colored given their module group number'''
-	modulegroups = {}
-	for t, n in zip(linktypes,nodes):
-		modulegroups[n] = t
+def linktype_assignment(sources, targets, linktypes):
+	'''assignes numbers to the nodes depending on weither 
+		they are mostly associated to negative or positive links. 
+		The nodes will then be colored according to their polarity muahaha'''
+	nodetypes = {}
+	for s,t,z in zip(sources, targets, linktypes):
+		if s not in nodetypes:
+			nodetypes[s] = [z]
+		else: nodetypes[s].append(z)
+		if t not in nodetypes:
+			nodetypes[t] = [z]
+		else: nodetypes[t].append(z)
 
-	return modulegroups
+	types = {}
+	for n in nodetypes.keys():
+		types[str(n)+'a'] = round(np.mean(nodetypes[n]),0)
+		types[str(n)+'b'] = round(np.mean(nodetypes[n]),0)
 	
+	return types
 	
-def write_nodes(file, nodes, positions, axis, modulegroup):
+def write_nodes(file, nodes, positions, axis, nodetype):
 	'''outputs node info to a text file
 		in a javascript variable format'''
 	f = open(file, 'w')
 	f.write('var nodes = [\n')
 
 	for n in nodes:
-		f.write('  {axis: '+str(axis[n])+', pos: '+str(positions[n])+', mod: '+str(modulegroup[n])+'},\n')
+		f.write('  {axis: '+str(axis[n])+', pos: '+str(positions[n])+', mod: '+str(nodetype[n])+'},\n')
 	f.write('];')
 	
-def write_links(file, nodes, sources, targets):
+def write_links(file, nodes, sources, targets, linktypes):
 	'''outputs node info to a text file
 		in a javascript variable format'''
 	f = open(file, 'w')
 	f.write('var links = [\n')
-	for s, t in zip(sources, targets):
-		f.write('  {source: nodes['+str(nodes.index(s))+'], target: nodes['+str(nodes.index(t))+']},\n')
+	for s, t, z in zip(sources, targets, linktypes):
+		f.write('  {source: nodes['+str(nodes.index(s))+'], target: nodes['+str(nodes.index(t))+'], type: '+str(z)+'},\n')
 	f.write('];')
     
     
@@ -205,10 +214,10 @@ nodes, depths, modules, degrees = get_nodes(innodesfile)
 sources, targets, linktypes = get_links(inlinksfile)
 positions = axis_position(nodes, depths)
 axis = axis_assignment(nodes, sources, targets, degrees,  LOW_DEG, HIGH_DEG)
-linktype = linktype_assignment(nodes, linktypes)
-write_nodes(outnodesfile, nodes, positions, axis, linktype)
+nodetype = linktype_assignment(sources, targets, linktypes)
+write_nodes(outnodesfile, nodes, positions, axis, nodetype)
 sources, targets = doublelinks(degrees, sources, targets, axis)
-write_links(outlinksfile, nodes, sources, targets)
+write_links(outlinksfile, nodes, sources, targets, linktypes)
 print "All done :)"
 
 

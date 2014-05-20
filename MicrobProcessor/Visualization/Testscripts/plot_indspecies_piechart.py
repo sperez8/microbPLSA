@@ -20,10 +20,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 
 study = '1526'
-z = 8
-#group_names = '_metadata_dryness'
-group_names = '_kmeans5'
-ind_cut = 0.8
+z = 4
+group_names = '_metadata_dryness'
+#group_names = '_kmeans5'
+ind_cut = 0.7
 
 for c in [0.5,0.6,0.7,0.8,0.9,0.97,0.99]:
     pdffile = '/Users/sperez/Desktop/pie_'+study+'_'+group_names+'_'+str(ind_cut)+'_'+str(c)+'.pdf'
