@@ -69,7 +69,6 @@ def axis_assignment(nodes, sources, targets, degrees, low, high):
 			if NUM_AXIS == 6:
 				axis[n]+=1 #populate all 0-5 axis
 			elif axis[n] != 0 :
-				if n == '2581.0b': print n
 				axis[n]+=1 #populate all 0-4 axis
 	return axis
 
@@ -93,12 +92,21 @@ def doublelinks(degrees, sources, targets, axis):
 			if (axis[sa] == 0 and axis [tb] == 1):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sa] == 2 and axis [tb] == 3):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sa] == 4 and axis [tb] == 5):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sb] == 1 and axis [ta] == 2):
 				newsources.append(sb)
 				newtargets.append(ta)

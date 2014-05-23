@@ -71,7 +71,6 @@ def axis_assignment(nodes, sources, targets, degrees, low, high):
 			if NUM_AXIS == 6:
 				axis[n]+=1 #populate all 0-5 axis
 			elif axis[n] != 0 :
-				if n == '2581.0b': print n
 				axis[n]+=1 #populate all 0-4 axis
 	return axis
 
@@ -95,12 +94,21 @@ def doublelinks(degrees, sources, targets, axis):
 			if (axis[sa] == 0 and axis [tb] == 1):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sa] == 2 and axis [tb] == 3):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sa] == 4 and axis [tb] == 5):
 				newsources.append(sa)
 				newtargets.append(tb)
+				#need to double within doubled axis links for symmetry
+				newsources.append(sb)
+				newtargets.append(ta)
 			elif (axis[sb] == 1 and axis [ta] == 2):
 				newsources.append(sb)
 				newtargets.append(ta)
@@ -136,23 +144,6 @@ def axis_position(nodes, depths):
 	depths = [float(d) for d in depths]
 	maxd = max(depths)
 	newdepths = [round(d/maxd, 2) for d in depths]
-
-##Uncomment below to assign each node to a group number depending 
-## on its depth. to be used for node colouring	
-# depth.sort()
-#	depthgroup = []
-# 	if ngroups == 3:
-# 		low = depths[int(float(len(depths))/3.0)]
-# 		high = depths[int(float(len(depths))*2.0/3.0)]
-# 
-# 		for d in depths:
-# 			if d <= low:
-# 				depthgroup.append(0)
-# 			elif d <= high:
-# 				depthgroup.append(1)
-# 			else:
-# 				depthgroup.append(2)
-
 	newdepths_dict = {}
 	for n, d in zip(nodes, newdepths):
 		newdepths_dict[n]=d
