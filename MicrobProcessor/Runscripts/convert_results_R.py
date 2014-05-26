@@ -13,7 +13,7 @@ sys.path.insert(0, _root_dir)
 
 from utilities import *
 
-for study in ['1037']:    
+for study in ['1526']:    
     directory = _root_dir + '/Results/'
     for file in os.listdir(directory):
         if fnmatch.fnmatch(file, 'study_'+study+'*'):

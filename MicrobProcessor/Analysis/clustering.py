@@ -17,7 +17,6 @@ from scipy.cluster.vq import kmeans
 import os, sys
 
 from matplotlib.pyplot import show
-import numpy as np
 from scipy.cluster.hierarchy import fclusterdata
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import dendrogram
@@ -30,14 +29,12 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-# study = '722'
-# z = 22
-# datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+study = '1526'
+z = 8
 
-
-def makedendrogram(datafile, showme = True):
+def makedendrogram(study, showme = True):
     m = microbplsa.MicrobPLSA()
-    m.open_data(datafile)
+    m.open_data(study = study)
     data = m.datamatrix
     X = data.T
 

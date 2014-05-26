@@ -14,7 +14,7 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from math import sqrt
+import math
 from matplotlib.font_manager import FontProperties
    
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
@@ -25,7 +25,6 @@ import microbplsa
 analysis_dir = _root_dir+ '/Analysis'
 sys.path.insert(0, analysis_dir)
 from labelling import Labelling
-
 
 def data_count(file):
     samples, datamatrix, otus = extract_data(file, False)
@@ -145,35 +144,98 @@ def topiclabel_scatter(X,Y,factor,z, colorlabel):
     return plt
 
 
-def loglikelihood_curve(study):
+def loglikelihood_curve(study, run = 'all', save = False):
     '''Given a dataset we can find the models p_z,p_w_z,p_d_z for 
     different number of topics Z and can plot the loglikelihood vs. Z curve'''
     logl = []
     topic = []
-
-    for file in os.listdir(_root_dir+'/Results/'):
-        if fnmatch.fnmatch(file, 'study_'+study+'*_topics_run2.txt'):
+    
+    files_found = False
+    if run == 1: run  = '_'
+    elif type(run) == int : run = "_run" + str(run)
+    elif run == 'all': run = "_*"
+    RESULT_FILE_TEMPLATE = 'study_'+study+'*_topics'+run+'.txt' #what a result file looks like
+    
+    f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+    m = microbplsa.MicrobPLSA()
+    m.open_data(study = study)
+    
+    for file in os.listdir(_root_dir+'/Results/'):        
+        if fnmatch.fnmatch(file, RESULT_FILE_TEMPLATE):
+            print file
+            files_found = True
             Z = int(re.findall(r'\d+', file)[1])
-            f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
-            m = microbplsa.MicrobPLSA()
-            m.open_data(f,sampling = False)
-            (w,d) = m.dimensions()
-            td = m.datamatrix
-            plsa = m.open_model(_root_dir+'/Results/'+file) #get model from the results file
+            plsa = m.open_model(file = _root_dir+'/Results/'+file) #get model from the results file
             L = m.loglikelihood()
             
-            topic.append(Z)
-            logl.append(L)
+            if Z in topic:
+                logl[topic.index(Z)].append(L)
+            else:
+                topic.append(Z)
+                logl.append([L])
+    print topic
+    print logl
+    logl_std = [np.std(x) for x in logl]
+    log_count = [len(x) for x in logl]
+    logl = [np.mean(x) for x in logl]
+    print logl_std
+    if not files_found: 
+        print "There were no files found using the template:" + RESULT_FILE_TEMPLATE
+        sys.exit()
     
     topic.sort()
-    logl.sort()
+    logl, logl_std = zip(*sorted(zip(logl,logl_std)))
     plt.plot(topic,logl,'b-')
-    plt.plot(topic,logl,'m.')
+    #plt.plot(topic,logl,'m.')
+    plt.errorbar(topic, logl, yerr=logl_std, fmt='m.')
     plt.ylabel('LogLikelihood')
     plt.title('Loglikelihood versus number of topics for study '+study)
     plt.xlabel('Z, number of topics')
     
+    if save:
+        topic = [str(round(t,2)) for t in topic]
+        count = [str(t) for t in log_count]
+        logl = [str(round(t,2)) for t in logl]
+        logl_std = [str(round(t,1)) for t in logl_std]
+        logfile = open(_root_dir+'/Results/'+'Loglikelihoods/logs_'+study+'.txt', 'w')
+        logfile.write('\t'.join(topic))
+        logfile.write('\n')
+        logfile.write('\t'.join(count))
+        logfile.write('\n')
+        logfile.write('\t'.join(logl))
+        logfile.write('\n')
+        logfile.write('\t'.join(logl_std))
+        
     return plt
     
+
+def piechart(z, groups):
+    '''gets the indicator species values, compares them
+        to the top otus per topic and plots a pie chart to show the
+        representation of otus in each category'''
+    labels = ["topic" + str(z) for z in range(1,z+1)]
+    labels.insert(0,"Not associated\n to topics")
+
+    for group, values in groups.items():
+        plt.close('all')
+        
+        total = float(values[0])
+        sum = float(np.sum(values[1:]))
+        sizes = [float(x)/total*100 for x in values[1:]]
+        sizes.insert(0,(1- sum/total)*100)
+        
+        colors = plt.cm.rainbow(np.linspace(0, 1, z+1))
+        explode = [0 for x in range(0,z)]
+        explode.insert(0,0.1)
+        
+        plt.pie(sizes, labels=labels, colors = colors, explode = explode,
+                autopct='%1.1f%%', shadow=True, startangle=90)
+        # Set aspect ratio to be equal so that pie is drawn as a circle.
+        plt.axis('equal')
+        plt.title("Indicator Otus for Group" + str(group) + " with "+str(int(total))+" OTUs", verticalalignment = 'bottom', horizontalalignment = 'right')
+        yield group, plt
+
+
+
 
 

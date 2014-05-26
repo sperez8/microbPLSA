@@ -17,11 +17,14 @@ from plsa import pLSA
 from plsa import loglikelihood
 
 OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
-LEVELS = 10 #number of levels to add to name of OTU in OTU_MAP
+RESULTS_LOCATION = '/Results/'
+MAX_ITER_PLSA = 10000
+LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
+K_DEFAULT = 1 #default number of samples to leave out when cross validating
 
 
 class MicrobPLSA():
-    '''A class to handle metagenomic data from in particular the Earth Microbiome Project
+    '''A class to handle metagenomic data in particular from the Earth Microbiome Project
     and apply statistical tools such as Probabilistic Latent Semantic Analysis.
     This class is actually a wrapper on Mathieu Blondel's PLSA package'''
 
@@ -33,7 +36,7 @@ class MicrobPLSA():
         if file:
             f = open(file,'r')
         elif study and z:
-            file = _cur_dir + '/Results/study_'+study +'_'+str(z)+'_topics_.txt'
+            file = _cur_dir + RESULTS_LOCATION + 'study_'+study +'_'+str(z)+'_topics_.txt'
             f = open(file,'r')
         else: print "Need study and topic input for this function."
         data = json.load(f)
@@ -43,7 +46,9 @@ class MicrobPLSA():
         model = p_z, p_w_z, p_d_z
         plsa = pLSA()
         plsa.set_model(model)
-        self.model = model
+        self.study = study
+        self.z = z
+        self.model = plsa
         return plsa
     
     def open_otu_maps(self,biom_data):
@@ -68,16 +73,10 @@ class MicrobPLSA():
             
         self.otu_map = otu_maps
         return otu_maps
-       
-    def topic_OTUS(self, file, N=5):
-        '''Open a results file, finds the primary OTU ids 
-        for each topic and translates them using an OTU-MAP file.'''
-        model = self.open_model(file) #get model from the results file  
-        #labels = model.topic_labels(self.otu_map['OTU_MAP'],N)
-        labels = model.topic_labels(None, N)
-        return labels
 
     def open_data(self, study = None, file = None,sampling = False):
+        self.study = study
+        
         if file:
             f = open(file,'r')
         elif study:
@@ -85,30 +84,37 @@ class MicrobPLSA():
             file = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
             f = open(file,'r')
         else: print "Need study and topic input for this function."      
-        self.columns, self.datamatrix, self.otus = extract_data(file, sampling)
-        return None
+        self.datamatrix= extract_data(file, sampling)
+        return file
     
     def dimensions(self):
         return self.datamatrix.shape
 
-    def runplsa(self, topic_number, maxiter=10000, verbatim = True):
+    def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True):
         '''runs plsa on sample data in filename'''
-        samples, datamatrix, otus = self.columns, self.datamatrix, self.otus
+        datamatrix = self.datamatrix
         Z = topic_number #number of topics
-#         if verbatim: 
-#             print '\nData in matrix form:\n', datamatrix.shape, '\n'
-#             print datamatrix
-#             print len(otus), 'Otus:',otus
-#             print len(samples), 'Samples:', samples
-#             print Z, 'Topics.'
-            
+
         plsa = pLSA()
         plsa.debug = verbatim
         print "\n Running PLSA...\n"
         plsa.train(datamatrix, Z, maxiter)   #runs plsa!
         self.model = plsa
-        return plsa
-    
+        return plsa        
+
+    def save_data(self, normalize = False):
+        ''' functions saves original abundance data to a csv or txt file'''
+        filename = _cur_dir + '/Results/data_study_'+self.study+'.txt'
+        f = open(filename,'w')
+        data = self.datamatrix
+        if normalize:
+            data = self.normalizeArray(data)
+        d = [list(row) for row in data]
+        json.dump(d,f)
+        f.write('\n')
+        f.close()
+        return None
+        
     def saveresults(self, filename = 'Results/results', extension = '.txt'):
         ''' functions saves plsa probabilities into a csv or txt file'''
         filename = self.formatfile(filename, extension)
@@ -164,10 +170,40 @@ class MicrobPLSA():
         """
         Compute the log-likelihood that the model generated the data.
         """
-        p_z, p_w_z, p_d_z = self.model
+        p_z, p_w_z, p_d_z = self.model.get_model()
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
-    
+
+    def top_otus_labels(self, study, z, N_otus = 5):
+        biom_data =self.open_data(study = study)
+        map = self.open_otu_maps(biom_data)['OTU_MAP']
+        self.open_model(study = study, z = z)
+        
+        otu_labels = self.model.topic_labels(map, N_otus)
+        for label in otu_labels:
+            print label
+        
+        return None
+
+    def significant_otus(self, cutoff = 0.8):
+        self.open_model(study = self.study, z = self.z)
+        
+        p_z_w = self.model.word_topics()
+        
+        table = []
+        for z,w in enumerate(p_z_w):
+            ind_otus = np.array(np.where(w>cutoff))
+            for otu in ind_otus[0]:
+                table.append([otu, p_z_w[z,otu], z+1])
+        return np.array(table) # usecols = (0,1,2), dtype = {'name':('otus','score','topics'), 'format':('f4','f8','f4')})
+
+
+    def cross_validate(self, k=K_DEFAULT):
+        score = 0
+        
+        
+        return score
+
     @staticmethod
     def formatfile(filename, extension):
         '''formats name of file to get correct file format and avoid conflicts'''
@@ -180,11 +216,15 @@ class MicrobPLSA():
             _cur_dir = os.path.dirname(os.path.realpath(__file__))
             filename = _cur_dir +'/Results/'+filename
         return filename
+
+    @staticmethod
+    def normalizeArray(data_array):
+        '''normalizes a numpy array along the columns'''
+        data = data_array.astype(float)
+        totals = np.sum(data, axis=0).astype(float)
+        norm_data = data/totals
+        return norm_data 
     
-
-
-
-
 
 
 

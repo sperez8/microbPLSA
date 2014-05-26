@@ -19,11 +19,10 @@ import microbplsa
 DECIMALPTS = 2
 
 
-def perform_correlations(realfactors, factors, factors_type, metatable, Z, file, ignore_continuous):
+def perform_correlations(realfactors, factors, factors_type, metatable, Z, study, p_z_d, ignore_continuous):
     ''' sorts through all the metadata and calculates all 
         the correlations depending on the type of variable 
         in the metadata'''
-    p_z_d = get_topic_proportions(file)
     F = len(realfactors)
     Rs = np.zeros((Z,F)) # to be filled
     for ftype,metafactors in factors_type.iteritems():
@@ -71,14 +70,6 @@ def perform_correlations(realfactors, factors, factors_type, metatable, Z, file,
     #We round the double floats to 2 decimal points, but only after checking for zeros.
     R = np.around(Rs, DECIMALPTS)
     return R
-
-def get_topic_proportions(file):
-    '''Given a model p_z,p_w_z,p_d_z, stored in a result file, 
-        we can find the topic distributions'''
-    m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file
-    #return document's distribution for each topic
-    return plsa.document_topics()  
     
 def correlation_dichotomous(p_z_d, Y):
     '''calculates the correlation between all topics

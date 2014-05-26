@@ -1,5 +1,5 @@
 .parcoords > svg, .parcoords > canvas { 
-  font: 14px sans-serif;
+  font: 16px sans-serif; /*font size of legend*/
   position: absolute;
 }
 .parcoords > canvas {
@@ -9,10 +9,10 @@
   fill: transparent;
 }
 .parcoords rect.background:hover {
-  fill: rgba(120,120,120,0.2);
+  fill: rgba(120,120,120,0.3);
 }
 .parcoords .resize rect {
-  fill: rgba(0,0,0,0.1);
+  fill: rgba(0,0,0,0.4);
 }
 .parcoords rect.extent {
   fill: rgba(255,255,255,0.25);

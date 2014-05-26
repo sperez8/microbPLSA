@@ -8,7 +8,6 @@ contains a bunch of different utilities to read EMP data
 '''
 import numpy as np
 import json
-#from pprint import pprint
 import sys, os
 import csv
 import matplotlib.pyplot as plt
@@ -20,15 +19,8 @@ sys.path.insert(0, _cur_dir)
 import microbplsa
 
 SAMPLE_SIZE = 100
-def find_otu_name(id):
-    '''returns the OTU name for an OTU id'''
-    id = str(id)
-    tax_file = '/Users/sperez/Documents/PLSAfun/gg_otus_4feb2011/taxonomies/greengenes_tax.txt'
-    tax_table = open(tax_file,'r')
-    
-    for line in tax_table:
-        if id in line[0:len(id)]:
-            return line.replace(id, '')
+classes = {'kingdom':'k', 'phylum':'p', 'class':'c', 'order':'o', 'family':'f', 'genus':'g', 'species':'s'}
+
 
 def extract_data(file,sampling):
     if file[-4:]=='.txt':
@@ -75,7 +67,7 @@ def import_biom_file(f,sampling):
             if sampling and row > SAMPLE_SIZE: break 
     
         
-    return [], datamatrix, []
+    return datamatrix
 
 def import_tab_file(filename, sampling):
     '''imports the date from filename and saves it in numpy array format'''
@@ -101,13 +93,13 @@ def read_results(file):
     reader = csv.reader(f)
     for row in reader:
         print row
-    sys.exit()
+    return None
 
 def convert_2_R(results_file):
     '''converts the result matrix probabilities into tab delimited files readable by R'''
     dir = os.path.dirname(os.path.realpath(__file__)) + "/Results/"  
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(dir + results_file) #get model from the results file
+    plsa = m.open_model(file = dir + results_file) #get model from the results file
     p_z = plsa.p_z
     p_w_z = plsa.p_w_z
     #return document's distribution
@@ -171,8 +163,6 @@ def make_dictionary(data, k):
 
     return {'OTU_MAP': otu_map, 'OTU_ID_MAP':otu_id_map}   
 
-
-classes = {'kingdom':'k', 'phylum':'p', 'class':'c', 'order':'o', 'family':'f', 'genus':'g', 'species':'s'}
 def get_otu_ranks(otu_map, level = "phylum"):         
     ranks_otus = []
     cut = classes[level]

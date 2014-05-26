@@ -27,18 +27,14 @@ class Labelling():
         self.adjusted_metadata = adjusted_metadata
         self.Z = Z
         self.study = study
-        
-        if resultfile == None:
-            self.resultfile = "/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_" + self.study + '_' + str(self.Z) +'_topics_.txt'
-        if datafile == None:
-            self.datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/study_'+self.study+'_closed_reference_otu_table.biom'
-   
+
         if self.debug:
             print '\n\n\nStudy:', study, 'Z = ', Z
             print 'Files are:'
             print self.datafile
             print self.resultfile
         
+        self.m = microbplsa.MicrobPLSA()
         return None
 
     def getlabels(self):
@@ -56,7 +52,12 @@ class Labelling():
         #sometimes the samples aren't in the same order in the metadata 
         #as in the result files
         if reorder:
-            self.metadatamatrix = reorder_metadata(self.datafile,self.metadatamatrix,self.study)
+            datafile = self.m.open_data(study = self.study)
+            json_data=open(datafile)
+            alldata = json.load(json_data)
+            json_data.close()
+            data = alldata['columns']
+            self.metadatamatrix = reorder_metadata(data,self.metadatamatrix,self.study)
         
         #test if different metadata factors are dichotomous, continuous
         #or categorical. The embedded dictionaries look like: 
@@ -65,9 +66,13 @@ class Labelling():
         return self.metadatamatrix, self.factors_type, self.factors
         
     def correlate(self):
-    #measure the correlation between each topic and each metadata factor
-    #store these in a numpy array where row: topic, col: factor
-        R = perform_correlations(self.realfactors, self.factors, self.factors_type, self.metadatamatrix, self.Z, self.resultfile, self.ignore_continuous)
+        '''measure the correlation between each topic and each metadata factor
+            store these in a numpy array where row: topic, col: factor'''
+               
+        # get document's distribution for each topic
+        model= self.m.open_model(self.study,self.Z) #get model from the results file
+        p_z_d = model.document_topics()  
+        R = perform_correlations(self.realfactors, self.factors, self.factors_type, self.metadatamatrix, self.Z, self.study, p_z_d, self.ignore_continuous)
         
         if self.debug:
             print '\nThe correlation matrix is:\n', R
