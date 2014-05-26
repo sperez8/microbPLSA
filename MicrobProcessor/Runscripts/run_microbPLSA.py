@@ -62,7 +62,7 @@ for z in range(2,num_topics):
     print 'ZZZZZZZzzzz is ',z, '\n' 
 
     t0 = time()
-    model = m.runplsa(z, maxiter=5000, verbatim = False)        
+    model = m.runplsa(z, verbatim = True)        
     m.saveresults(filename = filename, extension =  '.txt')
     print 'Topic Labels', model.topic_labels(None)
     print 'Time for analysis:', int(time()-t0)
