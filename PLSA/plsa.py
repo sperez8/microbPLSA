@@ -130,7 +130,7 @@ def train(td,
             break
 
         if debug:
-            if iteration%10 == 0:
+            if iteration%100 == 0:
                 print "Iteration", iteration
             
                 print "Parameter change"

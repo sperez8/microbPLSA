@@ -12,8 +12,10 @@ study = '1526'
 z = 8
 
 indspecies = IndSpecies(study, z)
+group_names = '_metadata_dryness'
 
-table = indspecies.find_indspecies()
+
+table = indspecies.find_indspecies(group_names)
 indspecies.get_significant_otus(cutoff = 0.9)
 groups = indspecies.compare()
 print groups
