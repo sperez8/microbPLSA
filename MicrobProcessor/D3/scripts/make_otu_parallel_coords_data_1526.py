@@ -38,7 +38,10 @@ W,Z =p_w_z.shape #number of otus and topics
 #Lab.metadata(non_labels = [])
 labels = ['\"'+l+'\"' for l in MANUAL_LABELS]
 
-#topotus = m.topic_OTUS(f,5) #indicator otus #NOT USING THIS INFORMATION YET
+#get the average abundance of otus
+m.open_data(study = study)
+abundances = m.measure_abundance()
+
 
 #get phylum of otus to color them appropriately
 ranks = get_otu_ranks(otus_map, level = level)
@@ -54,6 +57,8 @@ for (i,dist) in enumerate(p_w_z):
         if rank in otus_index[i]:
             line ='{'
             line += level+':\"'+rank+'\"'
+            if abundances:
+                line += ', abundances:'+ str(abundances[i]) 
             for j,p in enumerate(dist):
                 line += ', ' + labels[j] + ':' + str(round(p,3))
             line += '},\n'
@@ -62,28 +67,16 @@ f.write('];\n')
 
 f.write('var dim = [\n\'')
 f.write(level+'\',\'')
+f.write('abundances\',\'')
 f.write('\',\''.join(labels))
 f.write('\'];\n')
 
 f.write('var types = {\n')
 f.write('\"'+level+'\": \"string\",')
+f.write('\"abundances\": \"number\",')
 
 for label in labels:
     f.write(label+': \"number\",')
-#unfortunately we have to iter through all possible factors
-#to find the ones that are labels
-#could be more efficient but it would mean changing the way
-#the factor type is stored.
-#         for ftype,factors in Lab.factors_type.iteritems():
-#             for factor in factors:
-#                 if ftype == "continuous":
-#                     if factor in labels:
-#                         f.write('\"'+factor+'\": \"number\",')
-#                 elif ftype == "dichotomous" or ftype == "categorical":
-#                     for key, options in factor.iteritems():
-#                         for option in options:
-#                             if option in labels:
-#                                 f.write('\"'+option+'\": \"string\",')
 f.write('};\n')   
     
 f.close()    
