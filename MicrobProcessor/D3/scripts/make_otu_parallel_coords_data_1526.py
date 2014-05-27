@@ -29,7 +29,8 @@ datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_libr
 
 m = microbplsa.MicrobPLSA()
 plsa = m.open_model(study = study, z = z) #get model from the results file
-p_w_z = plsa.p_w_z #return otus topic distribution
+#p_w_z = plsa.p_w_z #return otus topic distribution
+p_w_z = plsa.word_topics().T
 otus_map = m.open_otu_maps(datafile) # create {otu id: otu name} dictionary
 W,Z =p_w_z.shape #number of otus and topics
 

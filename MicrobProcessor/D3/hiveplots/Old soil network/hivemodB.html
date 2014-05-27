@@ -1,0 +1,121 @@
+
+<!comment MODULE B with coloured modules.
+	6xis ordered by low, med, high degree nodes.
+	Position on axis relates to depth.
+
+*WITH INDICATORS*>
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/d3.hive.v0.min.js"></script>
+<script src="nodesmodB.js"></script>
+<script src="linksmodB.js"></script>
+<script>
+
+var SVGTitle = 'Hive Plot Module B'
+
+var show_indicator = true
+    indYES = "orange"
+    indNO = "white"
+    indORG = "orange"
+    indMIN = "grey";
+    
+var nodesize = 7
+	nodestroke = 0.5
+	nodestrokecolor = "grey"
+
+var width = 600
+    height = 500
+    innerRadius = 40,
+    outerRadius = 240;
+
+var linkfill = "none"
+	linkwidth = 0.7
+	oplink = 1
+	opnode = 0.9
+	bkgcolor = "white"
+    modulecolor = ["#bdbdbd","#c7eae5","#80cdc1","#35978f","#01665e","#003c30"]
+    num_axis = 6	//want 6 axis
+	
+var angle = [-0.35, 0.35, 1.75, 2.44, 3.84, 4.54], // for 6 axis
+    radius = d3.scale.linear().range([innerRadius, outerRadius]);
+
+var angles = d3.scale.ordinal()
+	.domain(d3.range(num_axis))
+	.range(angle);
+
+var colors = d3.scale.linear()
+	.domain(d3.range(0,modulecolor.length,1.0))
+	.range(modulecolor);
+
+var svg = d3.select("body").append("svg")
+	.attr("class", SVGTitle)
+    .attr("width", width)
+    .attr("height", height)
+    .style("background-color", bkgcolor)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+svg.selectAll(".axis")
+    .data(angle)
+  .enter().append("line")
+    .attr("class", "axis")
+    .attr("transform", function(d) { return "rotate(" + degrees(angles(d)) + ")"; })
+    .attr("x1", radius.range()[0])
+    .attr("x2", radius.range()[1])
+    .attr("stroke-width",0.7)
+    .attr("stroke", "black");
+
+svg.selectAll(".link")
+    .data(links)
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", d3.hive.link()
+    .angle(function(d) { return angles(d.axis); })
+    .radius(function(d) { return radius(d.pos); }))
+    .style("fill", linkfill)
+    .style("stroke-opacity", oplink)
+    .style("stroke", function(d) { return colors(d.source.mod); })
+    .style("stroke-width", linkwidth);
+  
+svg.selectAll(".node")
+    .data(nodes)
+  .enter().append("circle")
+    .attr("class", "node")
+    .attr("transform", function(d) { return "rotate(" + degrees(angles(d.axis)) + ")"; })
+    .attr("cx", function(d) { return radius(d.pos); })
+    .attr("r", nodesize)
+    .attr("stroke-width", nodestroke)
+    .attr("stroke", nodestrokecolor)
+    .style("fill-opacity", function(d) {
+    	if (show_indicator){
+			if (d.ind == 0){
+				return opnode*0.3}
+			else {return opnode}
+			}
+    	else{return opnode}
+    	})
+	 .style("fill", function(d) { 
+	 	if (show_indicator){
+			if (d.mod == d.ind){
+				return colors(d.mod)}
+			else if (d.ind == 7){
+				return indORG}
+			else if (d.ind == 6){
+				return indMIN}
+			else if (d.ind == 3 || d.ind == 4 || d.ind == 5){
+				return indMIN}
+			else if (d.ind == 1 || d.ind == 2){
+				return indORG}
+			else {return indNO}
+			}
+    	else {return colors(d.mod)}
+    	})
+
+function degrees(radians) {
+  return radians / Math.PI * 180 - 90;
+}
+
+</script>
