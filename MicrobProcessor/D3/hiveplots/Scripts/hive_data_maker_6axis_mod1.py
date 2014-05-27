@@ -25,8 +25,9 @@ delimiter = ","
 modulenames = {1:'1',2:'2',3:'3',4:'4'} #numbers in str encode for four components modules
 MOD = 1
 
-outnodesfile = _root_dir + '/WebContent/nodesmod' + str(NUM_AXIS) + 'mod' + module +'.js'
-outlinksfile = _root_dir + '/WebContent/linksmod' + str(NUM_AXIS) + 'mod' + module +'.js'
+
+outnodesfile = _root_dir + '/WebContent/nodesmod' + str(NUM_AXIS) + 'mod' + str(MOD) +'.js'
+outlinksfile = _root_dir + '/WebContent/linksmod' + str(NUM_AXIS) + 'mod' + str(MOD) +'.js'
 innodesfile = _root_dir + '/Data/WL_Nodes_ALL.csv'
 inlinksfile = _root_dir + '/Data/WL_EDGES_ALL.csv'
 
@@ -39,13 +40,14 @@ def get_nodes(file):
 	depths = []
 	degrees = []
 	modules = []
+	indicators = []
 	for i,m in enumerate(mods):
 		if m == MOD:
 			nodes.append(data[i,0])
 			depths.append(data[i,2])
 			modules.append(data[i,1])
 			degrees.append(data[i,4])
-			
+			indicators.append(data[i,3])
 			
 	nodesa = [str(n)+'a' for n in nodes]
 	nodesb = [str(n)+'b' for n in nodes]
@@ -67,8 +69,6 @@ def get_links(file):
 	#ta = [str(t)+'a' for t in targets]
 	#tb = [str(t)+'b' for t in targets]
 	#targets = ta + tb
-	print '\n', sources[0:4]
-	print targets[0:4]
 	return sources, targets
 	
 def axis_assignment(nodes, sources, targets, degrees, low, high):
@@ -91,9 +91,8 @@ def axis_assignment(nodes, sources, targets, degrees, low, high):
 			if NUM_AXIS == 6:
 				axis[n]+=1 #populate all 0-5 axis
 			elif axis[n] != 0 :
-				if n == '2581.0b': print n
 				axis[n]+=1 #populate all 0-4 axis
-	print 'degreees', a,b,c
+	#print 'degreees', a,b,c
 	return axis
 
 def doublelinks(degrees, sources, targets, axis):
@@ -196,14 +195,14 @@ def module_assignment(nodes, modules, modulenames):
 	return modulegroups
 
 
-def write_nodes(file, nodes, positions, axis, modulegroup):
+def write_nodes(file, nodes, positions, axis, modulegroup, indicators):
 	'''outputs node info to a text file
 		in a javascript variable format'''
 	f = open(file, 'w')
 	f.write('var nodes = [\n')
 
-	for n in nodes:
-		f.write('  {axis: '+str(axis[n])+', pos: '+str(positions[n])+', mod: '+str(modulegroup[n])+'},\n')
+	for n,i in zip(nodes, indicators):
+		f.write('  {axis: '+str(axis[n])+', pos: '+str(positions[n])+', mod: '+str(modulegroup[n])+ ', ind: '+str(i)+'},\n')
 	f.write('];')
 	
 def write_links(file, nodes, sources, targets):
@@ -217,12 +216,12 @@ def write_links(file, nodes, sources, targets):
     
     
 #What to run
-nodes, depths, modules, degrees = get_nodes(innodesfile)
+nodes, depths, modules, degrees, indicators = get_nodes(innodesfile)
 sources, targets = get_links(inlinksfile)
 positions = axis_position(nodes, depths)
 axis = axis_assignment(nodes, sources, targets, degrees,  LOW_DEG, HIGH_DEG)
 modulegroup = module_assignment(nodes, modules, modulenames)
-write_nodes(outnodesfile, nodes, positions, axis, modulegroup)
+write_nodes(outnodesfile, nodes, positions, axis, modulegroup, indicators)
 sources, targets = doublelinks(degrees, sources, targets, axis)
 write_links(outlinksfile, nodes, sources, targets)
 print "All done :)"

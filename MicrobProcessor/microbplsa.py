@@ -81,7 +81,7 @@ class MicrobPLSA():
             f = open(file,'r')
         elif study:
             study = str(study)
-            file = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+            file = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
             f = open(file,'r')
         else: print "Need study and topic input for this function."      
         self.datamatrix= extract_data(file, sampling)
@@ -197,6 +197,15 @@ class MicrobPLSA():
                 table.append([otu, p_z_w[z,otu], z+1])
         return np.array(table) # usecols = (0,1,2), dtype = {'name':('otus','score','topics'), 'format':('f4','f8','f4')})
 
+    def measure_abundance(self):
+        '''calculates the proportion of samples an OTU occurs in (ie. its abundance) and returns it
+            as a {otu index : abundance}'''
+        otutable = self.datamatrix
+        otu_abundances = {}
+        for otu, abundances in enumerate(otutable):
+            otu_abundances[otu] = round(float(np.count_nonzero(abundances))/float(otutable.shape[1]),2)
+        return otu_abundances
+
 
     def cross_validate(self, k=K_DEFAULT):
         score = 0
@@ -223,7 +232,7 @@ class MicrobPLSA():
         data = data_array.astype(float)
         totals = np.sum(data, axis=0).astype(float)
         norm_data = data/totals
-        return norm_data 
+        return norm_data
     
 
 
