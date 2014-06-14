@@ -76,19 +76,15 @@ def doublelinks(degrees, sources, targets, axis):
 	'''fixes links to accomodate for the doubling the axis'''
 	newsources = []
 	newtargets = []
+	print len(sources), len(targets)
 	for s,t in zip(sources, targets):
 		sa = str(s) + 'a'
 		ta = str(t) + 'a'
 		sb = str(s) + 'b'
 		tb = str(t) + 'b'
 		#if not (degrees[nodes.index(sa)] == 1 and degrees[nodes.index(ta)] == 1):
+		count = {1:0, 2:0, 3:0, 4:0, 5:0}
 		if NUM_AXIS == 6:
-			if sa not in axis:
-				print "s", s
-				continue
-			if ta not in axis:
-				print "t", t
-				continue
 			if (axis[sa] == 0 and axis [tb] == 1):
 				newsources.append(sa)
 				newtargets.append(tb)
@@ -107,6 +103,11 @@ def doublelinks(degrees, sources, targets, axis):
 				#need to double within doubled axis links for symmetry
 				newsources.append(sb)
 				newtargets.append(ta)
+				
+				
+				
+				
+				
 			elif (axis[sb] == 1 and axis [ta] == 2):
 				newsources.append(sb)
 				newtargets.append(ta)
@@ -116,22 +117,17 @@ def doublelinks(degrees, sources, targets, axis):
 			elif (axis[sb] == 5 and axis [ta] == 0):
 				newsources.append(sb)
 				newtargets.append(ta)
-		elif NUM_AXIS ==5:
-			if (axis[sa] == 0 and axis [ta] == 1):
-				newsources.append(sa)
-				newtargets.append(ta)
-			elif (axis[sa] == 1 and axis [tb] == 2):
+			#same thing but with source and target switched
+			elif (axis[tb] == 1 and axis [sa] == 2):
 				newsources.append(sa)
 				newtargets.append(tb)
-			elif (axis[sa] == 3 and axis [tb] == 4):
+			elif (axis[tb] == 3 and axis [sa] == 4):
 				newsources.append(sa)
 				newtargets.append(tb)
-			elif (axis[sb] == 2 and axis [ta] == 3):
-				newsources.append(sb)
-				newtargets.append(ta)
-			elif (axis[sb] == 4 and axis [ta] == 0):
-				newsources.append(sb)
-				newtargets.append(ta)		
+			elif (axis[tb] == 5 and axis [sa] == 0):
+				newsources.append(sa)
+				newtargets.append(tb)
+	print len(newsources), len(newtargets)
 	return newsources, newtargets
 
 
@@ -212,8 +208,9 @@ def write_links(file, nodes, sources, targets, linktypes):
 		in a javascript variable format'''
 	f = open(file, 'w')
 	f.write('var links = [\n')
-	for s, t, z in zip(sources, targets, linktypes):
-		f.write('  {source: nodes['+str(nodes.index(s))+'], target: nodes['+str(nodes.index(t))+'], type: '+str(z)+'},\n')
+	print len(sources), len(targets)
+	for s, t in zip(sources, targets):
+		f.write('  {source: nodes['+str(nodes.index(s))+'], target: nodes['+str(nodes.index(t))+'], type: '+'1.0'+'},\n')
 	f.write('];')
     
     
