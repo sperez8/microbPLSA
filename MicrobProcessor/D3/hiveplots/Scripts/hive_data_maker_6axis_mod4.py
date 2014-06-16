@@ -132,22 +132,16 @@ def doublelinks(degrees, sources, targets, axis):
 				elif (axis[sb] == 5 and axis [ta] == 0):
 					newsources.append(sb)
 					newtargets.append(ta)
-			elif NUM_AXIS ==5:
-				if (axis[sa] == 0 and axis [ta] == 1):
-					newsources.append(sa)
-					newtargets.append(ta)
-				elif (axis[sa] == 1 and axis [tb] == 2):
+				#same thing but with source and target switched
+				elif (axis[tb] == 1 and axis [sa] == 2):
 					newsources.append(sa)
 					newtargets.append(tb)
-				elif (axis[sa] == 3 and axis [tb] == 4):
+				elif (axis[tb] == 3 and axis [sa] == 4):
 					newsources.append(sa)
 					newtargets.append(tb)
-				elif (axis[sb] == 2 and axis [ta] == 3):
-					newsources.append(sb)
-					newtargets.append(ta)
-				elif (axis[sb] == 4 and axis [ta] == 0):
-					newsources.append(sb)
-					newtargets.append(ta)		
+				elif (axis[tb] == 5 and axis [sa] == 0):
+					newsources.append(sa)
+					newtargets.append(tb)	
 	return newsources, newtargets
 
 

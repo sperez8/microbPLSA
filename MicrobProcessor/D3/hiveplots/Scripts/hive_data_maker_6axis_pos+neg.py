@@ -76,14 +76,11 @@ def doublelinks(degrees, sources, targets, axis):
 	'''fixes links to accomodate for the doubling the axis'''
 	newsources = []
 	newtargets = []
-	print len(sources), len(targets)
 	for s,t in zip(sources, targets):
 		sa = str(s) + 'a'
 		ta = str(t) + 'a'
 		sb = str(s) + 'b'
 		tb = str(t) + 'b'
-		#if not (degrees[nodes.index(sa)] == 1 and degrees[nodes.index(ta)] == 1):
-		count = {1:0, 2:0, 3:0, 4:0, 5:0}
 		if NUM_AXIS == 6:
 			if (axis[sa] == 0 and axis [tb] == 1):
 				newsources.append(sa)
@@ -103,11 +100,6 @@ def doublelinks(degrees, sources, targets, axis):
 				#need to double within doubled axis links for symmetry
 				newsources.append(sb)
 				newtargets.append(ta)
-				
-				
-				
-				
-				
 			elif (axis[sb] == 1 and axis [ta] == 2):
 				newsources.append(sb)
 				newtargets.append(ta)
@@ -127,7 +119,6 @@ def doublelinks(degrees, sources, targets, axis):
 			elif (axis[tb] == 5 and axis [sa] == 0):
 				newsources.append(sa)
 				newtargets.append(tb)
-	print len(newsources), len(newtargets)
 	return newsources, newtargets
 
 
