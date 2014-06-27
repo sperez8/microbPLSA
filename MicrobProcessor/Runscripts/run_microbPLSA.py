@@ -55,24 +55,27 @@ for z in range(5,num_topics,5):
 
     run = ''
     while True:
+        print 'looping'
         if run == '' : 
             filename = _root_dir + '/Results/' + resultsfilename + ext
         else: 
             filename = _root_dir + '/Results/' + resultsfilename + 'run' +str(run) + ext
-                
+        print filename, run
         try:
             open(filename, "r")
             if study:
                 name = study
             print "The results file already exists for study", name, "and", z, "topics and run "+ str(run) +"."
-            if run  == "": run = 2
-            else: run += 1
+            if run  == "": 
+                run = 2
+            else: 
+                run += 1
             continue #if result files already exists, we don't override
         except IOError:
             #found a file not yet written so we run PLSA with those parameters.
             break
         
-    if run >= max_runs: 
+    if run != '' and run >= max_runs: 
         continue   #only want to compute plsa for each z a certain max number of times
     print "\nSaving plsa to file:", filename
     #plsa has not been run with that topic number and study so we run it!
