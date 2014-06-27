@@ -28,8 +28,7 @@ def extract_data(file,sampling):
     elif file[-5:]=='.biom':
         return import_biom_file(file, sampling)
     else: 
-        print "File name:", file
-        print "Incorrect file extension."
+        print "File name: {0} Incorrect file extension.".format(file)
         sys.exit()
             
 def import_biom_file(f,sampling):
@@ -73,20 +72,18 @@ def import_tab_file(filename, sampling):
     '''imports the date from filename and saves it in numpy array format'''
     file = open(filename,'r')
     table = file.read().splitlines() #read file and split by lines
-    samples = table[1].split('\t')  #read column names which are split by tabs
-    samples.pop(0)
+    samples = table[1].split('\t')[1:]  #read column names which are split by tabs, skip first row filled with garbage
     otus = []
-    datamatrix = np.ndarray((len(table)-2,len(samples)))
+    datamatrix = np.zeros((len(table)-2,len(samples)))
     if sampling and len(table)>1000:
         last_line = SAMPLE_SIZE
-    else: last_line = len(table)
+    else: 
+        last_line = len(table)
     for i in range(2,last_line):
         row = table[i].split('\t')
         otus.append(row.pop(0)) 
         datamatrix[i-2] = (row)
-
-    #return datamatrix, otus
-    return samples, datamatrix, np.array([int(x) for x in otus])
+    return datamatrix
     
 def read_results(file):
     f = open(file, 'r')
