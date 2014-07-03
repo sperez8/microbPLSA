@@ -6,9 +6,11 @@ author: sperez8
 import numpy as np
 import csv
 from time import time, localtime, strftime
+import datetime
 from utilities import *
 import sys, os
 import pickle
+from math import sqrt
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
@@ -20,7 +22,6 @@ OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
 RESULTS_LOCATION = '/Results/'
 MAX_ITER_PLSA = 10000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
-K_DEFAULT = 1 #default number of samples to leave out when cross validating
 
 
 class MicrobPLSA():
@@ -31,13 +32,13 @@ class MicrobPLSA():
     def __init__(self):
         return None
         
-    def open_model(self, study = None, z = 0, file = None):
+    def open_model(self, study = None, z = 0, filename = None):
         ''' Opens the probs of a model previously computed and saved in a json file '''
-        if file:
-            f = open(file,'r')
+        if filename:
+            f = open(filename,'r')
         elif study and z:
-            file = _cur_dir + RESULTS_LOCATION + 'study_'+study +'_'+str(z)+'_topics_.txt'
-            f = open(file,'r')
+            filename = _cur_dir + RESULTS_LOCATION + 'study_'+study +'_'+str(z)+'_topics_.txt'
+            f = open(filename,'r')
         else: print "Need study and topic input for this function."
         data = json.load(f)
         p_z = np.array(data['p_z'])
@@ -74,23 +75,64 @@ class MicrobPLSA():
         self.otu_map = otu_maps
         return otu_maps
 
-    def open_data(self, study = None, file = None,sampling = False):
+    def open_data(self, study = None, filename = None, name = None, sampling = False):
         self.study = study
-        
-        if file:
-            f = open(file,'r')
+        self.name = name
+        if not self.name:
+            self.name = filename.split('/')[-1][:-4]
+                
+        if filename:
+            pass
         elif study:
             study = str(study)
-            file = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
-            f = open(file,'r')
-        else: print "Need study and topic input for this function."      
-        self.datamatrix= extract_data(file, sampling)
-        return file
+            filename = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+        else: 
+            print "Need study number or filename to access the data."
+        f = open(filename,'r')
+        self.datamatrix= extract_data(filename, sampling)
+        return filename
     
     def dimensions(self):
         return self.datamatrix.shape
 
-    def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True, use_C = True):
+    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True):
+        '''runs plsa mutliple time for a range of topics'''
+        print '\n\n\nStudy', self.study, 'has', w, 'otus and', d, 'samples.'
+        if z_f is None:
+            z_f = int(3*sqrt(self.dimensions[1]))
+        print 'We will run PLSA with Z = {0} to {1}'.format(z_i, z_f)
+
+        for z in range(z_i, z_f, z_inc): 
+            run = 1
+            while True:
+                print 'Run {0} of plsa'.format(run)
+                filename = self.get_result_filename(run, useC)
+
+                try:
+                    open(filename, "r")
+                    print "The results file already exists for study", self.study, "and", z, "topics and run number"+ str(run) +"."
+                    run += 1
+                    continue #if result files already exists, we don't override
+                except IOError:
+                    #found a file not yet written so we run PLSA with those parameters.
+                    break
+            if run != '' and run >= max_runs: 
+                continue   #only want to compute plsa for each z a certain max number of times
+
+            today = datetime.datetime.today()
+            print '\n', today.strftime('%b %d, %Y @ %I:%M%p')
+            print 'ZZZZZZZzzzz is ',z, '\n' 
+        
+            t0 = time()
+            model = self.runplsa(z, verbatim = True)
+            print 'Saving plsa to file {0}.'.format(filename)
+
+            m.saveresults(filename = filename, extension =  '.txt')
+            print 'Time for analysis:', int(time()-t0)
+            
+        return None
+
+    def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True, useC = True):
         '''runs plsa on sample data in filename'''
         datamatrix = self.datamatrix
         Z = topic_number #number of topics
@@ -98,7 +140,7 @@ class MicrobPLSA():
         plsa = pLSA()
         plsa.debug = verbatim
         print "\n Running PLSA...\n"
-        plsa.train(datamatrix, Z, maxiter = maxiter, use_C = use_C)   #runs plsa!
+        plsa.train(datamatrix, Z, maxiter = maxiter, useC = useC)   #runs plsa!
         self.model = plsa
         return plsa        
 
@@ -206,12 +248,20 @@ class MicrobPLSA():
             otu_abundances[otu] = round(float(np.count_nonzero(abundances))/float(otutable.shape[1]),2)
         return otu_abundances
 
+    def get_result_filename(self, run, useC):
+        if useC:
+            add = 'with_C'
+        else: add = ''
+        
+        if self.study:
+            resultsfilename = 'study_' + self.study + '_' + str(z) + '_topics_' + add
+        else:
+            resultsfilename = 'study_' + self.name + '_' + str(z) + '_topics_' + add
+        ext = '.txt'
+        
+        filename = _root_dir + '/Results/' + resultsfilename + 'run' +str(run) + ext
+        return filename
 
-    def cross_validate(self, k=K_DEFAULT):
-        score = 0
-        
-        
-        return score
 
     @staticmethod
     def formatfile(filename, extension):
@@ -233,7 +283,5 @@ class MicrobPLSA():
         totals = np.sum(data, axis=0).astype(float)
         norm_data = data/totals
         return norm_data
-    
-
 
 
