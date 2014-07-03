@@ -97,38 +97,37 @@ class MicrobPLSA():
 
     def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True):
         '''runs plsa mutliple time for a range of topics'''
-        print '\n\n\nStudy', self.study, 'has', w, 'otus and', d, 'samples.'
+        print '\n\n\nStudy', self.study, 'has', self.dimensions()[0], 'otus and', self.dimensions()[1], 'samples.'
         if z_f is None:
-            z_f = int(3*sqrt(self.dimensions[1]))
-        print 'We will run PLSA with Z = {0} to {1}'.format(z_i, z_f)
+            z_f = int(3*sqrt(self.dimensions()[1]))
+        print 'We will run PLSA with Z = {0} to {1}.\n\n'.format(z_i, z_f)
 
         for z in range(z_i, z_f, z_inc): 
             run = 1
             while True:
-                print 'Run {0} of plsa'.format(run)
-                filename = self.get_result_filename(run, useC)
+                filename = self.get_result_filename(z, run, useC)
 
                 try:
                     open(filename, "r")
-                    print "The results file already exists for study", self.study, "and", z, "topics and run number"+ str(run) +"."
+                    print "The results file already exists for study {0}, {1} topics and run #{2}".format(self.study, z, run)
                     run += 1
                     continue #if result files already exists, we don't override
                 except IOError:
                     #found a file not yet written so we run PLSA with those parameters.
                     break
-            if run != '' and run >= max_runs: 
+            if run > numRuns: 
                 continue   #only want to compute plsa for each z a certain max number of times
 
             today = datetime.datetime.today()
             print '\n', today.strftime('%b %d, %Y @ %I:%M%p')
-            print 'ZZZZZZZzzzz is ',z, '\n' 
+            print 'ZZZZZZZzzzz is ',z 
         
             t0 = time()
             model = self.runplsa(z, verbatim = True)
             print 'Saving plsa to file {0}.'.format(filename)
 
-            m.saveresults(filename = filename, extension =  '.txt')
-            print 'Time for analysis:', int(time()-t0)
+            self.saveresults(filename = filename, extension =  '.txt')
+            print 'Time for analysis:', round(time()-t0,1)
             
         return None
 
@@ -159,7 +158,6 @@ class MicrobPLSA():
         
     def saveresults(self, filename = 'Results/results', extension = '.txt'):
         ''' functions saves plsa probabilities into a csv or txt file'''
-        filename = self.formatfile(filename, extension)
         f = open(filename,'w')
         p_z,p_w_z,p_d_z = self.model.get_model()
         
@@ -248,9 +246,9 @@ class MicrobPLSA():
             otu_abundances[otu] = round(float(np.count_nonzero(abundances))/float(otutable.shape[1]),2)
         return otu_abundances
 
-    def get_result_filename(self, run, useC):
+    def get_result_filename(self, z, run, useC):
         if useC:
-            add = 'with_C'
+            add = 'with_C_'
         else: add = ''
         
         if self.study:
@@ -259,21 +257,8 @@ class MicrobPLSA():
             resultsfilename = 'study_' + self.name + '_' + str(z) + '_topics_' + add
         ext = '.txt'
         
-        filename = _root_dir + '/Results/' + resultsfilename + 'run' +str(run) + ext
-        return filename
-
-
-    @staticmethod
-    def formatfile(filename, extension):
-        '''formats name of file to get correct file format and avoid conflicts'''
-        if 'results' in filename:
-            timestamp = strftime("%d%b", localtime()) #add date to filename to avoid conflicts
-            filename = filename + timestamp
-        if filename[-4:] != extension:
-            filename = filename + extension
-        if 'Results/' not in filename:
-            _cur_dir = os.path.dirname(os.path.realpath(__file__))
-            filename = _cur_dir +'/Results/'+filename
+        finalName = resultsfilename + 'run' +str(run) + ext
+        filename = os.path.join(_root_dir, 'MicrobProcessor', 'Results', finalName)
         return filename
 
     @staticmethod

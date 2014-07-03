@@ -165,7 +165,7 @@ class pLSA(object):
         if self.p_d_z is None:
             self.p_d_z = normalize(np.random.random((D,Z)), axis=0)
 
-    def train(self, td, Z, maxiter=500, eps=0.01, folding_in=False, use_C = True):
+    def train(self, td, Z, maxiter=500, eps=0.01, folding_in=False, useC = True):
         """
         Train the model.
 
@@ -182,18 +182,18 @@ class pLSA(object):
         p_w_z_old = np.zeros_like(self.p_w_z)
         p_z_old = np.zeros_like(self.p_z)
 
-        def get_train_func(use_C):
+        def get_train_func(useC):
             try:
                 import _plsa
                 HAVE_EXT = True
             except:
                 HAVE_EXT = False
-            if HAVE_EXT and use_C:
+            if HAVE_EXT and useC:
                 return _plsa.train
             else:
                 return train
 
-        train_func = get_train_func(use_C)
+        train_func = get_train_func(useC)
         
         train_func(td.astype(np.uint32),
                    self.p_z, self.p_w_z, self.p_d_z,
