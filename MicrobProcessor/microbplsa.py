@@ -123,18 +123,16 @@ class MicrobPLSA():
             print 'ZZZZZZZzzzz is ',z 
         
             t0 = time()
-            model = self.runplsa(z, verbatim = True)
+            model = self.run_plsa(z, verbatim = True)
             print 'Saving plsa to file {0}.'.format(filename)
 
-            self.saveresults(filename = filename, extension =  '.txt')
+            self.save_results(filename = filename, extension =  '.txt')
             print 'Time for analysis:', round(time()-t0,1)
             
         return None
 
-    def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True, useC = True):
+    def run_plsa(self, Z, maxiter=MAX_ITER_PLSA, verbatim = True, useC = True):
         '''runs plsa on sample data in filename'''
-        datamatrix = self.datamatrix
-        Z = topic_number #number of topics
 
         plsa = pLSA()
         plsa.debug = verbatim
@@ -149,14 +147,14 @@ class MicrobPLSA():
         f = open(filename,'w')
         data = self.datamatrix
         if normalize:
-            data = self.normalizeArray(data)
+            data = self.normalize_array(data)
         d = [list(row) for row in data]
         json.dump(d,f)
         f.write('\n')
         f.close()
         return None
         
-    def saveresults(self, filename = 'Results/results', extension = '.txt'):
+    def save_results(self, filename = 'Results/results', extension = '.txt'):
         ''' functions saves plsa probabilities into a csv or txt file'''
         f = open(filename,'w')
         p_z,p_w_z,p_d_z = self.model.get_model()
@@ -262,7 +260,7 @@ class MicrobPLSA():
         return filename
 
     @staticmethod
-    def normalizeArray(data_array):
+    def normalize_array(data_array):
         '''normalizes a numpy array along the columns'''
         data = data_array.astype(float)
         totals = np.sum(data, axis=0).astype(float)
