@@ -7,9 +7,7 @@ _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir + os.sep + 'PLSA')
 sys.path.insert(0, _root_dir + os.sep + 'taskmanager')
-
-
-sys.path.insert(0, '/Users/sperez/workspace/tfidf')
+sys.path.insert(0, _root_dir + os.sep + 'tfidf')
 
 import taskmanager as tm
 
@@ -26,6 +24,8 @@ def feat(folder):
     #stemmer = PorterStemmer()
     #docs = stemmer.stem_documents(docs)
     td_dict, vocab = tc(docs)
+    print td_dict
+    print vocab
     td = to_sparse_matrix(td_dict, vocab).toarray()
     idf = to_vector(idf_from_tc(td_dict), vocab)
     print "term-document matrix size", td.shape

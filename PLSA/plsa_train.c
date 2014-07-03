@@ -187,6 +187,6 @@ _train(unsigned int n_ele,
     } /* end for iter */
 
     printf("\nStopped at iteration %d (L += %f).\n", iter, lik_diff);
-
+    printf("Some parameters: %d, %d, %d, %d, %d, %f", n_ele, n_z, n_w, n_d, maxiter, eps);
     free(p_z_d_w);
 }

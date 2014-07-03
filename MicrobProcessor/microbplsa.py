@@ -90,7 +90,7 @@ class MicrobPLSA():
     def dimensions(self):
         return self.datamatrix.shape
 
-    def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True):
+    def runplsa(self, topic_number, maxiter=MAX_ITER_PLSA, verbatim = True, use_C = True):
         '''runs plsa on sample data in filename'''
         datamatrix = self.datamatrix
         Z = topic_number #number of topics
@@ -98,7 +98,7 @@ class MicrobPLSA():
         plsa = pLSA()
         plsa.debug = verbatim
         print "\n Running PLSA...\n"
-        plsa.train(datamatrix, Z, maxiter)   #runs plsa!
+        plsa.train(datamatrix, Z, maxiter = maxiter, use_C = use_C)   #runs plsa!
         self.model = plsa
         return plsa        
 

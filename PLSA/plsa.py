@@ -70,7 +70,6 @@ def loglikelihood(td, p_z, p_w_z, p_d_z):
     V, D = td.shape
     L = 0.0
     for w,d in zip(*td.nonzero()):
-        #print "HERE",  p_w_z[w,:], p_d_z[d,:]
         p_d_w = np.sum(p_z * p_w_z[w,:] * p_d_z[d,:])
         if p_d_w > 0: L += td[w,d] * np.log(p_d_w)
     return L
@@ -166,7 +165,7 @@ class pLSA(object):
         if self.p_d_z is None:
             self.p_d_z = normalize(np.random.random((D,Z)), axis=0)
 
-    def train(self, td, Z, maxiter=500, eps=0.01, folding_in=False):
+    def train(self, td, Z, maxiter=500, eps=0.01, folding_in=False, use_C = True):
         """
         Train the model.
 
@@ -183,9 +182,19 @@ class pLSA(object):
         p_w_z_old = np.zeros_like(self.p_w_z)
         p_z_old = np.zeros_like(self.p_z)
 
-                
-        train_func = _plsa.train if HAVE_EXT else train
+        def get_train_func(use_C):
+            try:
+                import _plsa
+                HAVE_EXT = True
+            except:
+                HAVE_EXT = False
+            if HAVE_EXT and use_C:
+                return _plsa.train
+            else:
+                return train
 
+        train_func = get_train_func(use_C)
+        
         train_func(td.astype(np.uint32),
                    self.p_z, self.p_w_z, self.p_d_z,
                    p_z_old, p_w_z_old, p_d_z_old,

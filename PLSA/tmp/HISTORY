@@ -6,3 +6,22 @@
 [2013/09/23 14:25:55] started: /Users/sperez/workspace/myprojects/myplsa/otu_table.txt/
 [2013/09/23 14:36:08] started: /Users/sperez/workspace/myprojects/myplsa/otu_table.txt/
 [2013/09/23 14:36:42] started: /Users/sperez/workspace/myprojects/myplsa/otu_table.txt/
+[2014/07/02 15:25:19] started: 
+[2014/07/02 15:31:05] started: 
+[2014/07/02 15:31:15] started: help
+[2014/07/02 15:31:15] completed: help
+[2014/07/02 15:31:33] started: help:train
+[2014/07/02 15:31:33] completed: help:train
+[2014/07/02 15:35:44] started: feat:/Users/sperez/Documents/PLSA data/EMPL data/study_1526_split_library_seqs_and_mapping/study_1526_closed_reference_otu_table.biom train
+[2014/07/02 15:36:07] started: feat:/Users/sperez/Documents/PLSA data/EMPL data/study_1526_split_library_seqs_and_mapping/study_1526_closed_reference_otu_table.biom train
+[2014/07/02 15:36:48] started: feat:/Users/sperez/Documents/PLSA data/EMPL data/study_1526_split_library_seqs_and_mapping train
+[2014/07/02 15:37:07] started: feat:/Users/sperez/Documents/PLSA data/EMPL data/study_1526_split_library_seqs_and_mapping/ train
+[2014/07/02 15:37:46] started: 
+[2014/07/02 15:37:48] started: feat:/Users/sperez/Documents/PLSA data/EMPL data/study_1526_split_library_seqs_and_mapping/ train
+[2014/07/02 15:38:53] started: feat:/Users/sperez/Documents/PLSA data/otu_table.txt train
+[2014/07/02 15:39:47] started: feat:/Users/sperez/Documents/PLSA data/try/ train
+[2014/07/02 15:39:51] started: feat:/Users/sperez/Documents/PLSA data/try train
+[2014/07/02 15:41:40] started: feat:/Users/sperez/Documents/PLSA data/try train
+[2014/07/02 15:42:36] started: train:/Users/sperez/Documents/PLSA data/try/otu_table.txt
+[2014/07/02 15:42:50] started: train:/Users/sperez/Documents/PLSA data/try/
+[2014/07/02 15:42:53] started: train:/Users/sperez/Documents/PLSA data/try

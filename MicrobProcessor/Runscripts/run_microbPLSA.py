@@ -25,7 +25,6 @@ from math import sqrt
 
 
 file = '/Users/sperez/Desktop/LSTP/LTSP-6site_tags/Bacterial/bac_final.an.0.03.otutable.txt'
-#file = '/Users/sperez/Desktop/sample.txt'
 Z = 100
 study = None
 max_runs = 1
@@ -44,7 +43,7 @@ else:
 print 'We will run PLSA with Z = 2 to', num_topics
 
 
-for z in range(5,num_topics,5):
+for z in range(2,num_topics,5):
     ext = '.txt'
     if study:
         resultsfilename = 'study_' + study + '_' + str(z) + '_topics_'

@@ -1,2 +1,7 @@
 eclipse.preferences.version=1
 encoding//PLSA/plsa.py=utf-8
+encoding//PLSA/setup.py=utf-8
+encoding//PLSA/tests.py=utf-8
+encoding//taskmanager/example.py=utf-8
+encoding//taskmanager/taskmanager.py=utf-8
+encoding//tfidf/tests.py=utf-8
