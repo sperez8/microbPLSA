@@ -86,7 +86,9 @@ class MicrobPLSA():
         elif study:
             study = str(study)
             filename = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
-        else: 
+        elif name: 
+            filename = os.path.join(_cur_dir, 'Results', name + '.txt')
+        else:
             print "Need study number or filename to access the data."
         f = open(filename,'r')
         self.datamatrix= extract_data(filename, sampling)
@@ -143,7 +145,7 @@ class MicrobPLSA():
 
     def save_data(self, normalize = False):
         ''' functions saves original abundance data to a csv or txt file'''
-        filename = _cur_dir + '/Results/data_study_'+self.study+'.txt'
+        filename = os.path.join(_cur_dir, 'Results', 'data_study_'+self.study+'.txt')
         f = open(filename,'w')
         data = self.datamatrix
         if normalize:
@@ -212,8 +214,8 @@ class MicrobPLSA():
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
 
-    def top_otus_labels(self, study, z, N_otus = 5):
-        biom_data =self.open_data(study = study)
+    def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
+        biom_data =self.open_data(study = study, name = name)
         map = self.open_otu_maps(biom_data)['OTU_MAP']
         self.open_model(study = study, z = z)
         
