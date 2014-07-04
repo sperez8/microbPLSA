@@ -137,7 +137,7 @@ class MicrobPLSA():
         plsa = pLSA()
         plsa.debug = verbatim
         print "\n Running PLSA...\n"
-        plsa.train(datamatrix, Z, maxiter = maxiter, useC = useC)   #runs plsa!
+        plsa.train(self.datamatrix, Z, maxiter = maxiter, useC = useC)   #runs plsa!
         self.model = plsa
         return plsa        
 

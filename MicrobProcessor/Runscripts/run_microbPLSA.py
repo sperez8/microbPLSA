@@ -14,19 +14,14 @@ import microbplsa
 
 #use file below to test this script
 #study = '1526'
-filename  = '/Users/Sarah/Desktop/test_otutable.txt'
-name = 'testing'
 
-
-#file = '/Users/sperez/Desktop/LSTP/LTSP-6site_tags/Bacterial/bac_final.an.0.03.biom'
+filename = '/Users/sperez/Desktop/LSTP/LTSP-6site_tags/Bacterial/bac_final0.03.otutable_GOODSAMPLES.txt'
 useC = True
-name = 'un_beau_test'
-z_i = 2
-z_f = 8
-z_inc = 2
-numRuns = 4
-
+z_i = 14
+z_f = 100
+z_inc = 4
+numRuns = 2
   
 m = microbplsa.MicrobPLSA()
-m.open_data(filename = filename, name = name, sampling = False)
+m.open_data(filename = filename)
 m.generate_runs(z_i = z_i, z_f = z_f, z_inc = z_inc, numRuns = numRuns, useC = useC)
