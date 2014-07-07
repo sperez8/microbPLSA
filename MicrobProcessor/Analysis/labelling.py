@@ -44,7 +44,7 @@ class Labelling():
 
     def metadata(self, metadatafile = None, reorder = True, non_labels = []):
         if metadatafile == None:
-            metadatafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/metadata'+self.study+'.csv'
+            metadatafile = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/metadata'+self.study+'.csv'
         
         #store the name of the metadata columns in FACTORS = ['date', 'soil type', ...]
         #store the metadata in a numpy array with row: sample, col: data

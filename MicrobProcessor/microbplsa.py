@@ -18,8 +18,8 @@ sys.path.insert(0, _root_dir + os.sep + "PLSA")
 from plsa import pLSA
 from plsa import loglikelihood
 
-OTU_MAP_NAME = 'JsonData/' + 'OTU_MAP_'
-RESULTS_LOCATION = '/Results/'
+OTU_MAP_NAME = os.path.join('JsonData', 'OTU_MAP_')
+RESULTS_LOCATION = 'Results'
 MAX_ITER_PLSA = 10000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
 
@@ -32,14 +32,18 @@ class MicrobPLSA():
     def __init__(self):
         return None
         
-    def open_model(self, study = None, z = 0, filename = None):
+    def open_model(self, study = None, z = 0, filename = None, name = None):
         ''' Opens the probs of a model previously computed and saved in a json file '''
         if filename:
             f = open(filename,'r')
+        elif name:
+            filename = os.path.join(_cur_dir, RESULTS_LOCATION, name+'.txt')
+            f = open(filename,'r')
         elif study and z:
-            filename = _cur_dir + RESULTS_LOCATION + 'study_'+study +'_'+str(z)+'_topics_.txt'
+            filename = os.path.join(_cur_dir, RESULTS_LOCATION, 'study_'+study +'_'+str(z)+'_topics_.txt')
             f = open(filename,'r')
         else: print "Need study and topic input for this function."
+        print 'using file', filename
         data = json.load(f)
         p_z = np.array(data['p_z'])
         p_w_z = np.array(data['p_w_z'])
@@ -78,7 +82,7 @@ class MicrobPLSA():
     def open_data(self, study = None, filename = None, name = None, sampling = False):
         self.study = study
         self.name = name
-        if not self.name:
+        if not self.name and filename is not None:
             self.name = filename.split('/')[-1][:-4]
                 
         if filename:
@@ -87,11 +91,12 @@ class MicrobPLSA():
             study = str(study)
             filename = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
         elif name: 
-            filename = os.path.join(_cur_dir, 'Results', name + '.txt')
+            filename = os.path.join(_cur_dir, RESULTS_LOCATION, name + '.txt')
         else:
             print "Need study number or filename to access the data."
         f = open(filename,'r')
         self.datamatrix= extract_data(filename, sampling)
+        print filename
         return filename
     
     def dimensions(self):
@@ -145,7 +150,7 @@ class MicrobPLSA():
 
     def save_data(self, normalize = False):
         ''' functions saves original abundance data to a csv or txt file'''
-        filename = os.path.join(_cur_dir, 'Results', 'data_study_'+self.study+'.txt')
+        filename = os.path.join(_cur_dir, RESULTS_LOCATION, 'data_study_'+self.study+'.txt')
         f = open(filename,'w')
         data = self.datamatrix
         if normalize:
@@ -156,7 +161,7 @@ class MicrobPLSA():
         f.close()
         return None
         
-    def save_results(self, filename = 'Results/results', extension = '.txt'):
+    def save_results(self, filename = os.path.join(RESULTS_LOCATION,'results'), extension = '.txt'):
         ''' functions saves plsa probabilities into a csv or txt file'''
         f = open(filename,'w')
         p_z,p_w_z,p_d_z = self.model.get_model()
@@ -217,12 +222,14 @@ class MicrobPLSA():
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
         biom_data =self.open_data(study = study, name = name)
         map = self.open_otu_maps(biom_data)['OTU_MAP']
-        self.open_model(study = study, z = z)
+        self.open_model(study = study, name = name, z = z)
         
         otu_labels = self.model.topic_labels(map, N_otus)
+        labels = []
         for label in otu_labels:
-            print label
+            labels.append(label)
         
+        print 'Top OTUs :\n', labels
         return None
 
     def significant_otus(self, cutoff = 0.8):
@@ -258,7 +265,7 @@ class MicrobPLSA():
         ext = '.txt'
         
         finalName = resultsfilename + 'run' +str(run) + ext
-        filename = os.path.join(_root_dir, 'MicrobProcessor', 'Results', finalName)
+        filename = os.path.join(_root_dir, 'MicrobProcessor', RESULTS_LOCATION, finalName)
         return filename
 
     @staticmethod

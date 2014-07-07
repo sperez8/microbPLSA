@@ -12,10 +12,11 @@ sys.path.insert(0, _root_dir)
 import microbplsa
 
 
-z = 2
+z = 8
 study = '1526'
-name = 'C_test_study_1526_2_topics_'
-N = 5
+#name = 'study_1526_8_topics_with_C_run1'
+name = None
+N = 2
 
 m = microbplsa.MicrobPLSA()
 

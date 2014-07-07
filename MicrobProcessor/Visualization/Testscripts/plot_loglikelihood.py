@@ -14,11 +14,12 @@ from time import time
 
 
 studies = ['1526']
-run = 'all'
+run = 1
+#run = 'all'
 
 t0 = time()
 for study in studies:
-    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_run_'+str(run)+'.pdf'
+    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_run_'+str(run)+'with_C.pdf'
     print "Plotting log likelihood curve for study ", study
     pdf = PdfPages(file)
     plot = loglikelihood_curve(study, run, save = True)

@@ -29,12 +29,9 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-study = '1526'
-z = 8
-
-def makedendrogram(study, showme = True):
+def makedendrogram(study = None, filename = None, showme = True):
     m = microbplsa.MicrobPLSA()
-    m.open_data(study = study)
+    m.open_data(study = study, filename = filename)
     data = m.datamatrix
     X = data.T
 

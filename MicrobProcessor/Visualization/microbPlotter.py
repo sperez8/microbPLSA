@@ -22,7 +22,7 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
-analysis_dir = _root_dir+ '/Analysis'
+analysis_dir = os.path.join(_root_dir, 'Analysis')
 sys.path.insert(0, analysis_dir)
 from labelling import Labelling
 
@@ -65,12 +65,12 @@ def data_count(file):
     plt.show()
     return None
 
-def topic_distribution(file,study, order = None):
+def topic_distribution(name = None, filename = None, study = None, order = None):
     '''Given a model p_z,p_w_z,p_d_z, we can plot the document's distribution
     using p(z|d) = normalized((p(d|z)*p(z))) '''
     
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(file) #get model from the results file
+    plsa = m.open_model(name = name, filename = filename, study = study) #get model from the results file
     
     #return document's distribution
     p_z_d = plsa.document_topics()
@@ -160,12 +160,12 @@ def loglikelihood_curve(study, run = 'all', save = False):
     m = microbplsa.MicrobPLSA()
     m.open_data(study = study)
     
-    for file in os.listdir(_root_dir+'/Results/'):        
+    for file in os.listdir(_root_dir + RESULTS_LOCATION):        
         if fnmatch.fnmatch(file, RESULT_FILE_TEMPLATE):
             print file
             files_found = True
             Z = int(re.findall(r'\d+', file)[1])
-            plsa = m.open_model(file = _root_dir+'/Results/'+file) #get model from the results file
+            plsa = m.open_model(filename = os.path.join(_root_dir, RESULTS_LOCATION, file)) #get model from the results file
             L = m.loglikelihood()
             
             if Z in topic:
@@ -197,7 +197,7 @@ def loglikelihood_curve(study, run = 'all', save = False):
         count = [str(t) for t in log_count]
         logl = [str(round(t,2)) for t in logl]
         logl_std = [str(round(t,1)) for t in logl_std]
-        logfile = open(_root_dir+'/Results/'+'Loglikelihoods/logs_'+study+'.txt', 'w')
+        logfile = open(os.path.join(_root_dir + RESULTS_LOCATION + 'Loglikelihoods', 'logs_' + study + '.txt'), 'w')
         logfile.write('\t'.join(topic))
         logfile.write('\n')
         logfile.write('\t'.join(count))

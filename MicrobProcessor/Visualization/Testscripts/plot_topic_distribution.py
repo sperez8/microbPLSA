@@ -15,19 +15,23 @@ sys.path.insert(0, analysis_dir)
 from clustering import *
 
 t0 = time()
-study = '1037'
-#Z = range(8,24)
-Z = [5]
+study = '1526'
+Z = range(8,9)
+#Z = [5]
 f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
-datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+#f = None
+#name = 'study_1526_8_topics_with_C_run1'
+datafile = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 format = 'svg'
 
 order = None
-order = makedendrogram(datafile, showme = False)
+order = makedendrogram(study = study, filename = datafile, showme = False)
 order = [int(o) for o in order]
 order = np.array(order)
+
+print "Dendogram done!"
 
 if format == 'svg':
     import matplotlib
@@ -40,7 +44,10 @@ if format == 'svg':
     from microbPlotter import * #have to import this AFTER selecting SVG usage.
     
     for z in Z:
-        plot = topic_distribution(f+str(z)+end,study, order)
+        if f:
+            plot = topic_distribution(filename = f+str(z)+end,study = study, order = order)
+        else:
+            plot = topic_distribution(name = name, study = study, order = order)
         plot.savefig('/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots.svg')
         print '\n\n\n The topic distribution svg file is ready.'
 
