@@ -66,15 +66,15 @@ def data_count(file):
     plt.show()
     return None
 
-def topic_distribution(name = None, filename = None, study = None, order = None):
+def topic_distribution(name = None, study = None, order = None, **options):
     '''Given a model p_z,p_w_z,p_d_z, we can plot the document's distribution
     using p(z|d) = normalized((p(d|z)*p(z))) '''
     
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(name = name, modelFile = filename, study = study) #get model from the results file
+    m.open_model(name = name, study = study, **options) #get model from the results file
     print 'woo1'
     #return document's distribution
-    p_z_d = plsa.document_topics()
+    p_z_d = m.model.document_topics()
     
     Z,N =p_z_d.shape #number of samples
     if order is not None:
@@ -84,7 +84,7 @@ def topic_distribution(name = None, filename = None, study = None, order = None)
     p = [] #list of plots
     colors = plt.cm.rainbow(np.linspace(0, 1, Z))    
     
-    Lab = Labelling(study, Z, ignore_continuous = True)
+    Lab = Labelling(m, ignore_continuous = False)
     Lab.metadata(non_labels = ['BarcodeSequence'])
     R = Lab.correlate()
     labels_r = Lab.assignlabels(R,num_labels = 1)
@@ -170,7 +170,7 @@ def loglikelihood_curve(study, run = 'all', save = False):
             print file
             files_found = True
             Z = int(re.findall(r'\d+', file)[1])
-            plsa = m.open_model(modelFile = os.path.join(_root_dir, RESULTS_LOCATION, file)) #get model from the results file
+            m.open_model(modelFile = os.path.join(_root_dir, RESULTS_LOCATION, file)) #get model from the results file
             L = m.loglikelihood()
             
             if Z in topic:

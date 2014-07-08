@@ -30,23 +30,19 @@ class MicrobPLSA():
     This class is actually a wrapper on Mathieu Blondel's PLSA package'''
 
     def __init__(self):
+        self.modelFile = None
         return None
         
-    def open_model(self, study = None, z = 0, modelFile = None, name = None):
+    def open_model(self, study = None, z = 0, name = None, run = '', useC = False):
         ''' Opens the probs of a model previously computed and saved in a json file '''
+        self.study = study
+        self.name = name
         
-        def get_model_file():
-            if modelFile:
-                return modelFile
-            elif name:
-                return os.path.join(_cur_dir, RESULTS_LOCATION, name+'.txt')
-            elif study and z:
-                return os.path.join(_cur_dir, RESULTS_LOCATION, 'study_'+study +'_'+str(z)+'_topics_.txt')
-            else: print "Need study and topic input for this function."
+        if self.modelFile is None:
+            self.modelFile = self.get_result_filename(z, run, useC)
         
-        modelFile = get_model_file()
-        f = open(modelFile,'r')
-        print 'Using file:', modelFile
+        f = open(self.modelFile,'r')
+        print 'Using file:', self.modelFile
         data = json.load(f)
         p_z = np.array(data['p_z'])
         p_w_z = np.array(data['p_w_z'])
@@ -58,7 +54,7 @@ class MicrobPLSA():
         self.name = name
         self.z = z
         self.model = plsa
-        return plsa
+        return self.modelFile
     
     def open_otu_maps(self,biom_data):
         '''Opens a file in the .biom format and opens or creates an {id:otu} dictionary 
@@ -92,12 +88,12 @@ class MicrobPLSA():
             if not self.name and dataFile is not None:
                 self.name = dataFile.split('/')[-1][:-4]
                     
-            if dataFile:
+            if dataFile is not None:
                 return dataFile
-            elif study:
-                study = str(study)
+            elif self.study:
+                self.study = str(self.study)
                 return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
-            elif name: 
+            elif self.name: 
                 return os.path.join(_cur_dir, RESULTS_LOCATION, name + '.txt')
             else:
                 print "Need study number or the name of the data file to access the data."
@@ -270,12 +266,14 @@ class MicrobPLSA():
         
         if self.study:
             resultsfilename = 'study_' + self.study + '_' + str(z) + '_topics_' + add
-        else:
+        elif name:
             resultsfilename = 'study_' + self.name + '_' + str(z) + '_topics_' + add
+        else:
+            print 'Please provide the study number or name.'
+            
         ext = '.txt'
         
-        finalName = resultsfilename + 'run' +str(run) + ext
-        filename = os.path.join(_root_dir, 'MicrobProcessor', RESULTS_LOCATION, finalName)
+        if run != '':
+            resultsfilename += 'run' +str(run)
+        filename = os.path.join(_cur_dir, RESULTS_LOCATION, resultsfilename + ext)
         return filename
-
-

@@ -19,17 +19,20 @@ import microbplsa
 class Labelling():
     '''A class to handle the labelling of topics using metadata'''
     
-    def __init__(self, study, Z, debug = False,  ignore_continuous = False, adjusted_metadata = True, resultfile = None, datafile = None):
+    def __init__(self, plsa, debug = False,  ignore_continuous = False, adjusted_metadata = True):
         '''handles all the files and calls the right functions
             to create a labeling file.'''
         self.debug = debug
         self.ignore_continuous = ignore_continuous
         self.adjusted_metadata = adjusted_metadata
-        self.Z = Z
-        self.study = study
-
+        self.Z = plsa.z
+        self.study = plsa.study
+        self.resultfile = plsa.open_model()
+        self.datafile = plsa.open_data()
+        
+        
         if self.debug:
-            print '\n\n\nStudy:', study, 'Z = ', Z
+            print '\n\n\nStudy:', self.study, 'Z = ', self.Z
             print 'Files are:'
             print self.datafile
             print self.resultfile
@@ -70,7 +73,7 @@ class Labelling():
             store these in a numpy array where row: topic, col: factor'''
                
         # get document's distribution for each topic
-        model= self.m.open_model(self.study,self.Z) #get model from the results file
+        model= self.m.open_model(study = self.study, z = self.Z) #get model from the results file
         p_z_d = model.document_topics()  
         R = perform_correlations(self.realfactors, self.factors, self.factors_type, self.metadatamatrix, self.Z, self.study, p_z_d, self.ignore_continuous)
         
