@@ -31,10 +31,10 @@ num_components = 3
 
 def makePCA(datafile, num_components):
     m = microbplsa.MicrobPLSA()
-    m.open_data(datafile) #get data of OTU abundances per sample
+    m.open_data(datafile = dataFile) #get data of OTU abundances per sample
     X = m.datamatrix.T
     
-    plsa = m.open_model(resultfile) #get model from the results file
+    plsa = m.open_model(modelFile = resultfile) #get model from the results file
     #return document's distribution
     p_d_z = plsa.p_d_z
     N,Z =p_d_z.shape

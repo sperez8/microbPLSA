@@ -20,7 +20,7 @@ from plsa import loglikelihood
 
 OTU_MAP_NAME = os.path.join('JsonData', 'OTU_MAP_')
 RESULTS_LOCATION = 'Results'
-MAX_ITER_PLSA = 10000
+MAX_ITER_PLSA = 100000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
 
 
@@ -32,19 +32,21 @@ class MicrobPLSA():
     def __init__(self):
         return None
         
-    def open_model(self, study = None, z = 0, filename = None, name = None):
+    def open_model(self, study = None, z = 0, modelFile = None, name = None):
         ''' Opens the probs of a model previously computed and saved in a json file '''
-        filename = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_1526_8_topics_with_C_run1.txt'
-        if filename:
-            f = open(filename,'r')
-        elif name:
-            filename = os.path.join(_cur_dir, RESULTS_LOCATION, name+'.txt')
-            f = open(filename,'r')
-        elif study and z:
-            filename = os.path.join(_cur_dir, RESULTS_LOCATION, 'study_'+study +'_'+str(z)+'_topics_.txt')
-            f = open(filename,'r')
-        else: print "Need study and topic input for this function."
-        print 'using file', filename
+        
+        def get_model_file():
+            if modelFile:
+                return modelFile
+            elif name:
+                return os.path.join(_cur_dir, RESULTS_LOCATION, name+'.txt')
+            elif study and z:
+                return os.path.join(_cur_dir, RESULTS_LOCATION, 'study_'+study +'_'+str(z)+'_topics_.txt')
+            else: print "Need study and topic input for this function."
+        
+        modelFile = get_model_file()
+        f = open(modelFile,'r')
+        print 'Using file:', modelFile
         data = json.load(f)
         p_z = np.array(data['p_z'])
         p_w_z = np.array(data['p_w_z'])
@@ -53,6 +55,7 @@ class MicrobPLSA():
         plsa = pLSA()
         plsa.set_model(model)
         self.study = study
+        self.name = name
         self.z = z
         self.model = plsa
         return plsa
@@ -80,25 +83,28 @@ class MicrobPLSA():
         self.otu_map = otu_maps
         return otu_maps
 
-    def open_data(self, study = None, filename = None, name = None, sampling = False):
+    def open_data(self, study = None, dataFile = None, name = None, sampling = False):
+        '''gets the otu table from a .biom or .txt file and saves the otu table as a numpy matrix.'''
         self.study = study
         self.name = name
-        if not self.name and filename is not None:
-            self.name = filename.split('/')[-1][:-4]
-                
-        if filename:
-            pass
-        elif study:
-            study = str(study)
-            filename = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
-        elif name: 
-            filename = os.path.join(_cur_dir, RESULTS_LOCATION, name + '.txt')
-        else:
-            print "Need study number or filename to access the data."
-        f = open(filename,'r')
-        self.datamatrix= extract_data(filename, sampling)
-        print filename
-        return filename
+        
+        def get_otu_data_file():
+            if not self.name and dataFile is not None:
+                self.name = dataFile.split('/')[-1][:-4]
+                    
+            if dataFile:
+                return dataFile
+            elif study:
+                study = str(study)
+                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+            elif name: 
+                return os.path.join(_cur_dir, RESULTS_LOCATION, name + '.txt')
+            else:
+                print "Need study number or the name of the data file to access the data."
+
+        dataFile = get_otu_data_file()
+        self.datamatrix = extract_data(dataFile, sampling)
+        return dataFile
     
     def dimensions(self):
         return self.datamatrix.shape
@@ -109,6 +115,9 @@ class MicrobPLSA():
         if z_f is None:
             z_f = int(3*sqrt(self.dimensions()[1]))
         print 'We will run PLSA with Z = {0} to {1}.\n\n'.format(z_i, z_f)
+        if useC:
+            print "Running PLSA using C code."
+
 
         for z in range(z_i, z_f, z_inc): 
             run = 1
@@ -131,7 +140,7 @@ class MicrobPLSA():
             print 'ZZZZZZZzzzz is ',z 
         
             t0 = time()
-            model = self.run_plsa(z, verbatim = True)
+            model = self.run_plsa(z, useC = useC, verbatim = True)
             print 'Saving plsa to file {0}.'.format(filename)
 
             self.save_results(filename = filename, extension =  '.txt')
@@ -144,7 +153,7 @@ class MicrobPLSA():
 
         plsa = pLSA()
         plsa.debug = verbatim
-        print "\n Running PLSA...\n"
+        print "\n Running ...\n"
         plsa.train(self.datamatrix, Z, maxiter = maxiter, useC = useC)   #runs plsa!
         self.model = plsa
         return plsa        
@@ -268,13 +277,5 @@ class MicrobPLSA():
         finalName = resultsfilename + 'run' +str(run) + ext
         filename = os.path.join(_root_dir, 'MicrobProcessor', RESULTS_LOCATION, finalName)
         return filename
-
-    @staticmethod
-    def normalize_array(data_array):
-        '''normalizes a numpy array along the columns'''
-        data = data_array.astype(float)
-        totals = np.sum(data, axis=0).astype(float)
-        norm_data = data/totals
-        return norm_data
 
 

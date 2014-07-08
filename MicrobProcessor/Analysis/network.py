@@ -21,7 +21,7 @@ class NetworkAnalysis():
     def __init__(self, study = None, biomFile = None):
         ''' Opens the probs of a model previously computed and saved in a json file '''
         m = microbplsa.MicrobPLSA()
-        m.open_data(study = study, file = biomFile) #get data matrix from the results file
+        m.open_data(study = study, dataFile = biomFile) #get data matrix from the results file
         self.rawData = m.datamatrix
         self.N,self.S = self.rawData.shape 
         return None

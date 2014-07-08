@@ -31,7 +31,7 @@ import microbplsa
 
 def makedendrogram(study = None, filename = None, showme = True):
     m = microbplsa.MicrobPLSA()
-    m.open_data(study = study, filename = filename)
+    m.open_data(study = study, dataFile = filename)
     data = m.datamatrix
     X = data.T
 

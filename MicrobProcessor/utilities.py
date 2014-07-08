@@ -173,14 +173,19 @@ def get_otu_ranks(otu_map, level = "phylum"):
     ranks = set(ranks_otus)
     return ranks
 
-def zipper(x,y,z=[]):
-    if z == []:
-        if len(y) != len(x):
+def normalize_array(data_array):
+    '''normalizes a numpy array along the columns'''
+    data = data_array.astype(float)
+    totals = np.sum(data, axis=0).astype(float)
+    norm_data = data/totals
+    return norm_data
+
+def zipper(*args):
+    '''a revamped version of zip() method that checks that lists
+    to be zipped are the same length'''
+    print args
+    for i,item in enumerate(args):
+        if len(item) != len(args[0]):
             raise ValueError('The lists to be zipped aren\'t the same length.')
-        else:
-            return zip(x,y)
-    else:
-        if len(x) != len(y) or len(x) != len(z):
-            raise ValueError('The lists to be zipped aren\'t the same length.')
-        else:
-            return zip(x,y,z)
+    
+    return zip(*args)

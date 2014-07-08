@@ -71,17 +71,16 @@ def topic_distribution(name = None, filename = None, study = None, order = None)
     using p(z|d) = normalized((p(d|z)*p(z))) '''
     
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(name = name, filename = filename, study = study) #get model from the results file
+    plsa = m.open_model(name = name, modelFile = filename, study = study) #get model from the results file
     print 'woo1'
     #return document's distribution
     p_z_d = plsa.document_topics()
     
-    print 'woo'
     Z,N =p_z_d.shape #number of samples
     if order is not None:
         p_z_d = p_z_d[:,order]
     n = np.arange(N)
-    width = 20.0/float(N) #scale width of bars by number of samples
+    width = 25.0/float(N) #scale width of bars by number of samples
     p = [] #list of plots
     colors = plt.cm.rainbow(np.linspace(0, 1, Z))    
     
@@ -94,17 +93,13 @@ def topic_distribution(name = None, filename = None, study = None, order = None)
     
     #sort and organize labels and topics so they are always plotted in the same order
     labelsUnsorted = zipper(labels,range(0,Z))
-    print labelsUnsorted
     labelsUnsorted.sort()
-    print labelsUnsorted
     labels, Zrange = zip(*labelsUnsorted)
     Zrange = list(Zrange)
     p.append(plt.bar(n, p_z_d[Zrange[0],:], width, color=colors[0], linewidth = 0))
-    print colors[0], Zrange
     height = p_z_d[Zrange[0],:]
     for i,z in enumerate(Zrange[1:]):
         p.append(plt.bar(n, p_z_d[z,:], width, color=colors[i+1], bottom=height, linewidth = 0))
-        print i,z, colors[i]
         height += p_z_d[z,:]
     
     
@@ -114,7 +109,6 @@ def topic_distribution(name = None, filename = None, study = None, order = None)
     #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
 
     topiclegend = ['Topic' + str(Zrange[labels.index(l)]+1) + ': '+ l + '\n ('+ str(r[Zrange[labels.index(l)]]) + ')' for l in labels]
-    print topiclegend
     fontP = FontProperties()
     if N >60:
         fontP.set_size('xx-small')
@@ -136,8 +130,6 @@ def topic_distribution(name = None, filename = None, study = None, order = None)
 
 def topiclabel_scatter(X,Y,factor,z, colorlabel):
     '''Given a study, a topic and a label we make scatter plot'''
-    print 'x', X
-    print Y
     plt.figure(1, figsize=(8,8))
     
     labelset = list(set(colorlabel))
@@ -145,7 +137,7 @@ def topiclabel_scatter(X,Y,factor,z, colorlabel):
     colors = plt.cm.rainbow(np.linspace(0, 1,len(labelset)+1))
     #colors = ['r','b','y','m']
     
-    for x,y,c in zip(X,Y,colorlabel):
+    for x,y,c in zipper(X,Y,colorlabel):
         plt.scatter(x,y, color=colors[labelset.index(c)])
     
     
@@ -178,7 +170,7 @@ def loglikelihood_curve(study, run = 'all', save = False):
             print file
             files_found = True
             Z = int(re.findall(r'\d+', file)[1])
-            plsa = m.open_model(filename = os.path.join(_root_dir, RESULTS_LOCATION, file)) #get model from the results file
+            plsa = m.open_model(modelFile = os.path.join(_root_dir, RESULTS_LOCATION, file)) #get model from the results file
             L = m.loglikelihood()
             
             if Z in topic:
@@ -186,18 +178,15 @@ def loglikelihood_curve(study, run = 'all', save = False):
             else:
                 topic.append(Z)
                 logl.append([L])
-    print topic
-    print logl
     logl_std = [np.std(x) for x in logl]
     log_count = [len(x) for x in logl]
     logl = [np.mean(x) for x in logl]
-    print logl_std
     if not files_found: 
         print "There were no files found using the template:" + RESULT_FILE_TEMPLATE
         sys.exit()
     
     topic.sort()
-    logl, logl_std = zip(*sorted(zip(logl,logl_std)))
+    logl, logl_std = zip(*sorted(zipper(logl,logl_std)))
     plt.plot(topic,logl,'b-')
     #plt.plot(topic,logl,'m.')
     plt.errorbar(topic, logl, yerr=logl_std, fmt='m.')

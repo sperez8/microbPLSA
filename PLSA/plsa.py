@@ -86,7 +86,7 @@ def train(td,
     #print td, p_z, p_w_z, p_d_z
     
     lik = loglikelihood(td, p_z, p_w_z, p_d_z)
-
+    
     for iteration in range(1, maxiter+1):
         # Swap old and new
         p_d_z_old, p_d_z = (p_d_z, p_d_z_old)
