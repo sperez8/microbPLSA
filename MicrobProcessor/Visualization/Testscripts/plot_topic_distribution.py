@@ -18,10 +18,10 @@ t0 = time()
 study = '1526'
 Z = range(8,9)
 #Z = [5]
-f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
+#f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'
 end = '_topics_.txt'
-#f = None
-#name = 'study_1526_8_topics_with_C_run1'
+f = None
+name = 'study_1526_8_topics_with_C_run1'
 datafile = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 format = 'svg'
@@ -48,8 +48,9 @@ if format == 'svg':
             plot = topic_distribution(filename = f+str(z)+end,study = study, order = order)
         else:
             plot = topic_distribution(name = name, study = study, order = order)
-        plot.savefig('/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots.svg')
-        print '\n\n\n The topic distribution svg file is ready.'
+        topicFile = '/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots_C'
+        plot.savefig(topicFile+'.svg')
+        print '\n\n\n The topic distribution svg file is ready.', topicFile
 
 elif format == 'pdf':
 
@@ -60,7 +61,8 @@ elif format == 'pdf':
     from microbPlotter import *
     
     from matplotlib.backends.backend_pdf import PdfPages
-    pdffile = '/Users/sperez/Desktop/topic_dist_'+study+'plots.pdf'
+    topicFile = '/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots_C'
+    pdffile = topicFile + '.pdf'
     pdf = PdfPages(pdffile)
     
     for z in Z:

@@ -34,6 +34,7 @@ class MicrobPLSA():
         
     def open_model(self, study = None, z = 0, filename = None, name = None):
         ''' Opens the probs of a model previously computed and saved in a json file '''
+        filename = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_1526_8_topics_with_C_run1.txt'
         if filename:
             f = open(filename,'r')
         elif name:

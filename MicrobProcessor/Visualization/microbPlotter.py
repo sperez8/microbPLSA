@@ -21,6 +21,7 @@ _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
+from utilities import zipper
 
 analysis_dir = os.path.join(_root_dir, 'Analysis')
 sys.path.insert(0, analysis_dir)
@@ -71,28 +72,18 @@ def topic_distribution(name = None, filename = None, study = None, order = None)
     
     m = microbplsa.MicrobPLSA()
     plsa = m.open_model(name = name, filename = filename, study = study) #get model from the results file
-    
+    print 'woo1'
     #return document's distribution
     p_z_d = plsa.document_topics()
     
+    print 'woo'
     Z,N =p_z_d.shape #number of samples
     if order is not None:
         p_z_d = p_z_d[:,order]
     n = np.arange(N)
     width = 20.0/float(N) #scale width of bars by number of samples
     p = [] #list of plots
-    colors = plt.cm.rainbow(np.linspace(0, 1, Z))
-    p.append(plt.bar(n, p_z_d[0,:], width, color=colors[0], linewidth = 0))
-    height = p_z_d[0,:]
-    for z in range(1,Z):
-        p.append(plt.bar(n, p_z_d[z,:], width, color=colors[z], bottom=height, linewidth = 0))
-        height += p_z_d[z,:]
-    
-    
-    plt.ylabel('Probability P(z|d)')
-    plt.xlabel('Sample')
-    plt.title('Sample\'s topic distribution')
-    #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
+    colors = plt.cm.rainbow(np.linspace(0, 1, Z))    
     
     Lab = Labelling(study, Z, ignore_continuous = True)
     Lab.metadata(non_labels = ['BarcodeSequence'])
@@ -100,8 +91,30 @@ def topic_distribution(name = None, filename = None, study = None, order = None)
     labels_r = Lab.assignlabels(R,num_labels = 1)
     labels, r = zip(*labels_r)
     labels = [l.replace('(','\n(') for l in labels]
+    
+    #sort and organize labels and topics so they are always plotted in the same order
+    labelsUnsorted = zipper(labels,range(0,Z))
+    print labelsUnsorted
+    labelsUnsorted.sort()
+    print labelsUnsorted
+    labels, Zrange = zip(*labelsUnsorted)
+    Zrange = list(Zrange)
+    p.append(plt.bar(n, p_z_d[Zrange[0],:], width, color=colors[0], linewidth = 0))
+    print colors[0], Zrange
+    height = p_z_d[Zrange[0],:]
+    for i,z in enumerate(Zrange[1:]):
+        p.append(plt.bar(n, p_z_d[z,:], width, color=colors[i+1], bottom=height, linewidth = 0))
+        print i,z, colors[i]
+        height += p_z_d[z,:]
+    
+    
+    plt.ylabel('Probability P(z|d)')
+    plt.xlabel('Sample')
+    plt.title('Sample\'s topic distribution')
+    #plt.xticks(np.arange(0,width/2.0,N*width), ['S'+str(n) for n in range(1,N)])
 
-    topiclegend = ['Topic' + str(z+1) + ': '+ str(labels[z]) + '\n ('+ str(r[z]) + ')' for z in range(0,Z)]
+    topiclegend = ['Topic' + str(Zrange[labels.index(l)]+1) + ': '+ l + '\n ('+ str(r[Zrange[labels.index(l)]]) + ')' for l in labels]
+    print topiclegend
     fontP = FontProperties()
     if N >60:
         fontP.set_size('xx-small')
