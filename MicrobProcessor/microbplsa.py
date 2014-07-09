@@ -30,16 +30,23 @@ class MicrobPLSA():
     This class is actually a wrapper on Mathieu Blondel's PLSA package'''
 
     def __init__(self):
+        self.study = None
+        self.name = None
         self.modelFile = None
         return None
         
-    def open_model(self, study = None, z = 0, name = None, run = '', useC = False):
+    def open_model(self, study = None, z = 0, name = None, modelFile = None, run = '', useC = False):
         ''' Opens the probs of a model previously computed and saved in a json file '''
-        self.study = study
-        self.name = name
+        if self.study is None:
+            self.study = study
+        if self.name is None:
+            self.name = name
         
         if self.modelFile is None:
-            self.modelFile = self.get_result_filename(z, run, useC)
+            if modelFile is not None:
+                self.modelFile = modelFile
+            else:
+                self.modelFile = self.get_result_filename(z, run, useC)
         
         f = open(self.modelFile,'r')
         print 'Using file:', self.modelFile
@@ -50,8 +57,6 @@ class MicrobPLSA():
         model = p_z, p_w_z, p_d_z
         plsa = pLSA()
         plsa.set_model(model)
-        self.study = study
-        self.name = name
         self.z = z
         self.model = plsa
         return self.modelFile
@@ -81,9 +86,11 @@ class MicrobPLSA():
 
     def open_data(self, study = None, dataFile = None, name = None, sampling = False):
         '''gets the otu table from a .biom or .txt file and saves the otu table as a numpy matrix.'''
-        self.study = study
-        self.name = name
-        
+        if self.study is None:
+            self.study = study
+        if self.name is None:
+            self.name = name
+            
         def get_otu_data_file():
             if not self.name and dataFile is not None:
                 self.name = dataFile.split('/')[-1][:-4]
@@ -92,7 +99,7 @@ class MicrobPLSA():
                 return dataFile
             elif self.study:
                 self.study = str(self.study)
-                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/study_'+self.study+'_closed_reference_otu_table.biom'
             elif self.name: 
                 return os.path.join(_cur_dir, RESULTS_LOCATION, name + '.txt')
             else:

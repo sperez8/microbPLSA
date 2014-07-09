@@ -72,7 +72,6 @@ def topic_distribution(name = None, study = None, order = None, **options):
     
     m = microbplsa.MicrobPLSA()
     m.open_model(name = name, study = study, **options) #get model from the results file
-    print 'woo1'
     #return document's distribution
     p_z_d = m.model.document_topics()
     

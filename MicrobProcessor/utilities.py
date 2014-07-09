@@ -22,13 +22,13 @@ SAMPLE_SIZE = 100
 classes = {'kingdom':'k', 'phylum':'p', 'class':'c', 'order':'o', 'family':'f', 'genus':'g', 'species':'s'}
 
 
-def extract_data(filename,sampling):
-    if filename[-4:]=='.txt':
-        return import_tab_file(filename, sampling)
-    elif filename[-5:]=='.biom':
-        return import_biom_file(filename, sampling)
+def extract_data(dataFile,sampling):
+    if dataFile[-4:]=='.txt':
+        return import_tab_file(dataFile, sampling)
+    elif dataFile[-5:]=='.biom':
+        return import_biom_file(dataFile, sampling)
     else: 
-        print "File name: {0} Incorrect file extension.".format(filename)
+        print "File name: {0} Incorrect file extension.".format(dataFile)
         sys.exit()
             
 def import_biom_file(f,sampling):
@@ -68,10 +68,10 @@ def import_biom_file(f,sampling):
         
     return datamatrix
 
-def import_tab_file(filename, sampling):
-    '''imports the date from filename and saves it in numpy array format'''
-    filename = open(filename,'r')
-    table = filename.read().splitlines() #read file and split by lines
+def import_tab_file(dataFile, sampling):
+    '''imports the date from f and saves it in numpy array format'''
+    f = open(dataFile,'r')
+    table = f.read().splitlines() #read file and split by lines
     samples = table[1].split('\t')[1:]  #read column names which are split by tabs, skip first row filled with garbage
     otus = []
     datamatrix = np.zeros((len(table)-2,len(samples)))
@@ -85,8 +85,8 @@ def import_tab_file(filename, sampling):
         datamatrix[i-2] = (row)
     return datamatrix
     
-def read_results(filename):
-    f = open(filename, 'r')
+def read_results(dataFile):
+    f = open(dataFile, 'r')
     reader = csv.reader(f)
     for row in reader:
         print row
@@ -96,7 +96,7 @@ def convert_2_R(results_file):
     '''converts the result matrix probabilities into tab delimited files readable by R'''
     dir = os.path.dirname(os.path.realpath(__file__)) + "/Results/"  
     m = microbplsa.MicrobPLSA()
-    plsa = m.open_model(filename = dir + results_file) #get model from the results file
+    plsa = m.open_model(modelFile = os.path.oin(dir, results_file)) #get model from the results file
     p_z = plsa.p_z
     p_w_z = plsa.p_w_z
     #return document's distribution

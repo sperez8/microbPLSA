@@ -73,7 +73,8 @@ class Labelling():
             store these in a numpy array where row: topic, col: factor'''
                
         # get document's distribution for each topic
-        model= self.m.open_model(study = self.study, z = self.Z) #get model from the results file
+        self.m.open_model(study = self.study, z = self.Z) #get model from the results file
+        model = self.m.model
         p_z_d = model.document_topics()  
         R = perform_correlations(self.realfactors, self.factors, self.factors_type, self.metadatamatrix, self.Z, self.study, p_z_d, self.ignore_continuous)
         
