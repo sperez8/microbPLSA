@@ -112,32 +112,41 @@ class MicrobPLSA():
     def dimensions(self):
         return self.datamatrix.shape
 
-    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True):
+    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False):
         '''runs plsa mutliple time for a range of topics'''
-        print '\n\n\nStudy', self.study, 'has', self.dimensions()[0], 'otus and', self.dimensions()[1], 'samples.'
+        print '\nStudy', self.study, 'has', self.dimensions()[0], 'otus and', self.dimensions()[1], 'samples.'
         if z_f is None:
             z_f = int(3*sqrt(self.dimensions()[1]))
-        print 'We will run PLSA with Z = {0} to {1}.\n\n'.format(z_i, z_f)
+        print 'We will run PLSA with Z = {0} to {1}.'.format(z_i, z_f)
         if useC:
             print "Running PLSA using C code."
+        if override:
+            print "Overriding result files if necessary."
 
-
+        if z_f == z_i:
+            z_f += 1
         for z in range(z_i, z_f, z_inc): 
             run = 1
             while True:
                 filename = self.get_result_filename(z, run, useC)
-
                 try:
                     open(filename, "r")
-                    print "The results file already exists for study {0}, {1} topics and run #{2}".format(self.study, z, run)
-                    run += 1
-                    continue #if result files already exists, we don't override
+                    print "The results file already exists for study {0}, {1} topics and run #{2}:\n    {3}".format(self.study, z, run, filename)
+                    if override:
+                        print 'Overriding...'
+                        break #override
+                    else:
+                        run += 1
+                        continue #if result files already exists, we don't override
                 except IOError:
-                    #found a file not yet written so we run PLSA with those parameters.
                     break
             if run > numRuns: 
+                print "Reached the maximum number of runs ({0}).".format(numRuns)
                 continue   #only want to compute plsa for each z a certain max number of times
-
+            elif override:
+                run += 1
+            else:
+                print "The results file DOES NOT exist for study {0}, {1} topics and run #{2} so we run plsa and create it: \n    {3}".format(self.study, z, run, filename)  
             today = datetime.datetime.today()
             print '\n', today.strftime('%b %d, %Y @ %I:%M%p')
             print 'ZZZZZZZzzzz is ',z 
@@ -145,12 +154,10 @@ class MicrobPLSA():
             t0 = time()
             model = self.run_plsa(z, useC = useC, verbatim = True)
             print 'Saving plsa to file {0}.'.format(filename)
-
             self.save_results(filename = filename, extension =  '.txt')
             print 'Time for analysis:', round(time()-t0,1)
             
-        return None
-
+            
     def run_plsa(self, Z, maxiter=MAX_ITER_PLSA, verbatim = True, useC = True):
         '''runs plsa on sample data in filename'''
 

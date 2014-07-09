@@ -24,7 +24,7 @@ def main(*argv):
     parser.add_argument('-z_inc','--increment', help='Increment of topic numbers', type = int, default = 1)
     parser.add_argument('-useC', help='use C code to run plsa', action = 'store_true')
     parser.add_argument('-runs','-numruns', help='Specify the number of runs', type = int, default = 1)
-    
+    parser.add_argument('-override', help='Overrides a result file', action = 'store_true')
     args = parser.parse_args()
     
     if args.study is None and args.name is None:
@@ -36,7 +36,7 @@ def main(*argv):
     name = args.name
     if len(args.topics) == 1:
         z_i = 2
-        z_f = args.topics
+        z_f = args.topics[0]
     elif len(args.topics) == 2: 
         z_i = min(args.topics)
         if z_i < 2: 
@@ -49,17 +49,21 @@ def main(*argv):
     z_inc = args.increment
     numRuns = args.runs
     useC = args.useC
+    override = args.override
 
     print ("    Study: %s" % study)
     print ("    Name: %s" % name)
-    print ("    Topics will be run from {0} to {1} in increments of {2}".format(z_i, z_f, z_inc))
+    if z_i != z_f:
+        print ("    Topics will be run from {0} to {1} in increments of {2}".format(z_i, z_f, z_inc))
+    else:
+        print ("    PLSA will be run with {0} topics".format(z_i))
     print ("    Using C: %s" % args.useC)
     print ("    Number of runs: %s" % args.runs)
-
+    print ("    Override result files: %s" % args.override)
 
     m = microbplsa.MicrobPLSA()
     m.open_data(study = study)
-    m.generate_runs(z_i = z_i, z_f = z_f, z_inc = z_inc, numRuns = numRuns, useC = useC)
+    m.generate_runs(z_i = z_i, z_f = z_f, z_inc = z_inc, numRuns = numRuns, useC = useC, override = override)
 
 if __name__ == "__main__":
     main(*sys.argv[1:])
