@@ -92,16 +92,16 @@ class MicrobPLSA():
             self.name = name
             
         def get_otu_data_file():
-            if not self.name and dataFile is not None:
+            if self.name is None and dataFile is not None:
                 self.name = dataFile.split('/')[-1][:-4]
                     
             if dataFile is not None:
                 return dataFile
-            elif self.study:
+            elif self.study is not None:
                 self.study = str(self.study)
                 return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/study_'+self.study+'_closed_reference_otu_table.biom'
-            elif self.name: 
-                return os.path.join(_cur_dir, RESULTS_LOCATION, name + '.txt')
+            elif self.name is not None: 
+                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.name+'/'+self.name+'.txt'
             else:
                 print "Need study number or the name of the data file to access the data."
 
@@ -280,7 +280,7 @@ class MicrobPLSA():
         
         if self.study:
             resultsfilename = 'study_' + self.study + '_' + str(z) + '_topics_' + add
-        elif name:
+        elif self.name:
             resultsfilename = 'study_' + self.name + '_' + str(z) + '_topics_' + add
         else:
             print 'Please provide the study number or name.'

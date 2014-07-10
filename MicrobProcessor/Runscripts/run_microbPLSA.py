@@ -18,7 +18,7 @@ def main(*argv):
     '''handles user input and runs plsa'''
 
     parser = argparse.ArgumentParser(description='This scripts runs plsa for a range of topic numbers.')
-    parser.add_argument('-s','--study', help='The study number')
+    parser.add_argument('-s','--study', help='The study number', default = None)
     parser.add_argument('-n','--name', help='The name of the dataset')
     parser.add_argument('-z','--topics', help='The range of topics to be run [z_start, z_end]', nargs = '+', type = int, required = True)
     parser.add_argument('-z_inc','--increment', help='Increment of topic numbers', type = int, default = 1)
@@ -32,7 +32,9 @@ def main(*argv):
         parser.print_help()
         sys.exit()
     
-    study = str(args.study)
+    if args.study:
+        study = str(args.study)
+    else: study = None
     name = args.name
     if len(args.topics) == 1:
         z_i = 2
@@ -62,7 +64,7 @@ def main(*argv):
     print ("    Override result files: %s" % args.override)
 
     m = microbplsa.MicrobPLSA()
-    m.open_data(study = study)
+    m.open_data(study = study, name = name)
     m.generate_runs(z_i = z_i, z_f = z_f, z_inc = z_inc, numRuns = numRuns, useC = useC, override = override)
 
 if __name__ == "__main__":
