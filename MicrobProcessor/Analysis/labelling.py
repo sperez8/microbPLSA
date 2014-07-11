@@ -10,11 +10,6 @@ metdata_tools to assign labels to topics
 from metadata_tools import *
 from correlations import *
 import sys,os
-_cur_dir = os.path.dirname(os.path.realpath(__file__))
-_cur_dir = os.path.dirname(os.path.realpath(__file__))
-_root_dir = os.path.dirname(_cur_dir)
-sys.path.insert(0, _root_dir)
-import microbplsa
 
 class Labelling():
     '''A class to handle the labelling of topics using metadata'''
@@ -26,18 +21,18 @@ class Labelling():
         self.ignore_continuous = ignore_continuous
         self.adjusted_metadata = adjusted_metadata
         self.Z = plsa.z
+        self.m = plsa
         self.study = plsa.study
+        self.name = plsa.name        
         self.resultfile = plsa.open_model()
-        self.datafile = plsa.open_data()
-        
+        self.dataFile = plsa.open_data()
         
         if self.debug:
             print '\n\n\nStudy:', self.study, 'Z = ', self.Z
             print 'Files are:'
-            print self.datafile
+            print self.dataFile
             print self.resultfile
-        
-        self.m = microbplsa.MicrobPLSA()
+            
         return None
 
     def getlabels(self):
@@ -47,16 +42,18 @@ class Labelling():
 
     def metadata(self, metadatafile = None, reorder = True, non_labels = []):
         if metadatafile == None:
-            metadatafile = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/metadata'+self.study+'.csv'
-        
+            if self.study:
+                metadatafile = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/metadata'+self.study+'.csv'
+            elif self.name:
+                metadatafile = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.name+'/metadata_'+self.study+'.csv'
+                
         #store the name of the metadata columns in FACTORS = ['date', 'soil type', ...]
         #store the metadata in a numpy array with row: sample, col: data
         self.factors, self.metadatamatrix = get_metadata(metadatafile, self.adjusted_metadata)
         #sometimes the samples aren't in the same order in the metadata 
         #as in the result files
         if reorder:
-            datafile = self.m.open_data(study = self.study)
-            json_data=open(datafile)
+            json_data=open(self.dataFile)
             alldata = json.load(json_data)
             json_data.close()
             data = alldata['columns']
@@ -73,7 +70,6 @@ class Labelling():
             store these in a numpy array where row: topic, col: factor'''
                
         # get document's distribution for each topic
-        self.m.open_model(study = self.study, z = self.Z) #get model from the results file
         model = self.m.model
         p_z_d = model.document_topics()  
         R = perform_correlations(self.realfactors, self.factors, self.factors_type, self.metadatamatrix, self.Z, self.study, p_z_d, self.ignore_continuous)

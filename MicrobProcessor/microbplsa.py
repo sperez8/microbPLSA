@@ -32,6 +32,8 @@ class MicrobPLSA():
     def __init__(self):
         self.study = None
         self.name = None
+        self.run = ''
+        self.useC = None
         self.modelFile = None
         return None
         
@@ -41,15 +43,19 @@ class MicrobPLSA():
             self.study = study
         if self.name is None:
             self.name = name
+        if self.run == '':
+            self.run = run
+        if self.useC is None:
+            self.useC = useC
+            
         
-        if self.modelFile is None:
-            if modelFile is not None:
-                self.modelFile = modelFile
-            else:
-                self.modelFile = self.get_result_filename(z, run, useC)
+        if modelFile is not None:
+            self.modelFile = modelFile
+        else:
+            self.modelFile = self.get_result_filename(z, self.run, self.useC)
         
         f = open(self.modelFile,'r')
-        print 'Using file:', self.modelFile
+        print 'Using the following result file:', self.modelFile
         data = json.load(f)
         p_z = np.array(data['p_z'])
         p_w_z = np.array(data['p_w_z'])
@@ -90,7 +96,7 @@ class MicrobPLSA():
             self.study = study
         if self.name is None:
             self.name = name
-            
+        
         def get_otu_data_file():
             if self.name is None and dataFile is not None:
                 self.name = dataFile.split('/')[-1][:-4]

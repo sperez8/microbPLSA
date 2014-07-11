@@ -17,8 +17,8 @@ from clustering import *
 t0 = time()
 study = '1526'
 Z = [8]
-useC = True
-run = 1
+useC = False
+run = 4
 name = None
 datafile = '/Users/sperez/Documents/PLSA data/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
@@ -44,7 +44,10 @@ if format == 'svg':
     for z in Z:
         plot = topic_distribution(name = name, study = study, order = order, run = run, useC = useC, z = z)
         topicFile = '/Users/sperez/Desktop/topic_dist_'+study+'_'+str(z)+'plots'
-        plot.savefig(topicFile+'.svg')
+        if useC:
+            topicFile += '_withC'
+        topicFile += '_run'+str(run)+'.svg'
+        plot.savefig(topicFile)
         print '\n\n\n The topic distribution svg file is ready.', topicFile
 
 elif format == 'pdf':

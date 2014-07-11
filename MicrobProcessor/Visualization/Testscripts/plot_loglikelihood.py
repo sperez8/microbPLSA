@@ -13,20 +13,21 @@ from microbPlotter import *
 from time import time
 
 
-studies = ['1526']
+study = None
+name = 'bac_final0.03.otutable_GOODSAMPLES'
 run = 1
 #run = 'all'
-
+useC = True
 t0 = time()
-for study in studies:
-    file = '/Users/sperez/Desktop/loglikelihood_curves'+study+'_run_'+str(run)+'with_C.pdf'
-    print "Plotting log likelihood curve for study ", study
-    pdf = PdfPages(file)
-    plot = loglikelihood_curve(study, run, save = True)
-    plot.savefig(pdf, format='pdf')
-    print "Figure saved for study ", study
-    plot.clf() 
-    pdf.close()
+
+file = '/Users/sperez/Desktop/loglikelihood_curves'+name+'_run_'+str(run)+'.pdf'
+print "Plotting log likelihood curve for study ", name
+pdf = PdfPages(file)
+plot = loglikelihood_curve(study = study, name = name, run = run, useC = useC, save = True)
+plot.savefig(pdf, format='pdf')
+print "Figure saved for study ", study
+plot.clf() 
+pdf.close()
     
 print 'Process took', time()-t0
 print 'PDF file is ready to read: ', file

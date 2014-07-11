@@ -20,7 +20,7 @@ from matplotlib.font_manager import FontProperties
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
-import microbplsa
+from microbplsa import *
 from utilities import zipper
 
 analysis_dir = os.path.join(_root_dir, 'Analysis')
@@ -148,28 +148,35 @@ def topiclabel_scatter(X,Y,factor,z, colorlabel):
     return plt
 
 
-def loglikelihood_curve(study, run = 'all', save = False):
+def loglikelihood_curve(study = None, name = None, run = 'all', useC = False, save = False):
     '''Given a dataset we can find the models p_z,p_w_z,p_d_z for 
     different number of topics Z and can plot the loglikelihood vs. Z curve'''
     logl = []
     topic = []
     
     files_found = False
-    if run == 1: run  = '_'
-    elif type(run) == int : run = "_run" + str(run)
+    if type(run) == int : run = "_run" + str(run)
     elif run == 'all': run = "_*"
-    RESULT_FILE_TEMPLATE = 'study_'+study+'*_topics'+run+'.txt' #what a result file looks like
-    
-    f = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
+    add = ''
+    if useC:
+        add = '_with_C'
+    if study is not None:
+        study = str(study)
+        RESULT_FILE_TEMPLATE = 'study_' + study + '*_topics' + add + run + '.txt' #what a result file looks like
+    else:
+        RESULT_FILE_TEMPLATE = 'study_' + name + '*_topics' + add + run + '.txt' #what a result file looks like
+        
     m = microbplsa.MicrobPLSA()
-    m.open_data(study = study)
+    m.open_data(study = study, name = name)
     
-    for file in os.listdir(_root_dir + RESULTS_LOCATION):        
+    for file in os.listdir(os.path.join(_root_dir, RESULTS_LOCATION)):        
         if fnmatch.fnmatch(file, RESULT_FILE_TEMPLATE):
-            print file
+            print 'Calculating LogLikelihood of model from the file: ', file
             files_found = True
-            Z = int(re.findall(r'\d+', file)[1])
+            Z = int(re.findall(r'\d+_topic', file)[0].split('_')[0])
+            print 'Getting model...'
             m.open_model(modelFile = os.path.join(_root_dir, RESULTS_LOCATION, file)) #get model from the results file
+            print 'Calculating...'
             L = m.loglikelihood()
             
             if Z in topic:
@@ -177,6 +184,8 @@ def loglikelihood_curve(study, run = 'all', save = False):
             else:
                 topic.append(Z)
                 logl.append([L])
+            print "Z = {0}, L = {1}".format(Z,L)
+                
     logl_std = [np.std(x) for x in logl]
     log_count = [len(x) for x in logl]
     logl = [np.mean(x) for x in logl]
@@ -190,7 +199,10 @@ def loglikelihood_curve(study, run = 'all', save = False):
     #plt.plot(topic,logl,'m.')
     plt.errorbar(topic, logl, yerr=logl_std, fmt='m.')
     plt.ylabel('LogLikelihood')
-    plt.title('Loglikelihood versus number of topics for study '+study)
+    if study:
+        plt.title('Loglikelihood versus number of topics for study ' + study )
+    else: 
+        plt.title('Loglikelihood versus number of topics for study ' + str(name) )
     plt.xlabel('Z, number of topics')
     
     if save:
@@ -198,7 +210,10 @@ def loglikelihood_curve(study, run = 'all', save = False):
         count = [str(t) for t in log_count]
         logl = [str(round(t,2)) for t in logl]
         logl_std = [str(round(t,1)) for t in logl_std]
-        logfile = open(os.path.join(_root_dir + RESULTS_LOCATION + 'Loglikelihoods', 'logs_' + study + '.txt'), 'w')
+        if study:
+            logfile = open(os.path.join(_root_dir, RESULTS_LOCATION, 'Loglikelihoods', 'logs_' + study + '.txt'), 'w')
+        elif name:
+            logfile = open(os.path.join(_root_dir, RESULTS_LOCATION, 'Loglikelihoods', 'logs_' + str(name) + '.txt'), 'w')
         logfile.write('\t'.join(topic))
         logfile.write('\n')
         logfile.write('\t'.join(count))
