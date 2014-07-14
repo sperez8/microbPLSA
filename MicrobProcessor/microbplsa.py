@@ -118,7 +118,7 @@ class MicrobPLSA():
     def dimensions(self):
         return self.datamatrix.shape
 
-    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False):
+    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False, folder = None, add_to_file = None):
         '''runs plsa mutliple time for a range of topics'''
         print '\nStudy', self.study, 'has', self.dimensions()[0], 'otus and', self.dimensions()[1], 'samples.'
         if z_f is None:
@@ -134,7 +134,7 @@ class MicrobPLSA():
         for z in range(z_i, z_f, z_inc): 
             run = 1
             while True:
-                filename = self.get_result_filename(z, run, useC)
+                filename = self.get_result_filename(z, run, useC, folder = folder, add_to_file = add_to_file)
                 try:
                     open(filename, "r")
                     print "The results file already exists for study {0}, {1} topics and run #{2}:\n    {3}".format(self.study, z, run, filename)
@@ -279,21 +279,26 @@ class MicrobPLSA():
             otu_abundances[otu] = round(float(np.count_nonzero(abundances))/float(otutable.shape[1]),2)
         return otu_abundances
 
-    def get_result_filename(self, z, run, useC):
+    def get_result_filename(self, z, run, useC, folder = None, add_to_file = None):
         if useC:
-            add = 'with_C_'
-        else: add = ''
+            addC = 'with_C_'
+        else: addC = ''
         
         if self.study:
-            resultsfilename = 'study_' + self.study + '_' + str(z) + '_topics_' + add
+            resultsfilename = 'study_' + self.study + '_' + str(z) + '_topics_'
         elif self.name:
-            resultsfilename = 'study_' + self.name + '_' + str(z) + '_topics_' + add
+            resultsfilename = 'study_' + self.name + '_' + str(z) + '_topics_'
         else:
             print 'Please provide the study number or name.'
             
         ext = '.txt'
-        
+
+        resultsfilename += addC + add_to_file        
         if run != '':
             resultsfilename += 'run' +str(run)
-        filename = os.path.join(_cur_dir, RESULTS_LOCATION, resultsfilename + ext)
+
+        if folder:
+            filename = os.path.join(_cur_dir, RESULTS_LOCATION, folder, resultsfilename + ext)
+        else:
+            filename = os.path.join(_cur_dir, RESULTS_LOCATION, resultsfilename + ext)
         return filename

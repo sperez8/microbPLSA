@@ -26,7 +26,7 @@ pdf = PdfPages(file)
 plot = loglikelihood_curve(study = study, name = name, run = run, useC = useC, save = True)
 plot.savefig(pdf, format='pdf')
 print "Figure saved for study ", study
-plot.clf() 
+plot.clf()
 pdf.close()
     
 print 'Process took', time()-t0

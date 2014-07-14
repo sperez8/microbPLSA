@@ -81,9 +81,6 @@ def train(td,
           folding_in, debug):
 
     R = td.sum() # total number of word counts
-
-    #print 'Input:'
-    #print td, p_z, p_w_z, p_d_z
     
     lik = loglikelihood(td, p_z, p_w_z, p_d_z)
     
