@@ -293,10 +293,12 @@ class MicrobPLSA():
             
         ext = '.txt'
 
-        resultsfilename += addC + add_to_file        
+        resultsfilename += addC
+        
         if run != '':
             resultsfilename += 'run' +str(run)
 
+        resultsfilename += add_to_file    
         if folder:
             filename = os.path.join(_cur_dir, RESULTS_LOCATION, folder, resultsfilename + ext)
         else:

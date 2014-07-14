@@ -27,8 +27,8 @@ useC = True
 
 #options
 k = 3 #for k-fold validation
-fileInfo = '_cross_k' + str(k) + '_seed' + str(randomSeed) + '_'
-folder = 'CrossValidate'
+fileInfo = '_cross_seed' + str(randomSeed) + '_k' + str(k)
+folder = 'CrossValidation'
 
 #load the data
 m = microbplsa.MicrobPLSA()
@@ -41,15 +41,19 @@ kFold = cross_validation.KFold(n=data.shape[1], n_folds = k, indices = False, sh
 print kFold    
 
 #test that diversity of sub samples are similar
-##
 
 #run plsa on each
 i = 1
 for trainSamples,testSamples in kFold:
     print sum(trainSamples), sum(testSamples)
-    trainData, testData = data[trainSamples], data[testSamples]
+    trainData, testData = data[:,trainSamples], data[:,testSamples]
     
-    m.generate_runs(z_i = z, z_f = z, z_inc = z_inc, numRuns = 1, useC = useC, override = False, folder = folder, add_to_file = fileInfo + str(i) + '_')
+    m = microbplsa.MicrobPLSA()
+    m.study = study
+    m.name = name
+    m.datamatrix = trainData
+    m.generate_runs(z_i = z, z_f = z, z_inc = z_inc, numRuns = 10, useC = useC, override = False, folder = folder, add_to_file = fileInfo + '(' + str(i) + ')')
+    print m.loglikelihood()
     i += 1
     
     # fold-in k-th sample and measure fit
