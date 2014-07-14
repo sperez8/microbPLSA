@@ -26,7 +26,7 @@ z_inc = 1
 useC = True
 
 #options
-k = 3 #for k-fold validation
+k = 2 #for k-fold validation
 fileInfo = '_cross_seed' + str(randomSeed) + '_k' + str(k)
 folder = 'CrossValidation'
 
@@ -53,10 +53,12 @@ for trainSamples,testSamples in kFold:
     m.name = name
     m.datamatrix = trainData
     m.generate_runs(z_i = z, z_f = z, z_inc = z_inc, numRuns = 10, useC = useC, override = False, folder = folder, add_to_file = fileInfo + '(' + str(i) + ')')
-    print m.loglikelihood()
+    #print m.loglikelihood()
     i += 1
     
-    # fold-in k-th sample and measure fit
+    # fold-in documents of k-th sample one at a time and measure fit
+    for document in testData:
+        m.fold_in(document)
     
     
     
