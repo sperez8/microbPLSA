@@ -34,6 +34,7 @@ class MicrobPLSA():
         self.name = None
         self.run = ''
         self.useC = None
+        self.model = None
         self.modelFile = None
         return None
         
@@ -131,6 +132,7 @@ class MicrobPLSA():
 
         if z_f == z_i:
             z_f += 1
+        filesCreated = False
         for z in range(z_i, z_f, z_inc): 
             run = 1
             while True:
@@ -148,7 +150,7 @@ class MicrobPLSA():
                     break
             if run > numRuns: 
                 print "Reached the maximum number of runs ({0}).".format(numRuns)
-                continue   #only want to compute plsa for each z a certain max number of times
+                continue #only want to compute plsa for each z a certain max number of times
             elif override:
                 run += 1
             else:
@@ -159,10 +161,16 @@ class MicrobPLSA():
         
             t0 = time()
             model = self.run_plsa(z, useC = useC, verbatim = True)
-            print 'Saving plsa to file {0}.'.format(filename)
+            print '\nSaving plsa to file {0}.'.format(filename)
             self.save_results(filename = filename, extension =  '.txt')
             print 'Time for analysis:', round(time()-t0,1)
-            
+            filesCreated = True
+        
+        if not filesCreated:
+            print '\n    No files were created. Exiting...\n'
+            sys.exit()
+        
+        return None
             
     def run_plsa(self, Z, maxiter=MAX_ITER_PLSA, verbatim = True, useC = True):
         '''runs plsa on sample data in filename'''
@@ -245,12 +253,11 @@ class MicrobPLSA():
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
 
-    def fold_in(self, testData):
+    def fold_in(self, document):
         """
         Compute the log-likelihood that the model generated the data.
         """
-        print self.datamatrix.shape
-        fold = self.model.folding_in(testData)
+        fold = self.model.folding_in(document)
         return fold
     
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
