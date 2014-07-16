@@ -119,7 +119,7 @@ class MicrobPLSA():
     def dimensions(self):
         return self.datamatrix.shape
 
-    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False, folder = None, add_to_file = None):
+    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False, folder = None, add_to_file = ''):
         '''runs plsa mutliple time for a range of topics'''
         print '\nStudy', self.study, 'has', self.dimensions()[0], 'otus and', self.dimensions()[1], 'samples.'
         if z_f is None:
@@ -257,7 +257,8 @@ class MicrobPLSA():
         """
         Compute the log-likelihood that the model generated the data.
         """
-        fold = self.model.folding_in(document)
+        print 'm', useC
+        fold = self.model.folding_in(document, useC = useC)
         return fold
     
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
@@ -294,11 +295,11 @@ class MicrobPLSA():
             otu_abundances[otu] = round(float(np.count_nonzero(abundances))/float(otutable.shape[1]),2)
         return otu_abundances
 
-    def get_result_filename(self, z, run, useC, folder = None, add_to_file = None):
+    def get_result_filename(self, z, run, useC, folder = None, add_to_file = ''):
         if useC:
             addC = 'with_C_'
         else: addC = ''
-        
+
         if self.study:
             resultsfilename = 'study_' + self.study + '_' + str(z) + '_topics_'
         elif self.name:

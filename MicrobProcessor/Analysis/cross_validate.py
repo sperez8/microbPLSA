@@ -34,11 +34,9 @@ folder = 'CrossValidation'
 m = microbplsa.MicrobPLSA()
 m.open_data(study = study, name = name)
 data = m.datamatrix
-print data.shape
 
 #First we split the data into k-sub-samples
 kFold = cross_validation.KFold(n=data.shape[1], n_folds = k, indices = False, shuffle = True, random_state = randomSeed)
-print kFold    
 
 #test that diversity of sub samples are similar
 
@@ -64,7 +62,6 @@ for trainSamples,testSamples in kFold:
         fold = m.fold_in(document, useC = False)
         print '\nfold', fold
         print 'len', len(document)
-        sys.exit()
     
 
 #collect all the data and plot it for all topic numbers

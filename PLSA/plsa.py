@@ -34,6 +34,7 @@ Notation:
 
 """
 
+from math import *
 import numpy as np
 
 try:
@@ -81,7 +82,10 @@ def train(td,
           folding_in, debug):
 
     R = td.sum() # total number of word counts
-    print R, td
+    print 'Number of elements:', R, folding_in
+    if folding_in:
+        print 'Folding in document:', td.shape, td
+        print'OK<'
     lik = loglikelihood(td, p_z, p_w_z, p_d_z)
     
     for iteration in range(1, maxiter+1):
@@ -126,7 +130,11 @@ def train(td,
             break
 
         if debug:
-            if iteration%100 == 0:
+            if folding_in:
+                itIncrements = 10
+            else:
+                itIncrements = 100
+            if iteration%itIncrements == 0:
                 print "Iteration", iteration
             
                 print "Parameter change"
@@ -303,7 +311,6 @@ class pLSA(object):
 
         Return: a Z-array of P(z|d) probabilities.
         """
-        print 'old', self.p_d_z
         V = d.shape[0]
         Z = len(self.p_z)
         plsa = pLSA()
@@ -311,17 +318,17 @@ class pLSA(object):
         plsa.p_z = self.p_z
         plsa.p_w_z = self.p_w_z
         plsa.train(d[:,np.newaxis], Z, maxiter, eps, folding_in=True, useC=useC)
-       # print "\n\ntraining occurred"
-        from math import *
-        #print 'a', plsa.p_d_z[0,:]
-       #print 'z', self.p_z
-        new = []
-        for x,y in zip(self.p_z, plsa.p_d_z[0]):
+        p_d = np.zeros(Z)
+        print '\n'
+        for z,x,y in zip(range(Z),self.p_z, plsa.p_d_z[0]):
             ly = log(y)
             lx = log(x)
             sum = lx+ly
-            new.append(exp(x+y))
-        return normalize(new)
+            if lx < pow(10,-324) or ly < pow(10,-324):
+                print "        AHHHH", x,y,lx,ly,sum, exp(lx+ly)
+            p_d[z] = exp(lx+ly)
+            print p_d
+        return normalize(p_d)
 
     def global_weights(self, gw):
         """
