@@ -311,19 +311,17 @@ class pLSA(object):
         plsa.p_z = self.p_z
         plsa.p_w_z = self.p_w_z
         plsa.train(d[:,np.newaxis], Z, maxiter, eps, folding_in=True, useC=useC)
-        print "\n\ntraining occurred"
-        print 'a', plsa.p_d_z[0,:]
-        print 'b', self.p_z * plsa.p_d_z[0]
-        print 'z', self.p_z
+       # print "\n\ntraining occurred"
+        from math import *
+        #print 'a', plsa.p_d_z[0,:]
+       #print 'z', self.p_z
         new = []
         for x,y in zip(self.p_z, plsa.p_d_z[0]):
-            y = float(y)
-            z = float(x)
-            print x + y
-            new.append(x*y)
-            print x,y,new
-        print np.multiply(self.p_z,plsa.p_d_z[0,:])
-        return normalize(self.p_z * plsa.p_d_z[0])
+            ly = log(y)
+            lx = log(x)
+            sum = lx+ly
+            new.append(exp(x+y))
+        return normalize(new)
 
     def global_weights(self, gw):
         """
