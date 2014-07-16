@@ -299,6 +299,9 @@ class MicrobPLSA():
         if useC:
             addC = 'with_C_'
         else: addC = ''
+        
+        if add_to_file is None:
+            add_to_file = ''
 
         if self.study:
             resultsfilename = 'study_' + self.study + '_' + str(z) + '_topics_'

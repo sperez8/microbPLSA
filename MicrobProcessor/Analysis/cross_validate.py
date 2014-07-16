@@ -59,9 +59,10 @@ for trainSamples,testSamples in kFold:
     print 'Folding...'
     # fold-in documents of k-th sample one at a time and measure fit
     for document in np.transpose(testData):
+        print 'doc', document
         fold = m.fold_in(document, useC = False)
         print '\nfold', fold
-        print 'len', len(document)
+        print sys.exit()
     
 
 #collect all the data and plot it for all topic numbers
