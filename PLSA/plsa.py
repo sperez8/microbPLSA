@@ -81,7 +81,7 @@ def train(td,
           folding_in, debug):
 
     R = td.sum() # total number of word counts
-    
+    print R, td
     lik = loglikelihood(td, p_z, p_w_z, p_d_z)
     
     for iteration in range(1, maxiter+1):
@@ -192,6 +192,7 @@ class pLSA(object):
 
         train_func = get_train_func(useC)
         
+        print useC, train_func
         train_func(td.astype(np.uint32),
                    self.p_z, self.p_w_z, self.p_d_z,
                    p_z_old, p_w_z_old, p_d_z_old,
@@ -294,7 +295,7 @@ class pLSA(object):
                 p_w_d[w,d] = np.sum(self.p_w_z[w,:] * self.p_d_z[d,:])
         return p_w_d
 
-    def folding_in(self, d, maxiter=50, eps=0.01):
+    def folding_in(self, d, maxiter=50, eps=0.01, useC=True):
         """
         Compute the probabilities of a new document d belonging to topics.
 
@@ -302,14 +303,27 @@ class pLSA(object):
 
         Return: a Z-array of P(z|d) probabilities.
         """
+        print 'old', self.p_d_z
         V = d.shape[0]
         Z = len(self.p_z)
         plsa = pLSA()
         plsa.debug = self.debug
         plsa.p_z = self.p_z
         plsa.p_w_z = self.p_w_z
-        plsa.train(d[:,np.newaxis], Z, maxiter, eps, folding_in=True)
-        return normalize(self.p_z * plsa.p_d_z[:,0])
+        plsa.train(d[:,np.newaxis], Z, maxiter, eps, folding_in=True, useC=useC)
+        print "\n\ntraining occurred"
+        print 'a', plsa.p_d_z[0,:]
+        print 'b', self.p_z * plsa.p_d_z[0]
+        print 'z', self.p_z
+        new = []
+        for x,y in zip(self.p_z, plsa.p_d_z[0]):
+            y = float(y)
+            z = float(x)
+            print x + y
+            new.append(x*y)
+            print x,y,new
+        print np.multiply(self.p_z,plsa.p_d_z[0,:])
+        return normalize(self.p_z * plsa.p_d_z[0])
 
     def global_weights(self, gw):
         """

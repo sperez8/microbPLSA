@@ -253,7 +253,7 @@ class MicrobPLSA():
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
 
-    def fold_in(self, document):
+    def fold_in(self, document, useC = True):
         """
         Compute the log-likelihood that the model generated the data.
         """

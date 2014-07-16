@@ -19,7 +19,7 @@ import microbplsa
 
 #initial input
 randomSeed = 2 #seed for reproducible randomization
-study = '1526'
+study = '1037'
 name = None
 z = 2
 z_inc = 1
@@ -54,13 +54,17 @@ for trainSamples,testSamples in kFold:
     m.datamatrix = trainData
     m.generate_runs(z_i = z, z_f = z, z_inc = z_inc, numRuns = 10, useC = useC, override = False, folder = folder, add_to_file = fileInfo + '(' + str(i) + ')')
     #print m.loglikelihood()
+    if m.model is None:
+        print ''
     i += 1
     
+    print 'Folding...'
     # fold-in documents of k-th sample one at a time and measure fit
-    for document in testData:
-        m.fold_in(document)
-    
-    
+    for document in np.transpose(testData):
+        fold = m.fold_in(document, useC = False)
+        print '\nfold', fold
+        print 'len', len(document)
+        sys.exit()
     
 
 #collect all the data and plot it for all topic numbers
