@@ -56,13 +56,20 @@ for trainSamples,testSamples in kFold:
         print ''
     i += 1
     
-    print 'Folding...'
+    print '\n*'+'-'*25+'Folding'+'-'*25+'*\n'
     # fold-in documents of k-th sample one at a time and measure fit
-    for document in np.transpose(testData):
-        print 'doc', document
-        fold = m.fold_in(document, useC = False)
-        print '\nfold', fold
-        print sys.exit()
+    print testData.shape, testData
+    fold = m.fold_in(testData, useC = False)
+    
+    print '\nfold', fold
+    print sys.exit()
+        
+#     for document in np.transpose(testData):
+#         print 'doc', document
+#         fold = m.fold_in(document, useC = False)
+#         
+#         print '\nfold', fold
+#         print sys.exit()
     
 
 #collect all the data and plot it for all topic numbers

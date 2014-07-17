@@ -70,6 +70,7 @@ def loglikelihood(td, p_z, p_w_z, p_d_z):
     """
     V, D = td.shape
     L = 0.0
+    
     for w,d in zip(*td.nonzero()):
         p_d_w = np.sum(p_z * p_w_z[w,:] * p_d_z[d,:])
         if p_d_w > 0: L += td[w,d] * np.log(p_d_w)
@@ -82,24 +83,29 @@ def train(td,
           folding_in, debug):
 
     R = td.sum() # total number of word counts
-    print 'Number of elements:', R, folding_in
-    if folding_in:
-        print 'Folding in document:', td.shape, td
-        print'OK<'
     lik = loglikelihood(td, p_z, p_w_z, p_d_z)
+    print td.shape, p_z
+    print p_w_z.shape
+    print p_d_z.shape, p_d_z
+    print p_d_z_old
+    
+    if folding_in:
+        print 'Folding in document with shape:', td.shape
+        print lik
     
     for iteration in range(1, maxiter+1):
         # Swap old and new
         p_d_z_old, p_d_z = (p_d_z, p_d_z_old)
-        p_w_z_old, p_w_z = (p_w_z, p_w_z_old)
-        p_z_old, p_z = (p_z, p_z_old)
+        if not folding_in:
+            p_w_z_old, p_w_z = (p_w_z, p_w_z_old)
+            p_z_old, p_z = (p_z, p_z_old)
 
         # Set to 0.0 without memory allocation
         p_d_z *= 0.0
         if not folding_in:
             p_w_z *= 0.0
             p_z *= 0.0
-
+            
         for w,d in zip(*td.nonzero()):
             # E-step
             p_z_d_w = p_z_old * p_d_z_old[d,:] * p_w_z_old[w,:]
@@ -108,30 +114,34 @@ def train(td,
             # M-step
             s = td[w,d] *  p_z_d_w
             p_d_z[d,:] += s
-
+            
             if not folding_in:
                 p_w_z[w,:] += s
                 p_z += s
 
         # normalize
         normalize(p_d_z, axis=0, out=p_d_z)
-
         if not folding_in:
             normalize(p_w_z, axis=0, out=p_w_z)
             p_z /= R
-
+        
+        print 'after', p_d_z, td, 'z4', p_z, p_w_z
         lik_new = loglikelihood(td, p_z, p_w_z, p_d_z)
         lik_diff = lik_new - lik
+        print lik_diff, lik_new
         assert(lik_diff >= -1e-10)
         lik = lik_new
 
-        if lik_diff < eps:
+        if iteration < 4:
+            print '\n\n\n\n\n'
+            pass
+        elif lik_diff < eps:
             print "No more progress, stopping EM at iteration", iteration
             break
 
         if debug:
             if folding_in:
-                itIncrements = 10
+                itIncrements = 1
             else:
                 itIncrements = 100
             if iteration%itIncrements == 0:
@@ -317,10 +327,15 @@ class pLSA(object):
         plsa.debug = self.debug
         plsa.p_z = self.p_z
         plsa.p_w_z = self.p_w_z
-        plsa.train(d[:,np.newaxis], Z, maxiter, eps, folding_in=True, useC=useC)
+        if len(d.shape)==1:
+            d = d[:,np.newaxis] #needs debugging
+            print 'Folding in 1D arrays has bugs.'
+        plsa.train(d, Z, maxiter, eps, folding_in=True, useC=useC)
+        
         p_d = np.zeros(Z)
         print '\n'
         for z,x,y in zip(range(Z),self.p_z, plsa.p_d_z[0]):
+            print x,y
             ly = log(y)
             lx = log(x)
             sum = lx+ly

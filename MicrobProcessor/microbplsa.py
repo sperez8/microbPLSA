@@ -257,7 +257,6 @@ class MicrobPLSA():
         """
         Compute the log-likelihood that the model generated the data.
         """
-        print 'm', useC
         fold = self.model.folding_in(document, useC = useC)
         return fold
     
