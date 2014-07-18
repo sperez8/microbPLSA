@@ -253,12 +253,12 @@ class MicrobPLSA():
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
 
-    def fold_in(self, document, useC = True):
+    def fold_in(self, testData, useC = True):
         """
         Compute the log-likelihood that the model generated the data.
         """
-        fold = self.model.folding_in(document, useC = useC)
-        return fold
+        p_d_z_test = self.model.folding_in(testData, useC = useC)
+        return p_d_z_test
     
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
         biom_data =self.open_data(study = study, name = name)

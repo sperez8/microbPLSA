@@ -84,14 +84,6 @@ def train(td,
 
     R = td.sum() # total number of word counts
     lik = loglikelihood(td, p_z, p_w_z, p_d_z)
-    print td.shape, p_z
-    print p_w_z.shape
-    print p_d_z.shape, p_d_z
-    print p_d_z_old
-    
-    if folding_in:
-        print 'Folding in document with shape:', td.shape
-        print lik
     
     for iteration in range(1, maxiter+1):
         # Swap old and new
@@ -125,23 +117,18 @@ def train(td,
             normalize(p_w_z, axis=0, out=p_w_z)
             p_z /= R
         
-        print 'after', p_d_z, td, 'z4', p_z, p_w_z
         lik_new = loglikelihood(td, p_z, p_w_z, p_d_z)
         lik_diff = lik_new - lik
-        print lik_diff, lik_new
         assert(lik_diff >= -1e-10)
         lik = lik_new
 
-        if iteration < 4:
-            print '\n\n\n\n\n'
-            pass
-        elif lik_diff < eps:
+        if lik_diff < eps:
             print "No more progress, stopping EM at iteration", iteration
             break
 
         if debug:
             if folding_in:
-                itIncrements = 1
+                itIncrements = 10
             else:
                 itIncrements = 100
             if iteration%itIncrements == 0:
@@ -194,8 +181,12 @@ class pLSA(object):
         self.random_init(Z, V, D)
         
         p_d_z_old = np.zeros_like(self.p_d_z)
-        p_w_z_old = np.zeros_like(self.p_w_z)
-        p_z_old = np.zeros_like(self.p_z)
+        if not folding_in:
+            p_w_z_old = np.zeros_like(self.p_w_z)
+            p_z_old = np.zeros_like(self.p_z)
+        else:
+            p_w_z_old = self.p_w_z
+            p_z_old = self.p_z
 
         def get_train_func(useC):
             try:
@@ -210,7 +201,6 @@ class pLSA(object):
 
         train_func = get_train_func(useC)
         
-        print useC, train_func
         train_func(td.astype(np.uint32),
                    self.p_z, self.p_w_z, self.p_d_z,
                    p_z_old, p_w_z_old, p_d_z_old,
@@ -330,20 +320,9 @@ class pLSA(object):
         if len(d.shape)==1:
             d = d[:,np.newaxis] #needs debugging
             print 'Folding in 1D arrays has bugs.'
-        plsa.train(d, Z, maxiter, eps, folding_in=True, useC=useC)
-        
-        p_d = np.zeros(Z)
-        print '\n'
-        for z,x,y in zip(range(Z),self.p_z, plsa.p_d_z[0]):
-            print x,y
-            ly = log(y)
-            lx = log(x)
-            sum = lx+ly
-            if lx < pow(10,-324) or ly < pow(10,-324):
-                print "        AHHHH", x,y,lx,ly,sum, exp(lx+ly)
-            p_d[z] = exp(lx+ly)
-            print p_d
-        return normalize(p_d)
+        else:
+            plsa.train(d, Z, maxiter, eps, folding_in=True, useC=useC)
+            return plsa.p_d_z
 
     def global_weights(self, gw):
         """

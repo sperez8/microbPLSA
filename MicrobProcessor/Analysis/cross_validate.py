@@ -43,7 +43,6 @@ kFold = cross_validation.KFold(n=data.shape[1], n_folds = k, indices = False, sh
 #run plsa on each
 i = 1
 for trainSamples,testSamples in kFold:
-    print sum(trainSamples), sum(testSamples)
     trainData, testData = data[:,trainSamples], data[:,testSamples]
     
     m = microbplsa.MicrobPLSA()
@@ -51,25 +50,18 @@ for trainSamples,testSamples in kFold:
     m.name = name
     m.datamatrix = trainData
     m.generate_runs(z_i = z, z_f = z, z_inc = z_inc, numRuns = 10, useC = useC, override = False, folder = folder, add_to_file = fileInfo + '(' + str(i) + ')')
-    #print m.loglikelihood()
-    if m.model is None:
-        print ''
     i += 1
     
     print '\n*'+'-'*25+'Folding'+'-'*25+'*\n'
     # fold-in documents of k-th sample one at a time and measure fit
-    print testData.shape, testData
-    fold = m.fold_in(testData, useC = False)
+    p_d_z_test = m.fold_in(testData, useC = False)
     
-    print '\nfold', fold
-    print sys.exit()
-        
-#     for document in np.transpose(testData):
-#         print 'doc', document
-#         fold = m.fold_in(document, useC = False)
-#         
-#         print '\nfold', fold
-#         print sys.exit()
+    p_z_d = m.model.p_z * p_d_z_test
+    print m.model.p_d_z
+    print np.sum(m.model.p_d_z, axis = 0)
+    print p_z_d
+    print np.sum(p_z_d, axis = 0)
+    
     
 
 #collect all the data and plot it for all topic numbers
