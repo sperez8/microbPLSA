@@ -8,9 +8,9 @@ Big data needs big analyses and big visualization. [Probabilistic Latent Semanti
 MicrobPLSA expands [Mathieu Blondel's PLSA python package](http://www.mblondel.org/journal/2010/06/13/lsa-and-plsa-in-python/) by adding some analyses modules and automizing different visualization techniques.
 
 
-*Packages*:
+**Packages:**
 * numpy
 * scipy
 * matplotlib
 
-Note: microbPLSA was developped in the 2.7 version of Python
+*Note*: microbPLSA was developped in the 2.7 version of Python
