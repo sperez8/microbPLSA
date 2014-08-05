@@ -24,7 +24,7 @@ name = None
 z = 2
 z_inc = 1
 useC = True
-numRuns = 1
+numRuns = 100
 #options
 k = 2 #for k-fold validation
 fileInfo = '_cross_seed' + str(randomSeed) + '_k' + str(k)
@@ -37,12 +37,11 @@ data = m.datamatrix
 
 #First we split the data into k-sub-samples
 kFold = cross_validation.KFold(n=data.shape[1], n_folds = k, indices = False, shuffle = True, random_state = randomSeed)
-
-m.save_kFold(kFold,study,z,k)
+#and save the way we partitioned the data
+m.save_kFold(kFold,z,k)
 
 #test that diversity of sub samples are similar
 #(in development...)
-
 
 #run plsa on each and save the "new model"
 i = 1
@@ -55,23 +54,30 @@ for trainSamples,testSamples in kFold:
     m.datamatrix = trainData
     m.generate_runs(z_i = z, z_f = z, z_inc = z_inc, numRuns = numRuns, useC = useC, override = False, folder = folder, add_to_file = fileInfo + '(' + str(i) + ')')
     i += 1
-    
-'''
-print '\n*'+'-'*25+'Folding'+'-'*25+'*\n'
-# fold-in documents of k-th sample one at a time and measure fit
-p_d_z_test = m.fold_in(testData, useC = False)
 
-p_z_d = m.model.p_z * p_d_z_test
-print m.model.p_d_z
-print np.sum(m.model.p_d_z, axis = 0)
-print p_z_d
-print np.sum(p_z_d, axis = 0)
- '''   
+
+#Load test data
+kFold = m.open_kFold(study, name, k, z)
+   
+#Fold in
+print '\n*'+'-'*25+'Folding'+'-'*25+'*\n'
+
+for trainSamples,testSamples in kFold:
+    trainData, testData = data[:,trainSamples], data[:,testSamples]
+
+    p_d_z_test = m.fold_in(testData, useC =  False)
+    
+    '''
+    p_z_d = m.model.p_z * p_d_z_test
+    print m.model.p_d_z
+    print np.sum(m.model.p_d_z, axis = 0)
+    print p_z_d
+    print np.sum(p_z_d, axis = 0)  
     
 
 #collect all the data and plot it for all topic numbers
 
-
+'''
 
 
 

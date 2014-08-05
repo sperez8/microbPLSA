@@ -30,12 +30,10 @@ def extract_data(dataFile,sampling):
     else: 
         try:
             open(dataFile+'.biom')
-            print "Found a .biom file"
             return import_biom_file(dataFile+'.biom', sampling)
         except IOError:
             try:
                 open(dataFile+'.txt')
-                print "Found a .txt file"
                 return import_tab_file(dataFile+'.txt', sampling)
             except IOError:
                 pass

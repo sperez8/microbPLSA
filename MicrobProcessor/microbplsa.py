@@ -261,18 +261,39 @@ class MicrobPLSA():
         p_d_z_test = self.model.folding_in(testData, useC = useC)
         return p_d_z_test
     
-    def save_kFold(self, kFold, study, z, k):
+    def get_kFold_file(self,z,k):
+        '''finds the path of the file with the dataset cross validation
+            partitions for the current study, number of folds (k) and topic number (z)'''
+        
+        if self.study:
+            fileName = 'study_' + self.study + '_z=' + str(z) + '_kFold_' + str(k) + '.txt'
+        elif self.name:
+            fileName = 'study_' + self.name + '_z=' + str(z) + '_kFold_' + str(k) + '.txt'
+        kFoldFile = os.path.join(_cur_dir, CROSS_VAL_LOCATION, fileName)
+        return kFoldFile
+    
+    def save_kFold(self, kFold, z, k):
         '''Save the k fold cross validation sample assignment'''
         kPartitions = []
         for train,test in kFold:
             a,b = list(train), list(test)
             kPartitions.append([a,b])
-               
-        fileName = 'study_' + self.study + '_z=' + str(z) + '_kFold_' + str(k) + '.txt'
-        kFoldFile = os.path.join(_cur_dir, CROSS_VAL_LOCATION, fileName)
+        
+        kFoldFile = self.get_kFold_file(k,z)
         f = open(kFoldFile,'w')
         pickle.dump(kPartitions, f)
         return None
+
+    def open_kFold(self, study, name, z, k):
+        '''Save the k fold cross validation sample assignment'''
+        if not self.study:
+            self.study = study
+        elif not self.name:
+            self.name = name
+        kFoldFile = self.get_kFold_file(k,z)
+        f = open(kFoldFile,'r')
+        data = pickle.load(f)
+        return data
     
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
         biom_data =self.open_data(study = study, name = name)
