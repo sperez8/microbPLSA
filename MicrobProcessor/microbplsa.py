@@ -20,6 +20,7 @@ from plsa import loglikelihood
 
 OTU_MAP_NAME = os.path.join('JsonData', 'OTU_MAP_')
 RESULTS_LOCATION = 'Results'
+CROSS_VAL_LOCATION = os.path.join('Results','CrossValidation')
 MAX_ITER_PLSA = 100000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
 
@@ -106,9 +107,9 @@ class MicrobPLSA():
                 return dataFile
             elif self.study is not None:
                 self.study = str(self.study)
-                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/study_'+self.study+'_closed_reference_otu_table.biom'
+                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/study_'+self.study+'_closed_reference_otu_table'
             elif self.name is not None: 
-                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.name+'/'+self.name+'.txt'
+                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.name+'/'+self.name
             else:
                 print "Need study number or the name of the data file to access the data."
 
@@ -259,6 +260,19 @@ class MicrobPLSA():
         """
         p_d_z_test = self.model.folding_in(testData, useC = useC)
         return p_d_z_test
+    
+    def save_kFold(self, kFold, study, z, k):
+        '''Save the k fold cross validation sample assignment'''
+        kPartitions = []
+        for train,test in kFold:
+            a,b = list(train), list(test)
+            kPartitions.append([a,b])
+               
+        fileName = 'study_' + self.study + '_z=' + str(z) + '_kFold_' + str(k) + '.txt'
+        kFoldFile = os.path.join(_cur_dir, CROSS_VAL_LOCATION, fileName)
+        f = open(kFoldFile,'w')
+        pickle.dump(kPartitions, f)
+        return None
     
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
         biom_data =self.open_data(study = study, name = name)

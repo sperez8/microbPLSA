@@ -28,8 +28,19 @@ def extract_data(dataFile,sampling):
     elif dataFile[-5:]=='.biom':
         return import_biom_file(dataFile, sampling)
     else: 
-        print "File name: {0} Incorrect file extension.".format(dataFile)
-        sys.exit()
+        try:
+            open(dataFile+'.biom')
+            print "Found a .biom file"
+            return import_biom_file(dataFile+'.biom', sampling)
+        except IOError:
+            try:
+                open(dataFile+'.txt')
+                print "Found a .txt file"
+                return import_tab_file(dataFile+'.txt', sampling)
+            except IOError:
+                pass
+    print "File name: {0} Incorrect file extension.".format(dataFile)
+    sys.exit()
             
 def import_biom_file(f,sampling):
     '''reads a .biom file and extracts OTU count data
