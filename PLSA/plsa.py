@@ -319,7 +319,7 @@ class pLSA(object):
         plsa.p_w_z = self.p_w_z
         if len(d.shape)==1:
             d = d[:,np.newaxis] #needs debugging
-            print 'Folding in 1D arrays has bugs.'
+            print 'WARNING: Folding in 1D arrays has bugs.'
         else:
             plsa.train(d, Z, maxiter, eps, folding_in=True, useC=useC)
             return plsa.p_d_z
