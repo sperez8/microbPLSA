@@ -261,7 +261,7 @@ class MicrobPLSA():
         p_d_z_test = self.model.folding_in(testData, useC = useC)
         return p_d_z_test
     
-    def get_kFold_file(self,z,k):
+    def get_kFold_file(self,k, z):
         '''finds the path of the file with the dataset cross validation
             partitions for the current study, number of folds (k) and topic number (z)'''
         
@@ -272,7 +272,7 @@ class MicrobPLSA():
         kFoldFile = os.path.join(_cur_dir, CROSS_VAL_LOCATION, fileName)
         return kFoldFile
     
-    def save_kFold(self, kFold, z, k):
+    def save_kFold(self, kFold, k, z):
         '''Save the k fold cross validation sample assignment'''
         kPartitions = []
         for train,test in kFold:
@@ -284,11 +284,11 @@ class MicrobPLSA():
         pickle.dump(kPartitions, f)
         return None
 
-    def open_kFold(self, study, name, z, k):
+    def open_kFold(self, study, name, k, z):
         '''Save the k fold cross validation sample assignment'''
         if not self.study:
             self.study = study
-        elif not self.name:
+        if not self.name:
             self.name = name
         kFoldFile = self.get_kFold_file(k,z)
         f = open(kFoldFile,'r')

@@ -21,24 +21,37 @@ import microbplsa
 randomSeed = 2 #seed for reproducible randomization
 study = '1037'
 name = None
-z = 2
+#name = 'bac_final0.03.otutable_GOODSAMPLES'
+z = 20
 z_inc = 1
 useC = True
-numRuns = 100
+numRuns = 1         
 #options
-k = 2 #for k-fold validation
+k = 5 #for k-fold validation
 fileInfo = '_cross_seed' + str(randomSeed) + '_k' + str(k)
 folder = 'CrossValidation'
+
 
 #load the data
 m = microbplsa.MicrobPLSA()
 m.open_data(study = study, name = name)
 data = m.datamatrix
+print 'Data loaded.'
+
 
 #First we split the data into k-sub-samples
 kFold = cross_validation.KFold(n=data.shape[1], n_folds = k, indices = False, shuffle = True, random_state = randomSeed)
 #and save the way we partitioned the data
-m.save_kFold(kFold,z,k)
+m.save_kFold(kFold,k,z)
+print 'kFold done.'
+
+
+#Load test data
+kFold = m.open_kFold(study, name, k, z)
+print kFold
+
+
+sys.exit()
 
 #test that diversity of sub samples are similar
 #(in development...)
@@ -48,6 +61,7 @@ i = 1
 for trainSamples,testSamples in kFold:
     trainData, testData = data[:,trainSamples], data[:,testSamples]
     
+    print '\nTraining dataset fold {0} of {1}'.format(i,k)
     m = microbplsa.MicrobPLSA()
     m.study = study
     m.name = name
@@ -78,10 +92,6 @@ for trainSamples,testSamples in kFold:
 #collect all the data and plot it for all topic numbers
 
 '''
-
-
-
-
 
 
 
