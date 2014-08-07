@@ -120,7 +120,7 @@ class MicrobPLSA():
     def dimensions(self):
         return self.datamatrix.shape
 
-    def generate_runs(self, z_i = 1, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False, folder = None, add_to_file = ''):
+    def generate_runs(self, z_i = 2, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False, folder = None, add_to_file = ''):
         '''runs plsa mutliple time for a range of topics'''
         print '\nStudy', self.study, 'has', self.dimensions()[0], 'otus and', self.dimensions()[1], 'samples.'
         if z_f is None:
