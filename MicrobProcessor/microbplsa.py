@@ -19,7 +19,8 @@ from plsa import pLSA
 from plsa import loglikelihood
 
 OTU_MAP_NAME = os.path.join('JsonData', 'OTU_MAP_')
-RESULTS_LOCATION = os.path.join('Results','Models')
+RESULTS_LOCATION = 'Results'
+MODELS_LOCATION = 'Models'
 CROSS_VAL_LOCATION = os.path.join('Results','CrossValidation')
 MAX_ITER_PLSA = 100000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
@@ -120,7 +121,7 @@ class MicrobPLSA():
     def dimensions(self):
         return self.datamatrix.shape
 
-    def generate_runs(self, z_i = 2, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False, folder = None, add_to_file = ''):
+    def generate_runs(self, z_i = 2, z_f = None, z_inc = 1, numRuns = 1, useC = True, override = False, folder = MODELS_LOCATION, add_to_file = ''):
         '''runs plsa mutliple time for a range of topics'''
         print '\nStudy', self.study, 'has', self.dimensions()[0], 'otus and', self.dimensions()[1], 'samples.'
         if z_f is None:
@@ -137,7 +138,7 @@ class MicrobPLSA():
         for z in range(z_i, z_f, z_inc): 
             run = 1
             while True:
-                filename = self.get_result_filename(z, run, useC, folder = folder, add_to_file = add_to_file)
+                filename = self.get_result_filename(z, run, useC, folder, add_to_file = add_to_file)
                 try:
                     open(filename, "r")
                     print "The results file already exists for study {0}, {1} topics and run #{2}:\n    {3}".format(self.study, z, run, filename)
@@ -329,7 +330,7 @@ class MicrobPLSA():
             otu_abundances[otu] = round(float(np.count_nonzero(abundances))/float(otutable.shape[1]),2)
         return otu_abundances
 
-    def get_result_filename(self, z, run, useC, folder = None, add_to_file = ''):
+    def get_result_filename(self, z, run, useC, folder, add_to_file = ''):
         if useC:
             addC = 'with_C_'
         else: addC = ''
@@ -352,8 +353,5 @@ class MicrobPLSA():
             resultsfilename += 'run' +str(run)
 
         resultsfilename += add_to_file    
-        if folder:
-            filename = os.path.join(_cur_dir, RESULTS_LOCATION, folder, resultsfilename + ext)
-        else:
-            filename = os.path.join(_cur_dir, RESULTS_LOCATION, resultsfilename + ext)
+        filename = os.path.join(_cur_dir, RESULTS_LOCATION, folder, resultsfilename + ext)
         return filename

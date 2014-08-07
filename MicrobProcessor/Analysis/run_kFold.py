@@ -10,13 +10,13 @@ to find out how many topics minimizes the test set error.
 import kFold_uttilities as kf
 
 #parameters
-randomSeed = 2 #seed for reproducible randomization
+randomSeed = 2
 
 study = '1037'
 name = None
-
 #study = None
 #name = 'bac_final0.03.otutable_GOODSAMPLES'
+
 z = 2
 useC = True
 numRuns = 10
