@@ -40,7 +40,7 @@ class MicrobPLSA():
         self.modelFile = None
         return None
         
-    def open_model(self, study = None, z = 0, name = None, modelFile = None, run = '', useC = False):
+    def open_model(self, z = 2, modelFile = None, study = None, name = None, run = '', useC = False, folder = MODELS_LOCATION, add_to_file = ''):
         ''' Opens the probs of a model previously computed and saved in a json file '''
         if self.study is None:
             self.study = study
@@ -55,7 +55,7 @@ class MicrobPLSA():
         if modelFile is not None:
             self.modelFile = modelFile
         else:
-            self.modelFile = self.get_result_filename(z, self.run, self.useC)
+            self.modelFile = self.get_result_filename(z, run, useC, folder, add_to_file = add_to_file)
         
         f = open(self.modelFile,'r')
         print 'Using the following result file:', self.modelFile

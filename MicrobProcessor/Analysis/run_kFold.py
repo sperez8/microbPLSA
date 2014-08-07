@@ -16,13 +16,11 @@ study = '1037'
 name = None
 #study = None
 #name = 'bac_final0.03.otutable_GOODSAMPLES'
-
 z = 2
 useC = True
 numRuns = 10
 k = 2
 fileInfo = '_cross_seed' + str(randomSeed) + '_k' + str(k)
-
 
 
 
@@ -36,7 +34,7 @@ data = m.datamatrix
 kf.train(k, kFolds, data, study, name, z, numRuns = numRuns, seed = randomSeed, override = False)
 
 #now we test the left out data
-kf.test(m, kFolds, k, z)
+kf.test(m, kFolds, k, z, useC = useC, run = 1, seed = randomSeed)
 
 
 

@@ -32,7 +32,7 @@ def create_folds(m, k, z, shuffle = True, seed = None):
     print 'kFold sample iterator done.'
     return kFolds
 
-def train(k, kFolds, data, study, name, z, numRuns = 1, seed = None, override = False, useC = True, folder = FOLDER):
+def train(k, kFolds, data, study, name, z, numRuns = 1, seed = 'None', override = False, useC = True, folder = FOLDER):
     i = 1
     for trainSamples,testSamples in kFolds:
         trainData, testData = data[:,trainSamples], data[:,testSamples]
@@ -43,10 +43,7 @@ def train(k, kFolds, data, study, name, z, numRuns = 1, seed = None, override = 
         m.name = name
         m.datamatrix = trainData
         
-        if seed is None:
-            seed = 'None'
-        fileInfo = '_cross_seed' + str(seed) + '_k' + str(k)
-        add = fileInfo + '(' + str(i) + ')'
+        add = '_cross_seed' + str(seed) + '_k' + str(k) + '(' + str(i) + ')'
         
         
         m.generate_runs(z_i = z, z_f = z, numRuns = numRuns, useC = useC, override = override, folder = folder, add_to_file = add)
@@ -54,17 +51,42 @@ def train(k, kFolds, data, study, name, z, numRuns = 1, seed = None, override = 
     
     return None
 
-def test(m, kFolds, k, z):
+def test(m, kFolds, k, z, run = 1, useC = True, seed = None, folder = FOLDER):
     study = m.study
     name = m.name
     data = m.datamatrix
     
     kFold = m.open_kFold(study, name, k, z)
-    
+    i = 1
     for trainSamples,testSamples in kFolds:
         trainData, testData = data[:,trainSamples], data[:,testSamples]
+        
+        #open the right cross validation model file
+        add = '_cross_seed' + str(seed) + '_k' + str(k) + '(' + str(i) + ')'
+        m.open_model(z = z, run = run, useC = useC, folder = folder, add_to_file = add)
+        
+        #fold in
         p_d_z_test = m.fold_in(testData, useC =  False)
-    
+        #save fold-in results
     '''in development'''
         
     return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
