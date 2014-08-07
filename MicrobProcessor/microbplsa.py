@@ -19,7 +19,7 @@ from plsa import pLSA
 from plsa import loglikelihood
 
 OTU_MAP_NAME = os.path.join('JsonData', 'OTU_MAP_')
-RESULTS_LOCATION = 'Results'
+RESULTS_LOCATION = os.path.join('Results','Models')
 CROSS_VAL_LOCATION = os.path.join('Results','CrossValidation')
 MAX_ITER_PLSA = 100000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
