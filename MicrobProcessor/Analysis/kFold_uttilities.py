@@ -68,7 +68,7 @@ def test(m, kFolds, k, z, run = 1, useC = True, seed = None, folder = FOLDER):
         #fold in
         p_d_z_test = m.fold_in(testData, useC =  False)
         #save fold-in results
-    '''in development'''
+        '''in development'''
         
     return None
 

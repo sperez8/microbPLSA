@@ -182,7 +182,7 @@ class MicrobPLSA():
         print "\n Running ...\n"
         plsa.train(self.datamatrix, Z, maxiter = maxiter, useC = useC)   #runs plsa!
         self.model = plsa
-        return plsa        
+        return plsa
 
     def save_data(self, normalize = False):
         ''' functions saves original abundance data to a csv or txt file'''
@@ -220,32 +220,7 @@ class MicrobPLSA():
             json.dump(data,f)
         else: print "Error: the extension given is not valid"     
         f.close()
-        return None
-    
-    def svd(self, columns, datamatrix, otus):
-        '''performs svd on data. NEEDS TESTING'''
-        print '\nData in matrix form:\n', datamatrix
-        print '\nOtus:',otus
-        print columns
-        
-        print 'The matrix dimensions are', datamatrix.shape
-        
-        t0 = time.time() 
-        U, s, V = np.linalg.svd(datamatrix, full_matrices=True)
-        print '\nSVD took ', time.time(), 'seconds'
-        print 's', s
-        print 'U is', U.shape, 'V is ', V.shape
-        
-        #Let's reduce the dimensionality/rank by 50%
-        k = int(datamatrix.shape[1]/2)
-        print 'k=', k
-        for i in range(k,s.shape[0]):
-            s[i]=0
-        print s
-        
-        #NON FUNCTIONAL
-        #new_data = np.dot(np.dot(U, np.diag(s)), np.conjugate(V))
-        #print new_data
+        return N
         
     def loglikelihood(self):
         """
@@ -355,3 +330,4 @@ class MicrobPLSA():
         resultsfilename += add_to_file    
         filename = os.path.join(_cur_dir, RESULTS_LOCATION, folder, resultsfilename + ext)
         return filename
+

@@ -12,11 +12,9 @@ import kFold_uttilities as kf
 #parameters
 randomSeed = 2
 
-study = '1037'
-name = None
-#study = None
-#name = 'bac_final0.03.otutable_GOODSAMPLES'
-z = 2
+study = None
+name = 'bac_final0.03.otutable_GOODSAMPLES'
+z = 40
 useC = True
 numRuns = 10
 k = 2
