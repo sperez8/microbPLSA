@@ -220,7 +220,7 @@ class MicrobPLSA():
             json.dump(data,f)
         else: print "Error: the extension given is not valid"     
         f.close()
-        return N
+        return None
         
     def loglikelihood(self):
         """
@@ -232,7 +232,7 @@ class MicrobPLSA():
 
     def fold_in(self, testData, useC = True):
         """
-        Compute the log-likelihood that the model generated the data.
+        Fold in new documents and get their conditional probability over the topics.
         """
         p_d_z_test = self.model.folding_in(testData, useC = useC)
         return p_d_z_test

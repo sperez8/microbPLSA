@@ -55,22 +55,28 @@ def test(m, kFolds, k, z, run = 1, useC = True, seed = None, folder = FOLDER):
     study = m.study
     name = m.name
     data = m.datamatrix
-    
-    kFold = m.open_kFold(study, name, k, z)
+
+    #i denotes the fold currently being tested
     i = 1
+    mseAverage = 0
     for trainSamples,testSamples in kFolds:
         trainData, testData = data[:,trainSamples], data[:,testSamples]
         
         #open the right cross validation model file
         add = '_cross_seed' + str(seed) + '_k' + str(k) + '(' + str(i) + ')'
-        m.open_model(z = z, run = run, useC = useC, folder = folder, add_to_file = add)
+        m.open_model(z = z, run = run, useC = True, folder = folder, add_to_file = add)
         
         #fold in
-        p_d_z_test = m.fold_in(testData, useC =  False)
+        print "Folding in"
+        p_d_z_test = m.fold_in(testData, useC =  useC)
         #save fold-in results
         '''in development'''
+        #p_d_z_train = 0 #get original model
+        #mse = np.sum((p_d_z_test - p_d_z_train)**2)
+        mseAverage += mse
+        i+=1
         
-    return None
+    return mseAverage/k
 
 
 
