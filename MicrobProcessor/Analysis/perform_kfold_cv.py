@@ -19,7 +19,6 @@ study = '1037'
 name = None
 useC = False
 k = 5
-fileInfo = '_cross_seed' + str(randomSeed) + '_k' + str(k)
 
 #load the data
 m = kf.load(study, name)
