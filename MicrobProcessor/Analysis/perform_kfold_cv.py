@@ -26,6 +26,5 @@ m = kf.load(study, name)
     
 for z in [2]:
     #load k-fold partition of samples
-    kFolds = m.open_kFold(study, name, k, z)
-    
+    kFolds = kf.open_kFold(study, name, k, z)
     kf.test(m, kFolds, k, z, useC = useC, seed = randomSeed)

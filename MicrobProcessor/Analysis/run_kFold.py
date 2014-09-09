@@ -31,9 +31,6 @@ for z in [8,12,15,17,22,27,32,39,42,47,55,65,75,85]:
     
     #run plsa on each and save the "new model"
     kf.train(k, kFolds, data, study, name, z, numRuns = numRuns, seed = randomSeed, override = False)
-    
-    #now we test the left out data
-    #kf.test(m, k, z)
 
 
 
