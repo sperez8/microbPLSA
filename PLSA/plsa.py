@@ -125,6 +125,8 @@ def train(td,
         if lik_diff < eps:
             print "No more progress, stopping EM at iteration", iteration
             break
+        elif iteration == maxiter:
+            print "Reached max number of iterations (", maxiter, "), stopping EM."
 
         if debug:
             if folding_in:
@@ -303,7 +305,7 @@ class pLSA(object):
                 p_w_d[w,d] = np.sum(self.p_w_z[w,:] * self.p_d_z[d,:])
         return p_w_d
 
-    def folding_in(self, d, maxiter=50, eps=0.01, useC=True):
+    def folding_in(self, d, maxiter=500, eps=0.01, useC=True):
         """
         Compute the probabilities of a new document d belonging to topics.
 

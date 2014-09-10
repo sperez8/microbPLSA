@@ -229,11 +229,11 @@ class MicrobPLSA():
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
 
-    def fold_in(self, testData, useC = True):
+    def fold_in(self, testData, maxiter = 500, useC = True):
         """
         Fold in new documents and get their conditional probability over the topics.
         """
-        p_d_z_test = self.model.folding_in(testData, useC = useC)
+        p_d_z_test = self.model.folding_in(testData, maxiter = maxiter, useC = useC)
         return p_d_z_test
     
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
