@@ -10,6 +10,8 @@ Uses sklearn cross_validation module
 import sys, os
 import numpy as np
 from sklearn import cross_validation
+from sklearn.metrics import mean_squared_error
+from math import sqrt
 import pickle
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
@@ -88,6 +90,8 @@ def test(m, kFolds, k, z, run = 1, useC = True, seed = None, folder = FOLDER):
     i = 1
     foldedData = []
     for trainSamples,testSamples in kFolds:
+        trainSamples = np.array(trainSamples)
+        testSamples = np.array(testSamples)
         trainData, testData = data[:,trainSamples], data[:,testSamples]
         
         #open the right cross validation model file
@@ -117,21 +121,26 @@ def measure_error(m, kFolds, k, z):
     
     #Get model for when the fold is included.
     m.open_model(z = z, run = 1, useC = True, folder = 'Models', add_to_file = None)
-    p_d_z_train = m.model.p_d_z
-    print 'p_d_z_train', p_d_z_train.shape
+    p_d_z = m.model.p_d_z
     
     #get folded in data
-    p_d_z_test = open_kFold(study, name, k, z, folded = True) 
+    p_d_z_test_all = open_kFold(study, name, k, z, folded = True) 
         
-    mseAverage = 0
+    mse = []
+    i=0
     for trainSamples,testSamples in kFolds:
+        trainSamples = np.array(trainSamples)
+        testSamples = np.array(testSamples)
         trainData, testData = data[:,trainSamples], data[:,testSamples]
-                
-        mse = 0
-        #mse = np.sum((p_d_z_test - p_d_z_train)**2)
-    mseAverage += mse
         
-    return mseAverage/k
+        p_d_z_train = p_d_z[testSamples,:]
+        p_d_z_test = p_d_z_test_all[i]
+        
+        mse.append(mean_squared_error(p_d_z_train, p_d_z_test))
+        
+        i+=1
+        
+    return np.mean(mse), np.std(mse) 
 
 def get_kFold_file(k, z, study = None, name = None, folded = False):
     '''finds the path of the file with the dataset cross validation

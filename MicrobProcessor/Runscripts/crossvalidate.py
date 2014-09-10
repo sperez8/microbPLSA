@@ -90,8 +90,8 @@ def main(*argv):
             kf.test(m, kFolds, k, z, useC = useC, seed = seed)
         if action == 'error' or action == 'all':
             kFolds = kf.open_kFold(study, name, k, z)
-            error = kf.measure_error(m, kFolds, k, z)
-            print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3}\n".format(study, z, k, error)
+            mse, std = kf.measure_error(m, kFolds, k, z)
+            print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3} +/-{4}\n".format(study, z, k, round(mse,3), round(std,3))
             
             
 if __name__ == "__main__":
