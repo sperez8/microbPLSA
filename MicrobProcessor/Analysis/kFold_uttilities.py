@@ -122,6 +122,8 @@ def measure_error(m, kFolds, k, z):
     #Get model for when the fold is included.
     m.open_model(z = z, run = 1, useC = True, folder = 'Models', add_to_file = None)
     p_d_z = m.model.p_d_z
+    p_z_train = m.model.p_z
+    print 'train', p_z_train
     
     #get folded in data
     p_d_z_test_all = open_kFold(study, name, k, z, folded = True) 
@@ -133,13 +135,20 @@ def measure_error(m, kFolds, k, z):
         testSamples = np.array(testSamples)
         trainData, testData = data[:,trainSamples], data[:,testSamples]
         
+        #open folds
+        seed = 2
+        add = '_cross_seed' + str(seed) + '_k' + str(k) + '(' + str(i+1) + ')'
+        m.open_model(z = z, run = 1, useC = True, folder = FOLDER, add_to_file = add)
+        p_z_fold = m.model.p_z
+        print 'fold', p_z_fold
+        
         p_d_z_train = p_d_z[testSamples,:]
         p_d_z_test = p_d_z_test_all[i]
         
         mse.append(mean_squared_error(p_d_z_train, p_d_z_test))
-        
         i+=1
         
+    print 'All mse:', mse
     return np.mean(mse), np.std(mse) 
 
 def get_kFold_file(k, z, study = None, name = None, folded = False):

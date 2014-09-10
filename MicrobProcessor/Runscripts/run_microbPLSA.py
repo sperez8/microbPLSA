@@ -37,7 +37,7 @@ def main(*argv):
     else: study = None
     name = args.name
     if len(args.topics) == 1:
-        z_i = 2
+        z_i = args.topics[0]
         z_f = args.topics[0]
     elif len(args.topics) == 2: 
         z_i = min(args.topics)

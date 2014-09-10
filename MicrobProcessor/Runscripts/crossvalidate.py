@@ -23,7 +23,7 @@ def main(*argv):
     '''handles user input and runs plsa'''
 
     parser = argparse.ArgumentParser(description='This scripts runs cross validations to determine the optimal number of topics.')
-    parser.add_argument('-action', help='Action to perform from "all", "train", "test", "error"', required = True)
+    parser.add_argument('-action', help='Action to perform from "all", "train", "test", "mse"', required = True)
     parser.add_argument('-k', help='Number of folds in kFold cross validation', type = int, default = 5)
     parser.add_argument('-s','--study', help='The study number', default = None)
     parser.add_argument('-n','--name', help='The name of the dataset')
@@ -34,7 +34,7 @@ def main(*argv):
     parser.add_argument('-seed', help='Random seed for kFold generator', type = int, default = 2)
     args = parser.parse_args()
     
-    if args.action not in ['all', 'train', 'test', 'error']:
+    if args.action not in ['all', 'train', 'test', 'mse']:
         print "***The specified action is not recognized.***\n"
         parser.print_help()
         sys.exit()
@@ -53,7 +53,7 @@ def main(*argv):
     else: study = None
     name = args.name
     if len(args.topics) == 1:
-        z_i = 2
+        z_i = args.topics[0]
         z_f = args.topics[0]
     elif len(args.topics) == 2: 
         z_i = min(args.topics)
@@ -64,8 +64,6 @@ def main(*argv):
         print "\n***Too many arguments specified for number of topics***\n"
         parser.print_help()
         sys.exit()
-    if z_i == z_f:
-        z_f = z_i + 1
     z_inc = args.increment
     run = args.run
     useC = args.useC
@@ -79,7 +77,10 @@ def main(*argv):
     print ("    Number of run used: %s" % args.run)
 
 
-    m = kf.load(study, name)    
+    m = kf.load(study, name)
+    mseLog = []
+    if z_i == z_f:
+        z_f = z_i + 1
     for z in range(z_i, z_f, z_inc): 
         if action == 'train' or action == 'all':
             kFolds = kf.create_folds(m, k, z, shuffle = True, seed = seed)
@@ -88,12 +89,15 @@ def main(*argv):
         if action == 'test' or action == 'all':
             kFolds = kf.open_kFold(study, name, k, z)
             kf.test(m, kFolds, k, z, useC = useC, seed = seed)
-        if action == 'error' or action == 'all':
+        if action == 'mse' or action == 'all':
             kFolds = kf.open_kFold(study, name, k, z)
             mse, std = kf.measure_error(m, kFolds, k, z)
             print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3} +/-{4}\n".format(study, z, k, round(mse,3), round(std,3))
-            
-            
+            mseLog.append((mse,std))
+    
+    if mseLog:
+        print mseLog
+    
 if __name__ == "__main__":
     main(*sys.argv[1:])
     
