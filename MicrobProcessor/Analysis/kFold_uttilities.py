@@ -53,9 +53,9 @@ def save_folded_data(foldedData, k, z, study = None, name = None):
     pickle.dump(foldedData, f)
     return None
 
-def open_kFold(study, name, k, z):
+def open_kFold(study, name, k, z, folded = False):
     '''Open the k fold cross validation folds'''
-    kFoldFile = get_kFold_file(k,z, study, name)
+    kFoldFile = get_kFold_file(k,z, study, name, folded)
     f = open(kFoldFile,'r')
     data = pickle.load(f)
     return data
@@ -111,17 +111,22 @@ def test(m, kFolds, k, z, run = 1, useC = True, seed = None, folder = FOLDER):
 
 def measure_error(m, kFolds, k, z):
     '''Compare the p_d_z_test and p_d_z_train for the folded in documents'''
+    study = m.study
+    name = m.name
+    data = m.datamatrix
+    
+    #Get model for when the fold is included.
+    m.open_model(z = z, run = 1, useC = True, folder = 'Models', add_to_file = None)
+    p_d_z_train = m.model.p_d_z
+    print 'p_d_z_train', p_d_z_train.shape
+    
+    #get folded in data
+    p_d_z_test = open_kFold(study, name, k, z, folded = True) 
+        
     mseAverage = 0
     for trainSamples,testSamples in kFolds:
         trainData, testData = data[:,trainSamples], data[:,testSamples]
-        
-        #Get model for when the fold is included.
-        m.open_model(z = z, run = 1, useC = True, folder = 'Models', add_to_file = None)
-        p_d_z_train = m.model.p_d_z
-    
-        #get folded in data
-        #p_d_z_test = open_folded_data() 
-   
+                
         mse = 0
         #mse = np.sum((p_d_z_test - p_d_z_train)**2)
     mseAverage += mse

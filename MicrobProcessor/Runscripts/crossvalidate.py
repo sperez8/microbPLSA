@@ -23,7 +23,7 @@ def main(*argv):
     '''handles user input and runs plsa'''
 
     parser = argparse.ArgumentParser(description='This scripts runs cross validations to determine the optimal number of topics.')
-    parser.add_argument('-action', help='Action to perform from "all", "train", "test", "error"', default = 'all')
+    parser.add_argument('-action', help='Action to perform from "all", "train", "test", "error"', required = True)
     parser.add_argument('-k', help='Number of folds in kFold cross validation', type = int, default = 5)
     parser.add_argument('-s','--study', help='The study number', default = None)
     parser.add_argument('-n','--name', help='The name of the dataset')
@@ -90,7 +90,8 @@ def main(*argv):
             kf.test(m, kFolds, k, z, useC = useC, seed = seed)
         if action == 'error' or action == 'all':
             kFolds = kf.open_kFold(study, name, k, z)
-            
+            error = kf.measure_error(m, kFolds, k, z)
+            print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3}\n".format(study, z, k, error)
             
             
 if __name__ == "__main__":
