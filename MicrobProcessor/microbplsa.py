@@ -23,7 +23,7 @@ RESULTS_LOCATION = 'Results'
 MODELS_LOCATION = 'Models'
 MAX_ITER_PLSA = 100000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
-
+EPS = 0.01
 
 class MicrobPLSA():
     '''A class to handle metagenomic data in particular from the Earth Microbiome Project
@@ -130,11 +130,9 @@ class MicrobPLSA():
             print "Running PLSA using C code."
         if override:
             print "Overriding result files if necessary."
-
-        if z_f == z_i:
-            z_f += 1
+        
         filesCreated = False
-        for z in range(z_i, z_f, z_inc): 
+        for z in range(z_i, z_f+1, z_inc): 
             run = 1
             while True:
                 filename = self.get_result_filename(z, run, useC, folder, add_to_file = add_to_file)
@@ -229,11 +227,11 @@ class MicrobPLSA():
         L = loglikelihood(self.datamatrix, p_z, p_w_z, p_d_z)
         return L 
 
-    def fold_in(self, testData, maxiter = 500, useC = True):
+    def fold_in(self, testData, maxiter = 500, eps = EPS, useC = True):
         """
         Fold in new documents and get their conditional probability over the topics.
         """
-        p_d_z_test = self.model.folding_in(testData, maxiter = maxiter, useC = useC)
+        p_d_z_test = self.model.folding_in(testData, maxiter = maxiter, eps = eps, useC = useC)
         return p_d_z_test
     
     def top_otus_labels(self, z, study = None, name = None, N_otus = 5):

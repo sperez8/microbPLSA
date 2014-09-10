@@ -72,20 +72,21 @@ def main(*argv):
 
     print ("    Study: %s" % study)
     print ("    Name: %s" % name)
-    print ("    Topics tested will be from {0} to {1} in increments of {2}".format(z_i, z_f, z_inc))
+    if z_i != z_f:
+        print ("    Topics tested will be from {0} to {1} in increments of {2}".format(z_i, z_f, z_inc))
+    else:
+        print ("    Number of topics: {0}".format(z_i))
     print ("    Using C: %s" % args.useC)
     print ("    Number of run used: %s" % args.run)
 
 
     m = kf.load(study, name)
     mseLog = []
-    if z_i == z_f:
-        z_f = z_i + 1
-    for z in range(z_i, z_f, z_inc): 
+    for z in range(z_i, z_f+1, z_inc): 
         if action == 'train' or action == 'all':
             kFolds = kf.create_folds(m, k, z, shuffle = True, seed = seed)
             data = m.datamatrix
-            kf.train(k, kFolds, data, study, name, z, numRuns = run, seed = seed, override = False)
+            kf.train(k, kFolds, data, study, name, z, numRuns = run, seed = seed, useC = useC, override = False)
         if action == 'test' or action == 'all':
             kFolds = kf.open_kFold(study, name, k, z)
             kf.test(m, kFolds, k, z, useC = useC, seed = seed)

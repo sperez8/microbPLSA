@@ -125,8 +125,6 @@ def train(td,
         if lik_diff < eps:
             print "No more progress, stopping EM at iteration", iteration
             break
-        elif iteration == maxiter:
-            print "Reached max number of iterations (", maxiter, "), stopping EM."
 
         if debug:
             if folding_in:
@@ -142,6 +140,9 @@ def train(td,
                 print "P(d|z): ", np.abs(p_d_z - p_d_z_old).sum()
             
                 print "L += %f" % lik_diff
+                
+    if iteration < maxiter:
+        print "Reached max number of iterations (", maxiter, "), stopping EM."
 
 class pLSA(object):
 
@@ -313,6 +314,7 @@ class pLSA(object):
 
         Return: a Z-array of P(z|d) probabilities.
         """
+        
         V = d.shape[0]
         Z = len(self.p_z)
         plsa = pLSA()

@@ -140,6 +140,9 @@ def train(td,
                 print "P(d|z): ", np.abs(p_d_z - p_d_z_old).sum()
             
                 print "L += %f" % lik_diff
+                
+    if iteration < maxiter:
+        print "Reached max number of iterations (", maxiter, "), stopping EM."
 
 class pLSA(object):
 
@@ -303,7 +306,7 @@ class pLSA(object):
                 p_w_d[w,d] = np.sum(self.p_w_z[w,:] * self.p_d_z[d,:])
         return p_w_d
 
-    def folding_in(self, d, maxiter=50, eps=0.01, useC=True):
+    def folding_in(self, d, maxiter=500, eps=0.01, useC=True):
         """
         Compute the probabilities of a new document d belonging to topics.
 

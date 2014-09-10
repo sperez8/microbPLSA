@@ -19,6 +19,9 @@ _root_dir = os.path.dirname(_cur_dir)
 sys.path.insert(0, _root_dir)
 import microbplsa
 
+#lower the difference in log likelihood for folding in documents
+EPS = 0.001
+
 FOLDER = 'CrossValidation'
 CROSS_VAL_LOCATION = os.path.join('Results',FOLDER)
 
@@ -101,7 +104,7 @@ def test(m, kFolds, k, z, run = 1, useC = True, seed = None, folder = FOLDER):
         p_d_z_fold = m.model.p_d_z
         #fold in
         print "Folding in"
-        p_d_z_test = m.fold_in(testData, useC =  useC)
+        p_d_z_test = m.fold_in(testData, eps = EPS, useC =  useC)
         
         #Check that folding indeed occurred
         if p_d_z_test == p_d_z_fold:
@@ -123,7 +126,7 @@ def measure_error(m, kFolds, k, z):
     m.open_model(z = z, run = 1, useC = True, folder = 'Models', add_to_file = None)
     p_d_z = m.model.p_d_z
     p_z_train = m.model.p_z
-    print 'train', p_z_train
+    #print 'train', p_z_train
     
     #get folded in data
     p_d_z_test_all = open_kFold(study, name, k, z, folded = True) 
@@ -140,12 +143,17 @@ def measure_error(m, kFolds, k, z):
         add = '_cross_seed' + str(seed) + '_k' + str(k) + '(' + str(i+1) + ')'
         m.open_model(z = z, run = 1, useC = True, folder = FOLDER, add_to_file = add)
         p_z_fold = m.model.p_z
-        print 'fold', p_z_fold
+        #print 'fold', p_z_fold
+        
         
         p_d_z_train = p_d_z[testSamples,:]
         p_d_z_test = p_d_z_test_all[i]
         
-        mse.append(mean_squared_error(p_d_z_train, p_d_z_test))
+        #need to reorder p_d_z_train and p_d_z_test in order of the dominant topics so they line up!
+        p_d_z_train_sorted = p_d_z_train[:,np.argsort(p_z_train)]
+        p_d_z_test_sorted = p_d_z_test[:,np.argsort(p_z_fold)]
+        
+        mse.append(mean_squared_error(p_d_z_train_sorted, p_d_z_test_sorted))
         i+=1
         
     print 'All mse:', mse
