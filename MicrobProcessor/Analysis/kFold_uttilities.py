@@ -40,21 +40,21 @@ def save_kFold(kFold, k, z, study = None, name = None):
         a,b = list(train), list(test)
         kPartitions.append([a,b])
     
-    kFoldFile = get_kFold_file(k,z, study, name, folded = False)
+    kFoldFile = get_file_name(k,z, study, name, folded = False)
     f = open(kFoldFile,'w')
     pickle.dump(kPartitions, f)
     return None
 
 def save_folded_data(foldedData, k, z, study = None, name = None):
     '''Save the folded in test data'''
-    foldedFile = get_kFold_file(k, z, study, name, folded = True)
+    foldedFile = get_file_name(k, z, study, name, folded = True)
     f = open(foldedFile,'w')
     pickle.dump(foldedData, f)
     return None
 
 def open_kFold(study, name, k, z, folded = False):
     '''Open the k fold cross validation folds'''
-    kFoldFile = get_kFold_file(k,z, study, name, folded)
+    kFoldFile = get_file_name(k,z, study, name, folded)
     f = open(kFoldFile,'r')
     data = pickle.load(f)
     return data
@@ -148,12 +148,19 @@ def measure_error(m, kFolds, k, z):
         mse.append(mean_squared_error(p_d_z_train_sorted, p_d_z_test_sorted))
         i+=1
         
-    print 'All mse:', mse
-    return np.mean(mse), np.std(mse) 
+    return mse
 
-def get_kFold_file(k, z, study = None, name = None, folded = False):
+def save_mse(mse, k, z, study = None, name = None, seed = 2, run = 1):
+    '''Save the folded in test data'''
+    mseFile = get_file_name(k, z, study, name, mse = True)
+    np.savetxt(mseFile, mse, delimiter=",")
+    return None
+
+
+def get_file_name(k, z, study = None, name = None, folded = False, mse = False):
     '''finds the path of the file with the dataset cross validation
         partitions for the current study, number of folds (k) and topic number (z)'''
+    ext = '.txt'
     
     if study:
         fileName = 'study_' + study + '_z=' + str(z) + '_kFold_' + str(k)
@@ -165,10 +172,12 @@ def get_kFold_file(k, z, study = None, name = None, folded = False):
     if folded:
         fileName += '_folded'
         
-    kFoldFile = os.path.join(_root_dir, CROSS_VAL_LOCATION, fileName + '.txt')
+    if mse:
+        fileName += '_mse'
+        ext = '.csv'
+    
+    kFoldFile = os.path.join(_root_dir, CROSS_VAL_LOCATION, fileName + ext)
     return kFoldFile
-
-
 
 
 

@@ -30,9 +30,9 @@ class MicrobPLSA():
     and apply statistical tools such as Probabilistic Latent Semantic Analysis.
     This class is actually a wrapper on Mathieu Blondel's PLSA package'''
 
-    def __init__(self):
-        self.study = None
-        self.name = None
+    def __init__(self, study = None, name = None):
+        self.study = study
+        self.name = name
         self.run = ''
         self.useC = None
         self.model = None

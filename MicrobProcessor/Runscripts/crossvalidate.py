@@ -6,6 +6,7 @@ author: sperez8
 
 import sys, os
 import argparse
+import numpy as np
 
 _cur_dir = os.path.dirname(os.path.realpath(__file__))
 _root_dir = os.path.dirname(_cur_dir)
@@ -82,7 +83,7 @@ def main(*argv):
     print ("    Number of folds, k= : %s" % k)
 
     m = microbplsa.MicrobPLSA(study = study, name = name)
-    mseLog = []
+    mseAll = []
     if action == 'train' or action == 'test' or action == 'all':
         m.open_data()
         print 'Data loaded.'
@@ -97,12 +98,13 @@ def main(*argv):
             kf.test(m, kFolds, k, z, useC = useC, seed = seed)
         if action == 'mse' or action == 'all':
             kFolds = kf.open_kFold(study, name, k, z)
-            mse, std = kf.measure_error(m, kFolds, k, z)
-            print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3} +/-{4}\n".format(study, z, k, round(mse,5), round(std,5))
-            mseLog.append((mse,std))
+            mse = kf.measure_error(m, kFolds, k, z)
+            print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3} +/-{4}\n".format(study, z, k, round(np.mean(mse),5), round(np.std(mse),5))
+            mse.insert(0,z)
+            mseAll.append(mse)
     
-    if mseLog:
-        print mseLog
+    if mseAll:
+        kf.save_mse(mseAll, k, z, study, name, seed, run)
     
 if __name__ == "__main__":
     main(*sys.argv[1:])
