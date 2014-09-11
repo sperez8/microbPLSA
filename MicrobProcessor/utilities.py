@@ -37,7 +37,7 @@ def extract_data(dataFile,sampling):
                 return import_tab_file(dataFile+'.txt', sampling)
             except IOError:
                 pass
-    print "File name: {0} Incorrect file extension.".format(dataFile)
+    print "The file {0} with extension '.txt' or '.biom' doesn't exist. Please check the study number and name were attributed correctly.".format(dataFile)
     sys.exit()
             
 def import_biom_file(f,sampling):

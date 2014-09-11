@@ -25,12 +25,6 @@ EPS = 0.001
 FOLDER = 'CrossValidation'
 CROSS_VAL_LOCATION = os.path.join('Results',FOLDER)
 
-def load(study, name):
-    m = microbplsa.MicrobPLSA()
-    m.open_data(study = study, name = name)
-    print 'Data loaded.'
-    return m
-
 def create_folds(m, k, z, shuffle = True, seed = None):
     #Create the folds and save the way we partitioned the data
     numSamples = m.dimensions()[1]
@@ -120,7 +114,6 @@ def measure_error(m, kFolds, k, z):
     '''Compare the p_d_z_test and p_d_z_train for the folded in documents'''
     study = m.study
     name = m.name
-    data = m.datamatrix
     
     #Get model for when the fold is included.
     m.open_model(z = z, run = 1, useC = True, folder = 'Models', add_to_file = None)
@@ -136,7 +129,6 @@ def measure_error(m, kFolds, k, z):
     for trainSamples,testSamples in kFolds:
         trainSamples = np.array(trainSamples)
         testSamples = np.array(testSamples)
-        trainData, testData = data[:,trainSamples], data[:,testSamples]
         
         #open folds
         seed = 2

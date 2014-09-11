@@ -78,10 +78,15 @@ def main(*argv):
         print ("    Number of topics: {0}".format(z_i))
     print ("    Using C: %s" % args.useC)
     print ("    Number of run used: %s" % args.run)
+    print ("    Action performed: %s" % action)
+    print ("    Number of folds, k= : %s" % k)
 
-
-    m = kf.load(study, name)
+    m = microbplsa.MicrobPLSA(study = study, name = name)
     mseLog = []
+    if action == 'train' or action == 'test' or action == 'all':
+        m.open_data()
+        print 'Data loaded.'
+        
     for z in range(z_i, z_f+1, z_inc): 
         if action == 'train' or action == 'all':
             kFolds = kf.create_folds(m, k, z, shuffle = True, seed = seed)
@@ -93,7 +98,7 @@ def main(*argv):
         if action == 'mse' or action == 'all':
             kFolds = kf.open_kFold(study, name, k, z)
             mse, std = kf.measure_error(m, kFolds, k, z)
-            print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3} +/-{4}\n".format(study, z, k, round(mse,3), round(std,3))
+            print "\n The cross validation error for study {0} with {1} topics and {2} folds is:     {3} +/-{4}\n".format(study, z, k, round(mse,5), round(std,5))
             mseLog.append((mse,std))
     
     if mseLog:
