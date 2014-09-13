@@ -83,6 +83,7 @@ def import_tab_file(dataFile, sampling):
     table = f.read().splitlines() #read file and split by lines
     samples = table[1].split('\t')[1:]  #read column names which are split by tabs, skip first row filled with garbage
     otus = []
+    print len(table), len(samples)
     datamatrix = np.zeros((len(table)-2,len(samples)))
     if sampling and len(table)>1000:
         last_line = SAMPLE_SIZE

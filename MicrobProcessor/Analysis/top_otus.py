@@ -12,12 +12,17 @@ sys.path.insert(0, _root_dir)
 import microbplsa
 
 
-z = 8
-study = '1526'
-#name = 'study_1526_8_topics_with_C_run1'
-name = None
+z = 2
+study = None
+name = 'bac_final0.03.otutable_GOODSAMPLES'
 N = 2
+
+dataFile = os.path.join('C:/Users/Sarah/Desktop/bac_final0.03.otutable_GOODSAMPLES.txt')
 
 m = microbplsa.MicrobPLSA()
 
-m.top_otus_labels(z, study = study, name = name, N_otus = N)
+m.open_data(study = study, name = name, dataFile = dataFile)
+
+m.open_model(z = z, run = run, useC = True, folder = folder, add_to_file = add)
+
+m.top_otus_labels(z, dataFile,  study = study, name = name, N_otus = N)

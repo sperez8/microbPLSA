@@ -33,6 +33,7 @@ class MicrobPLSA():
     def __init__(self, study = None, name = None):
         self.study = study
         self.name = name
+        self.datamatrix = None
         self.run = ''
         self.useC = None
         self.model = None
@@ -234,12 +235,10 @@ class MicrobPLSA():
         p_d_z_test = self.model.folding_in(testData, maxiter = maxiter, eps = eps, useC = useC)
         return p_d_z_test
     
-    def top_otus_labels(self, z, study = None, name = None, N_otus = 5):
-        biom_data =self.open_data(study = study, name = name)
-        map = self.open_otu_maps(biom_data)['OTU_MAP']
-        self.open_model(study = study, name = name, z = z)
+    def top_otus_labels(self, z, dataFile, study = None, name = None, n_otus = 5):
+        map = self.open_otu_maps(dataFile)['OTU_MAP']
         
-        otu_labels = self.model.topic_labels(map, N_otus)
+        otu_labels = self.model.topic_labels(map, n_otus)
         labels = []
         for label in otu_labels:
             labels.append(label)
