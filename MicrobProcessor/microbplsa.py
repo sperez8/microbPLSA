@@ -167,7 +167,6 @@ class MicrobPLSA():
         
         if not filesCreated:
             print '\n    No files were created. Exiting...\n'
-            sys.exit()
         
         return None
             
