@@ -13,13 +13,15 @@ sys.path.insert(0, _root_dir)
 
 import microbplsa
 
+FOLDER = 'Models'
+
 #analysis_dir = os.path.join(_root_dir, 'Analysis')
 #sys.path.insert(0, analysis_dir)
 
 #import top_otus as top
 
 def main(*argv):
-    '''handles user input and runs plsa'''
+    '''handles user input and runs different analysis functions using plsa model'''
 
     parser = argparse.ArgumentParser(description='This scripts runs plsa for a range of topic numbers.')
     parser.add_argument('-s','--study', help='The study number', default = None)
@@ -27,7 +29,7 @@ def main(*argv):
     parser.add_argument('-z','--topics', help='The range of topics to be run [z_start, z_end]', nargs = '+', type = int, required = True)
     parser.add_argument('-z_inc','--increment', help='Increment of topic numbers', type = int, default = 1)
     parser.add_argument('-useC', help='use C code to run plsa', action = 'store_true')
-    parser.add_argument('-runs','-numruns', help='Specify the number of runs', type = int, default = 1)
+    parser.add_argument('-run', help='Specify the run number', type = int, default = 1)
     parser.add_argument('-topotus', help='Specify to calculate the top otus', action = 'store_true')
     parser.add_argument('-n_otus', help='Specify the number of top otus to return per topic', type = int, default = 5)
     parser.add_argument('-calculateX', help='Specify to calculate X', action = 'store_true')
@@ -61,7 +63,7 @@ def main(*argv):
         parser.print_help()
         sys.exit()
     z_inc = args.increment
-    numRuns = args.runs
+    run = args.run
     useC = args.useC
     topotus = args.topotus
     n_otus = args.n_otus
@@ -74,17 +76,17 @@ def main(*argv):
     else:
         print ("    Topic number used: {0}".format(z_i))
     print ("    Using C: %s" % args.useC)
-    print ("    Number of runs: %s" % args.runs)
+    print ("    Run number: %s" % args.run)
 
-    m = microbplsa.MicrobPLSA()
-    m.open_data(study = study, name = name)
+    m = microbplsa.MicrobPLSA(study = study, name = name)
+    #m.open_data()
     
     for z in range(z_i, z_f+1, z_inc): 
         if topotus:
-            pass
-            dataFile = m.open_data(study = study, name = name)
-            m.open_model(z = z, run = run, useC = True, folder = folder, add_to_file = add)
-            m.top_otus_labels(z, dataFile, study = study, name = name, n_otus = n_otus)
+            print "Finding top otus per each topic"
+            #dataFile = m.open_data(study = study, name = name)
+            m.open_model(z = z, run = run, useC = True, folder = FOLDER)
+            m.top_otus_labels(z, n_otus = n_otus)
         if calculateX:
             pass
             #do something...

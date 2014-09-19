@@ -18,7 +18,7 @@ sys.path.insert(0, _root_dir + os.sep + "PLSA")
 from plsa import pLSA
 from plsa import loglikelihood
 
-OTU_MAP_NAME = os.path.join('JsonData', 'OTU_MAP_')
+OTU_MAP_NAME = os.path.join(_cur_dir, 'Otu_maps', 'OTU_MAP_')
 RESULTS_LOCATION = 'Results'
 MODELS_LOCATION = 'Models'
 MAX_ITER_PLSA = 100000
@@ -234,9 +234,27 @@ class MicrobPLSA():
         p_d_z_test = self.model.folding_in(testData, maxiter = maxiter, eps = eps, useC = useC)
         return p_d_z_test
     
-    def top_otus_labels(self, z, dataFile, study = None, name = None, n_otus = 5):
-        map = self.open_otu_maps(dataFile)['OTU_MAP']
+    def top_otus_labels(self, z, dataFile = None, mapFile = None, n_otus = 5):
+        map = None
+        if dataFile:
+            map = self.open_otu_maps(dataFile)['OTU_MAP']
+        elif mapFile:
+            f = mapFile
+        else:
+            try:
+                print OTU_MAP_NAME + "name_" + str(self.name) + ".txt"
+                f = open(OTU_MAP_NAME + "name_" + str(self.name) + ".txt", 'r')
+            except IOError:
+                try:
+                    print "xxxx"
+                    f = open(OTU_MAP_NAME + "study_" + str(self.study) + ".txt", 'r')
+                except IOError:
+                    f = ''
         
+        if f:
+            data = json.loads(f)
+            map = np.array(data['OTU_MAP'])
+            
         otu_labels = self.model.topic_labels(map, n_otus)
         labels = []
         for label in otu_labels:
