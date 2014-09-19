@@ -19,7 +19,6 @@ from plsa import pLSA
 from plsa import loglikelihood
 
 OTU_MAP_NAME = os.path.join(_cur_dir, 'Otu_maps', 'OTU_MAP_')
-TOP_OTUS_NAME = os.path.join(_cur_dir, 'Results', 'Top_otus', 'top_otus_')
 RESULTS_LOCATION = 'Results'
 MODELS_LOCATION = 'Models'
 MAX_ITER_PLSA = 100000
@@ -234,43 +233,6 @@ class MicrobPLSA():
         """
         p_d_z_test = self.model.folding_in(testData, maxiter = maxiter, eps = eps, useC = useC)
         return p_d_z_test
-    
-    def top_otus_labels(self, z, dataFile = None, mapFile = None, n_otus = 5):
-        ''' get otu_id: otu_name map and use it to find the top labels per topic in the plsa model.
-            Writes the output to a text file or to console if no file found'''
-        map = None
-        if dataFile:
-            map = self.open_otu_maps(dataFile)['OTU_MAP']
-        elif mapFile:
-            f = mapFile
-        else:
-            try:
-                f = open(OTU_MAP_NAME + "name_" + str(self.name) + ".txt", 'r')
-                print "Found map:", f 
-            except IOError:
-                try:
-                    f = open(OTU_MAP_NAME + "study_" + str(self.study) + ".txt", 'r')
-                    print "Found map:", f
-                except IOError:
-                    f = ''
-                    print "No otu id to otu name map found for this study."
-        
-        if f:
-            data = np.loadtxt(f, delimiter = ',', dtype = { 'names':('id','name'), 'formats': ('i16', 'S200') })
-            map = {}
-            for row in data:
-                id, name = row[0], row[1]
-                map[id] = name
-            
-        otu_labels = self.model.topic_labels(map, n_otus)
-        if self.name:
-            f = os.path.join(TOP_OTUS_NAME + "name_" + str(self.name) + ".txt")
-        elif self.study:
-            f = os.path.join(TOP_OTUS_NAME + "name_" + str(self.name) + ".txt")
-        print f
-        np.savetxt(f, np.asarray(otu_labels), delimiter = ',', fmt="%s")
-        
-        return None
 
     def significant_otus(self, cutoff = 0.8):
         self.open_model(study = self.study, z = self.z)

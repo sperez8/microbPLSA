@@ -13,6 +13,10 @@ sys.path.insert(0, _root_dir)
 
 import microbplsa
 
+sys.path.insert(0, os.path.join(_root_dir,'Analysis'))
+
+import analysis_tools as analysis
+
 FOLDER = 'Models'
 
 #analysis_dir = os.path.join(_root_dir, 'Analysis')
@@ -86,7 +90,7 @@ def main(*argv):
             print "Finding top otus per each topic"
             #dataFile = m.open_data(study = study, name = name)
             m.open_model(z = z, run = run, useC = True, folder = FOLDER)
-            m.top_otus_labels(z, n_otus = n_otus)
+            analysis.top_otus(m, z, n_otus = n_otus)
         if calculateX:
             pass
             #do something...
