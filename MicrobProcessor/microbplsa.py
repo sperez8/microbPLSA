@@ -246,15 +246,6 @@ class MicrobPLSA():
                 table.append([otu, p_z_w[z,otu], z+1])
         return np.array(table) # usecols = (0,1,2), dtype = {'name':('otus','score','topics'), 'format':('f4','f8','f4')})
 
-    def measure_abundance(self):
-        '''calculates the proportion of samples an OTU occurs in (ie. its abundance) and returns it
-            as a {otu index : abundance}'''
-        otutable = self.datamatrix
-        otu_abundances = {}
-        for otu, abundances in enumerate(otutable):
-            otu_abundances[otu] = round(float(np.count_nonzero(abundances))/float(otutable.shape[1]),2)
-        return otu_abundances
-
     def get_result_filename(self, z, run, useC, folder, add_to_file = ''):
         if useC:
             addC = 'with_C_'

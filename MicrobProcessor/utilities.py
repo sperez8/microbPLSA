@@ -46,7 +46,6 @@ def import_biom_file(f,sampling):
     See biom-format.org/documentation/versions/biom-1.0.html for more info'''
     json_data=open(f)
     data = json.load(json_data)
-    #pprint(data) #use this command to print the whole file
     json_data.close()
     
     shape = data['shape']
@@ -79,22 +78,18 @@ def import_biom_file(f,sampling):
 
 def import_tab_file(dataFile, sampling):
     '''imports the date from f and saves it in numpy array format'''
-    f = open(dataFile,'r')
-    table = f.read().splitlines() #read file and split by lines
-    samples = table[1].split('\t')[1:]  #read column names which are split by tabs, skip first row filled with garbage
-    otus = []
-    print len(table), len(samples)
-    datamatrix = np.zeros((len(table)-2,len(samples)))
-    if sampling and len(table)>1000:
-        last_line = SAMPLE_SIZE
-    else: 
-        last_line = len(table)
-    for i in range(2,last_line):
-        row = table[i].split('\t')
-        otus.append(row.pop(0)) 
-        datamatrix[i-2] = (row)
-    return datamatrix
+    print 'Loading'
+    datamatrix = np.loadtxt(dataFile, delimiter = '\t', dtype = int, skiprows = 1) #skip header of document
+    print 'shape', datamatrix.shape
+    print datamatrix
+
     
+    if sampling:
+        return datamatrix[:,:SAMPLE_SIZE]
+    else:
+        return datamatrix
+    
+        
 def read_results(dataFile):
     f = open(dataFile, 'r')
     reader = csv.reader(f)
@@ -193,7 +188,6 @@ def normalize_array(data_array):
 def zipper(*args):
     '''a revamped version of zip() method that checks that lists
     to be zipped are the same length'''
-    print args
     for i,item in enumerate(args):
         if len(item) != len(args[0]):
             raise ValueError('The lists to be zipped aren\'t the same length.')

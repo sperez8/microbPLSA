@@ -83,12 +83,10 @@ def main(*argv):
     print ("    Run number: %s" % args.run)
 
     m = microbplsa.MicrobPLSA(study = study, name = name)
-    #m.open_data()
     
     for z in range(z_i, z_f+1, z_inc): 
         if topotus:
             print "Finding top otus per each topic"
-            #dataFile = m.open_data(study = study, name = name)
             m.open_model(z = z, run = run, useC = True, folder = FOLDER)
             analysis.top_otus(m, z, n_otus = n_otus)
         if calculateX:

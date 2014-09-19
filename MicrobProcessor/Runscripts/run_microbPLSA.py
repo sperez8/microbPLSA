@@ -25,6 +25,7 @@ def main(*argv):
     parser.add_argument('-useC', help='use C code to run plsa', action = 'store_true')
     parser.add_argument('-runs','-numruns', help='Specify the number of runs', type = int, default = 1)
     parser.add_argument('-override', help='Overrides a result file', action = 'store_true')
+    parser.add_argument('-add', help='Add text to result file', default = '')
     args = parser.parse_args()
     
     if args.study is None and args.name is None:
@@ -52,6 +53,7 @@ def main(*argv):
     numRuns = args.runs
     useC = args.useC
     override = args.override
+    add = args.add
 
     print ("    Study: %s" % study)
     print ("    Name: %s" % name)
@@ -62,10 +64,11 @@ def main(*argv):
     print ("    Using C: %s" % args.useC)
     print ("    Number of runs: %s" % args.runs)
     print ("    Override result files: %s" % args.override)
+    print ("    Text to add to file: %s" % args.add)
 
     m = microbplsa.MicrobPLSA()
     m.open_data(study = study, name = name)
-    m.generate_runs(z_i = z_i, z_f = z_f, z_inc = z_inc, numRuns = numRuns, useC = useC, override = override)
+    m.generate_runs(z_i = z_i, z_f = z_f, z_inc = z_inc, numRuns = numRuns, useC = useC, override = override, add_to_file = add)
 
 if __name__ == "__main__":
     main(*sys.argv[1:])
