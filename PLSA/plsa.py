@@ -289,9 +289,9 @@ class pLSA(object):
         for z in range(Z):
             ind = np.argsort(self.p_w_z[:,z])[-N:][::-1]
             if inv_vocab and parameters:
-                labels.append([(i, inv_vocab[i], parameters[i]) for i in ind])
+                labels.append([(i, inv_vocab[i], parameters[i], p_w_z[i,z]) for i in ind])
             elif inv_vocab:
-                labels.append([(i, inv_vocab[i], parameters[i]) for i in ind])
+                labels.append([(i, inv_vocab[i], parameters[i] , p_w_z[i,z]) for i in ind])
             else: labels.append(ind)
         return labels
 

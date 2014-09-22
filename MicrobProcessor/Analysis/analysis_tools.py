@@ -63,13 +63,6 @@ def top_otus(m, z, dataFile = None, mapFile = None, n_otus = 5):
     
     otu_labels = m.model.topic_labels(map, n_otus, abundances)
     
-    mapk = map.keys()
-    mapk.sort()
-    absk = abundances.keys()
-    absk.sort()
-    print mapk[0], mapk[-1]
-    print absk[0], absk[-1]
-    print abundances[0], abundances[1]
     print m.datamatrix.shape
     print m.model.p_w_z.shape
     

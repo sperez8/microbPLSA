@@ -80,9 +80,6 @@ def import_tab_file(dataFile, sampling):
     '''imports the date from f and saves it in numpy array format'''
     print 'Loading'
     datamatrix = np.loadtxt(dataFile, delimiter = '\t', dtype = int, skiprows = 1) #skip header of document
-    print 'shape', datamatrix.shape
-    print datamatrix
-
     
     if sampling:
         return datamatrix[:,:SAMPLE_SIZE]
