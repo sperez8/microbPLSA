@@ -32,10 +32,12 @@ def extract_data(dataFile,sampling):
     else: 
         try:
             open(dataFile+'.txt.array')
+            print "Loading data from pickled numpy array"
             return load_array_data(dataFile + '.txt.array', sampling)
         except IOError:
             try:
                 open(dataFile+'.biom.array')
+                print "Loading data from pickled numpy arraXy"
                 return load_array_data(dataFile + '.biom.array', sampling)
             except IOError:
                 try:
@@ -103,8 +105,7 @@ def pickle_data_matrix(dataFile):
     return None
 
 def load_array_data(dataFile, sampling):
-    datamatrix = np.load(dataFile + '.array', 'r')
-
+    datamatrix = np.load(dataFile, 'r')
     if sampling:
         return datamatrix[:,:SAMPLE_SIZE]
     else:
