@@ -21,6 +21,7 @@ from plsa import loglikelihood
 OTU_MAP_NAME = os.path.join(_cur_dir, 'Otu_maps', 'OTU_MAP_')
 RESULTS_LOCATION = 'Results'
 MODELS_LOCATION = 'Models'
+DATA_LOCATION = os.path.join('/Users','sperez', 'Documents', 'PLSA data', 'EMPL data')
 MAX_ITER_PLSA = 100000
 LEVELS = 10 #default number of levels to add to name of OTU in OTU_MAP
 EPS = 0.01
@@ -108,9 +109,9 @@ class MicrobPLSA():
                 return dataFile
             elif self.study is not None:
                 self.study = str(self.study)
-                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.study+'_split_library_seqs_and_mapping/study_'+self.study+'_closed_reference_otu_table'
+                return os.path.join(DATA_LOCATION, 'study_' + self.study + '_split_library_seqs_and_mapping', 'study_' + self.study + '_closed_reference_otu_table')
             elif self.name is not None: 
-                return '/Users/sperez/Documents/PLSA data/EMPL data/study_'+self.name+'/'+self.name
+                return os.path.join(DATA_LOCATION, 'study_' + self.name, self.name)
             else:
                 print "Need study number or the name of the data file to access the data."
 

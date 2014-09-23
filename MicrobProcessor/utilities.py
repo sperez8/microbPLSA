@@ -23,21 +23,31 @@ classes = {'kingdom':'k', 'phylum':'p', 'class':'c', 'order':'o', 'family':'f', 
 
 
 def extract_data(dataFile,sampling):
-    if dataFile[-4:]=='.txt':
+    if dataFile[-6:]=='.array':
+        return load_array_data(dataFile, sampling)
+    elif dataFile[-4:]=='.txt':
         return import_tab_file(dataFile, sampling)
     elif dataFile[-5:]=='.biom':
         return import_biom_file(dataFile, sampling)
     else: 
         try:
-            open(dataFile+'.biom')
-            return import_biom_file(dataFile+'.biom', sampling)
+            open(dataFile+'.txt.array')
+            return load_array_data(dataFile + '.txt.array', sampling)
         except IOError:
             try:
-                open(dataFile+'.txt')
-                return import_tab_file(dataFile+'.txt', sampling)
+                open(dataFile+'.biom.array')
+                return load_array_data(dataFile + '.biom.array', sampling)
             except IOError:
-                pass
-    print "The file {0} with extension '.txt' or '.biom' doesn't exist. Please check the study number and name were attributed correctly.".format(dataFile)
+                try:
+                    open(dataFile+'.biom')
+                    return import_biom_file(dataFile+'.biom', sampling)
+                except IOError:
+                    try:
+                        open(dataFile+'.txt')
+                        return import_tab_file(dataFile+'.txt', sampling)
+                    except IOError:
+                        pass
+    print "The file {0} with extension '.array', '.txt' or '.biom' doesn't exist. Please check the study number and name were attributed correctly.".format(dataFile)
     sys.exit()
             
 def import_biom_file(f,sampling):
@@ -86,7 +96,20 @@ def import_tab_file(dataFile, sampling):
     else:
         return datamatrix
     
-        
+
+def pickle_data_matrix(dataFile):
+    datamatrix = extract_data(dataFile,None)
+    datamatrix.dump(dataFile + '.array')
+    return None
+
+def load_array_data(dataFile, sampling):
+    datamatrix = np.load(dataFile + '.array', 'r')
+
+    if sampling:
+        return datamatrix[:,:SAMPLE_SIZE]
+    else:
+        return datamatrix
+
 def read_results(dataFile):
     f = open(dataFile, 'r')
     reader = csv.reader(f)
