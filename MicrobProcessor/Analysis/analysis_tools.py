@@ -15,7 +15,7 @@ _root_dir = os.path.dirname(_cur_dir)
 OTU_MAP_NAME = os.path.join(_root_dir, 'Otu_maps', 'OTU_MAP_')
 TOP_OTUS_NAME = os.path.join(_root_dir, 'Results', 'Top_otus', 'top_otus_')
 
-
+HEADER = ['Z','Otu #', 'Name', 'Abundance', 'P(w|z)']
 
 def measure_abundance(m):
     '''calculates the proportion of samples an OTU occurs in (ie. its abundance) and returns it
@@ -63,15 +63,25 @@ def top_otus(m, z, dataFile = None, mapFile = None, n_otus = 5):
     
     otu_labels = m.model.topic_labels(map, n_otus, abundances)
     
-    print m.datamatrix.shape
-    print m.model.p_w_z.shape
-    
     if m.name:
-        f = os.path.join(TOP_OTUS_NAME + "name_" + str(m.name) + ".txt")
+        topFile = os.path.join(TOP_OTUS_NAME + "name_" + str(m.name) + ".txt")
     elif m.study:
-        f = os.path.join(TOP_OTUS_NAME + "name_" + str(m.name) + ".txt")
-    print f
-    np.savetxt(f, np.asarray(otu_labels), delimiter = ',', fmt="%s")
+        topFile = os.path.join(TOP_OTUS_NAME + "name_" + str(m.name) + ".txt")
+    
+    f = open(topFile, 'w')
+    
+    f.write('\t'.join(HEADER))
+    
+    for label in otu_labels:
+        for row in label:
+            f.write('\n')
+            f.write('\t'.join([str(r) for r in row]))
+        
+    f.close()
+    
+    #np.savetxt(f, np.asarray(otu_labels), delimiter = ',', fmt="%s")
+    
+    print "\nSaved top otus {0} per topic in file: {1}".format(n_otus, f)
     
     return None
 
