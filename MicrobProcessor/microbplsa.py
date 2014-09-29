@@ -109,9 +109,9 @@ class MicrobPLSA():
                 return dataFile
             elif self.study is not None:
                 self.study = str(self.study)
-                return os.path.join(DATA_LOCATION, 'study_' + self.study + '_split_library_seqs_and_mapping', 'study_' + self.study + '_closed_reference_otu_table')
+                return os.path.join(DATA_LOCATION, 'study_' + self.study + '_split_library_seqs_and_mapping', 'study_' + self.study + '_closed_reference_otu_table' + '.biom')
             elif self.name is not None: 
-                return os.path.join(DATA_LOCATION, 'study_' + self.name, self.name)
+                return os.path.join(DATA_LOCATION, 'study_' + self.name, self.name +'.txt')
             else:
                 print "Need study number or the name of the data file to access the data."
 

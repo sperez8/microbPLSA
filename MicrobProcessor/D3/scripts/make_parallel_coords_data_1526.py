@@ -23,19 +23,21 @@ CORRELATION_THRESHOLD = 0.0
 MANUAL_LABELS = ['Topic 1', 'Topic 2', 'Year Last submerged', 'Under water', 'Topic 5', 'Topic 6', 'Submerged between 2002-1999', 'Moki Camp']
 pcoordfile = _root_dir +'/D3/pcplots/topics.js'
 
-f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/study_'+study +'_'+str(z)+'_topics_.txt'
+f = '/Users/sperez/git/microbPLSA/MicrobProcessor/Results/Models/study_'+study +'_'+str(z)+'_topics_.txt'
 datafile = '/Users/sperez/Documents/PLSAfun/EMPL data/study_'+study+'_split_library_seqs_and_mapping/study_'+study+'_closed_reference_otu_table.biom'
 
 m = microbplsa.MicrobPLSA()
-plsa = m.open_model(file = f) #get model from the results file
+m.open_model(modelFile = f, study = '1526') #get model from the results file
+plsa = m.model
 p_z_d = plsa.document_topics() #return document's distribution
 Z,N =p_z_d.shape #number of samples
 
-Lab = Labelling(study, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
+Lab = Labelling(m, Z, ignore_continuous = False, adjusted_metadata = True) #get labels!
 Lab.metadata(non_labels = [])
 samplenames = Lab.metadatamatrix[:,0]
 samples = [s.split('.')[0] for s in samplenames] #removes numerical id after sample name
 types = Lab.metadatamatrix[:,1] #column with types for color coding later
+
 year = Lab.metadatamatrix[:,6]
 if len(MANUAL_LABELS) == Z:
     labels = ['\"'+l+'\"' for l in MANUAL_LABELS]

@@ -12,15 +12,15 @@ from correlations import *
 import sys,os
 
 class Labelling():
-    '''A class to handle the labelling of topics using metadata'''
+    '''A class to handle the labeling of topics using metadata'''
     
-    def __init__(self, plsa, debug = False,  ignore_continuous = False, adjusted_metadata = True):
+    def __init__(self, plsa, Z, debug = False,  ignore_continuous = False, adjusted_metadata = True):
         '''handles all the files and calls the right functions
             to create a labeling file.'''
         self.debug = debug
         self.ignore_continuous = ignore_continuous
         self.adjusted_metadata = adjusted_metadata
-        self.Z = plsa.z
+        self.Z = Z
         self.m = plsa
         self.study = plsa.study
         self.name = plsa.name        
