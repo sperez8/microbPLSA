@@ -17,12 +17,17 @@ sys.path.insert(0, analysis_dir)
 from labelling import Labelling
 from string import replace
 
+FOLDER = 'Models'
+
+
+
+
 name = 'bac_final0.03.otutable_GOODSAMPLES'
 z = 20
 run = 1
-FOLDER = 'Models'
-CORRELATION_THRESHOLD = 0.0
 pcoordfile = os.path.join(_root_dir, 'D3', 'pcplots', 'paracoords_LTSP_topics'+'.js')
+
+   
 
 m = microbplsa.MicrobPLSA(name = name)
 m.open_model(z = z, run = run, useC = True, folder = FOLDER) #get model from the results file

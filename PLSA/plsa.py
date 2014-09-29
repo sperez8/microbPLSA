@@ -274,7 +274,7 @@ class pLSA(object):
         """
         return self.word_topics().argmax(axis=0)
 
-    def topic_labels(self, inv_vocab=None, N=10, parameters=None):
+    def topic_labels(self,N=10, inv_vocab=None):
         """
         For each topic z, find the N words w with highest probability P(w|z).
 
@@ -285,14 +285,15 @@ class pLSA(object):
         Return: Z lists of N words.
         """
         Z = len(self.p_z)
-        labels = []
+        labels = {}
         for z in range(Z):
+            labels[z] = {}
             ind = np.argsort(self.p_w_z[:,z])[-N:][::-1]
-            if inv_vocab and parameters:
-                labels.append([(z, i, inv_vocab[i], parameters[i], self.p_w_z[i,z]) for i in ind])
-            elif inv_vocab:
-                labels.append([(z, i, inv_vocab[i], parameters[i] , self.p_w_z[i,z]) for i in ind])
-            else: labels.append(ind)
+            for i in ind:
+                if inv_vocab:
+                    labels[z][i] = [self.p_w_z[i,z], inv_vocab[i]]
+                else: 
+                    labels[z][i] = [self.p_w_z[i,z]]
         return labels
 
     def unigram_smoothing(self):
